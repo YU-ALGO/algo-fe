@@ -6,7 +6,7 @@
       :title="title"
   >
     <svg class="remix">
-      <use :xlink:href="`${remixiconUrl}#ri-${icon}`" />
+      <use :xlink:href="`${remixiconUrl}#ri-${icon}`"/>
     </svg>
   </button>
 </template>
@@ -20,17 +20,14 @@ export default {
       type: String,
       required: true,
     },
-
     title: {
       type: String,
       required: true,
     },
-
     action: {
       type: Function,
       required: true,
     },
-
     isActive: {
       type: Function,
       default: null,

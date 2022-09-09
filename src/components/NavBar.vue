@@ -25,7 +25,7 @@
             <ul class="dropdown-menu">
               <li><router-link class="dropdown-item" :to="{ name: 'FreeBoard' }">자유게시판</router-link></li>
               <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
+              <li><hr class="dropdown-divider"/></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </li>

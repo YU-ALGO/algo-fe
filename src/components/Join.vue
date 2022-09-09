@@ -5,21 +5,21 @@
       <form class="validation-form" novalidate>
         <div class="mb-3">
           <label for="username">아이디</label>
-          <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck()" required>
+          <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck" required/>
           <span v-if="username" :style="[resVal === 1 ? 'color: red' : 'color: green']">{{ message }}</span>
         </div>
         <div class="mb-3">
           <label for="password">비밀번호</label>
-          <input type="password" class="form-control" id="password" v-model="password" required>
+          <input type="password" class="form-control" id="password" v-model="password" required/>
         </div>
         <div class="mb-3">
           <label for="password">비밀번호 확인</label>
-          <input type="password" class="form-control" id="password2" v-model="password2" @keyup="pwCheck()" required>
+          <input type="password" class="form-control" id="password2" v-model="password2" @keyup="pwCheck" required/>
           <span v-if="password2" style="color: red">{{ message2 }}</span>
         </div>
         <div class="mb-3">
           <label for="nickname">닉네임</label>
-          <input type="text" class="form-control" id="nickname" v-model="nickname" required>
+          <input type="text" class="form-control" id="nickname" v-model="nickname" required/>
         </div>
         <div class="mb-4"></div>
         <button class="btn btn-primary btn-block" type="button" @click="submit">가입하기</button>
@@ -47,13 +47,14 @@ export default {
     const resVal = ref(3)
 
     const idCheck = () => {
-      if(username.value)
+      if (username.value) {
         axiosGet(`/api/v2/users/${username.value}/exists`, getId, () => console.error())
+      }
     }
 
     const pwCheck = () => {
       message2.value = ''
-      if(password.value !== password2.value) {
+      if (password.value !== password2.value) {
         message2.value = '비밀번호가 일치하지 않습니다.'
       }
     }
@@ -72,7 +73,7 @@ export default {
       axiosPost('/api/v2/signup', {
         user_id : username.value,
         password : password.value,
-        nickname : nickname.value
+        nickname : nickname.value,
       }, () => {
         alert('회원가입 성공!')
         router.push('/')
@@ -86,11 +87,11 @@ export default {
       password,
       password2,
       nickname,
-      idCheck,
-      pwCheck,
       message,
       message2,
       resVal,
+      idCheck,
+      pwCheck,
       submit,
     }
   },

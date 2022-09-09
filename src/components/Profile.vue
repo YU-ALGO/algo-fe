@@ -3,17 +3,18 @@
 </template>
 
 <script>
-import useAxios from '@/modules/axios.js'
+import { computed, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 import { useCookies } from 'vue3-cookies'
-import { computed, onBeforeMount } from 'vue'
+import useAxios from '@/modules/axios.js'
 import router from '@/router'
 
-const { cookies } = useCookies()
-const { axiosPost } = useAxios()
+
 
 export default {
   setup() {
+    const { axiosPost } = useAxios()
+    const { cookies } = useCookies()
     const store = useStore()
 
     const needLogin = computed(() => {

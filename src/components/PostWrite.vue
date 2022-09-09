@@ -1,10 +1,10 @@
 <template>
   <h2>글쓰기</h2>
-  <input type="text" v-model="title" className="form-control" id="title" placeholder="제목">
+  <input type="text" v-model="title" className="form-control" id="title" placeholder="제목"/>
   <br/>
   <div className="editor" v-if="editor">
-    <menu-bar className="editor__header" :editor="editor"/>
-    <editor-content className="editor__content" :editor="editor"/>
+    <MenuBar className="editor__header" :editor="editor"/>
+    <EditorContent className="editor__content" :editor="editor"/>
   </div>
   <br/>
   <button @click="write" class="btn btn-primary me-2">글쓰기</button>
@@ -14,9 +14,9 @@
 <script>
 
 import { ref, computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex';
+import { useStore } from 'vuex'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
-import useAxios from '@/modules/axios'
+import useAxios from '@/modules/axios.js'
 import StarterKit from '@tiptap/starter-kit'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
@@ -63,7 +63,7 @@ export default {
       // console.log('내용: ' + editor.value.getHTML())
       axiosPost('/api/v1/boards/1/posts', {
         title: title.value,
-        content: editor.value.getHTML()
+        content: editor.value.getHTML(),
       }, onSuccess, onFailed)
     }
 

@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name:'PostWrite' }" class="btn btn-primary me-2">글쓰기</router-link>
+  <router-link :to="{ name: 'PostWrite' }" class="btn btn-primary me-2">글쓰기</router-link>
   <table class="table table-light">
     <thead>
     <tr>
@@ -42,6 +42,7 @@ export default {
     const rows = ref(5)
     const total_rows = ref(0)
     const page = ref(1)
+
     const total_pages = computed(() => {
       return Math.ceil(total_rows.value / rows.value)
     })
@@ -169,14 +170,14 @@ export default {
         date: '2022.08.24 10:52',
         views: 1,
         like: 0,
-      }
+      },
     ])
 
     return {
       data,
       page,
       total_pages,
-      sliced_data
+      sliced_data,
     }
   },
 }

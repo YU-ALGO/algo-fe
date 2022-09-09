@@ -12,7 +12,7 @@
         <p>Here is a test image URL</p>
         <pre>https://i.imgur.com/0ogkTp7.jpg</pre>
         <label for="url">Image URL:</label>
-        <input v-model="imageSrc" id="url" />
+        <input v-model="imageSrc" id="url"/>
       </div>
       <div v-if="tab == 1">
         <vue3Dropzone
@@ -62,7 +62,7 @@ export default {
     const dropzoneOptions = reactive({
       url: 'https://httpbin.org/post',
       thumbnailWidth: 200,
-      dictDefaultMessage: 'UPLOAD A FILE'
+      dictDefaultMessage: 'UPLOAD A FILE',
     })
 
     const validImage = computed(() => {

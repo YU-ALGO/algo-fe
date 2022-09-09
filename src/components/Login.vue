@@ -3,11 +3,11 @@
     <main class="form-signin">
       <h2>DownBit</h2>
       <form>
-        <input type="text" v-model="username" id="username" class="form-control mb-2" placeholder="아이디" @keyup.enter="login">
-        <input type="password" v-model="password" id="password" class="form-control mb-3" placeholder="비밀번호" @keyup.enter="login">
+        <input type="text" v-model="username" id="username" class="form-control mb-2" placeholder="아이디" @keyup.enter="login"/>
+        <input type="password" v-model="password" id="password" class="form-control mb-3" placeholder="비밀번호" @keyup.enter="login"/>
         <button class="btn btn-lg btn-primary btn-block me-2" type="button" @click="login">로그인</button>
         <a href="http://anycar8515.iptime.org:8088/oauth2/authorization/kakao">
-          <img src="../assets/kakao_login_medium_narrow.png" alt="">
+          <img src="../assets/kakao_login_medium_narrow.png"/>
         </a>
       </form>
     </main>
@@ -35,11 +35,11 @@ export default {
       try {
         const rs = await store.dispatch('login', {
           username: username.value,
-          password: password.value
+          password: password.value,
         })
-        alert(rs);
+        alert(rs)
       } catch (err) {
-        alert('아이디 또는 비밀번호를 확인해주세요.');
+        alert('아이디 또는 비밀번호를 확인해주세요.')
       }
     }
 
@@ -64,9 +64,9 @@ export default {
     // }
 
     return {
-      needLogin,
       username,
       password,
+      needLogin,
       login,
     }
   },
