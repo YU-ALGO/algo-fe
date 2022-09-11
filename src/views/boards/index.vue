@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hello, Guest! <br> Please Login.</h1>
+    <h2>boards/index.vue</h2>
   </div>
 </template>
 

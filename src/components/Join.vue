@@ -14,8 +14,8 @@
         </div>
         <div class="mb-3">
           <label for="password">비밀번호 확인</label>
-          <input type="password" class="form-control" id="password2" v-model="password2" @keyup="pwCheck()" required>
-          <span v-if="password2" style="color: red">{{ message2 }}</span>
+          <input type="password" class="form-control" id="passwordCheck" v-model="passwordCheck" @keyup="pwCheck()" required>
+          <span v-if="passwordCheck" style="color: red">{{ pwMessage }}</span>
         </div>
         <div class="mb-3">
           <label for="nickname">닉네임</label>
@@ -39,11 +39,11 @@ export default {
 
     const username = ref('')
     const password = ref('')
-    const password2 = ref('')
+    const passwordCheck = ref('')
     const nickname = ref('')
 
     const message = ref('')
-    const message2 = ref('')
+    const pwMessage = ref('')
     const resVal = ref(3)
 
     const idCheck = () => {
@@ -52,9 +52,9 @@ export default {
     }
 
     const pwCheck = () => {
-      message2.value = ''
-      if(password.value !== password2.value) {
-        message2.value = '비밀번호가 일치하지 않습니다.'
+      pwMessage.value = ''
+      if(password.value !== passwordCheck.value) {
+        pwMessage.value = '비밀번호가 일치하지 않습니다.'
       }
     }
 
@@ -84,12 +84,12 @@ export default {
     return {
       username,
       password,
-      password2,
+      passwordCheck,
       nickname,
       idCheck,
       pwCheck,
       message,
-      message2,
+      pwMessage,
       resVal,
       submit,
     }
@@ -98,15 +98,15 @@ export default {
 </script>
 
 <style scoped>
-body {
-  min-height: 100vh;
+/*body {*/
+/*  min-height: 100vh;*/
 
-  background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));
-  background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
-  background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
-  background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
-  background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);
-}
+/*  background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));*/
+/*  background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
+/*  background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
+/*  background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);*/
+/*  background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);*/
+/*}*/
 
 .input-form {
   max-width: 680px;

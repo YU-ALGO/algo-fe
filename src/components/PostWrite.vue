@@ -1,14 +1,16 @@
 <template>
   <h2>글쓰기</h2>
-  <input type="text" v-model="title" className="form-control" id="title" placeholder="제목">
-  <br/>
-  <div className="editor" v-if="editor">
-    <menu-bar className="editor__header" :editor="editor"/>
-    <editor-content className="editor__content" :editor="editor"/>
+  <div class="mt-2">
+    <input type="text" v-model="title" class="form-control" id="title" placeholder="제목">
+    <br/>
+    <div class="editor" v-if="editor">
+      <menu-bar className="editor__header" :editor="editor"/>
+      <editor-content className="editor__content" :editor="editor"/>
+    </div>
+    <br/>
+    <button @click="write" class="btn btn-primary me-2" disabled="disabled">글쓰기</button>
+    <button class="btn btn-outline-dark m-lg-2" @click="moveToPostListPage">취소</button>
   </div>
-  <br/>
-  <button @click="write" class="btn btn-primary me-2">글쓰기</button>
-  <router-link className="btn btn-primary" to="/boards/1">취소</router-link>
 </template>
 
 <script>
@@ -40,10 +42,10 @@ export default {
     })
 
     onBeforeMount(() => {
-      // if (needLogin.value) {
-      //   alert('로그인이 필요합니다!')
-      //   router.push('/boards/1')
-      // }
+      if (!needLogin.value) {
+        alert('로그인이 필요합니다!')
+        router.push('/boards')
+      }
     })
 
     const title = ref('')
@@ -75,10 +77,15 @@ export default {
 
     }
 
+    const moveToPostListPage = () => {
+      router.go(-1)
+    }
+
     return {
       title,
       editor,
       write,
+      moveToPostListPage,
     }
   },
 }

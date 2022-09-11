@@ -1,11 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import BoardsView from '../views/BoardView.vue'
-import Join from '../components/Join.vue'
-import Login from '../components/Login.vue'
-import MainView from '../views/MainView.vue'
-import PostWrite from '../components/PostWrite.vue'
-import Profile from '../components/Profile.vue'
-import StockView from '../views/StockView.vue'
+import MainView from '../views/index'
+import Profile from '../views/profile/index'
+import FoodView from '../views/food/index'
+import Join from '../components/Join'
+import Login from '../components/Login'
+import PostWrite from '../components/PostWrite'
+import Board from '../views/boards/_id'
+// import Boards from '../views/boards/index'
+import Admin from '../views/admin/index'
+import PostView from '../views/boards/views/_id'
 
 const routes = [
   {
@@ -14,17 +17,12 @@ const routes = [
     component: MainView,
   },
   {
-    path: '/stock',
-    name: 'Stock',
-    component: StockView,
+    path: '/food',
+    name: 'Food',
+    component: FoodView,
   },
   {
-    path: '/boards/1',
-    name: 'FreeBoard',
-    component: BoardsView,
-  },
-  {
-    path: '/write',
+    path: '/boards/write',
     name: 'PostWrite',
     component: PostWrite,
   },
@@ -42,6 +40,26 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile,
+  },
+  {
+    path: '/boards/:id',
+    name: 'Board',
+    component: Board,
+  },
+  // {
+  //   path: '/boards',
+  //   name: 'boards',
+  //   component: Boards,
+  // },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+  },
+  {
+    path: '/boards/views/:id',
+    name: 'Post',
+    component: PostView,
   },
 ]
 

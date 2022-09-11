@@ -1,10 +1,7 @@
 import { createStore } from 'vuex'
-import { useCookies } from 'vue3-cookies'
 import axios from 'axios'
 import router from '@/router'
 import createPersistedState from 'vuex-persistedstate'
-
-const { cookies } = useCookies();
 
 export default createStore({
     namespaced: true,
@@ -14,9 +11,6 @@ export default createStore({
     mutations: {
         needLogin(state, data) {
             state.needLogin = data;
-        },
-        removeToken () {
-            // cookies.remove('accessToken')
         }
     },
     getters: {
@@ -25,7 +19,7 @@ export default createStore({
         },
     },
     actions: {
-        login({commit}, {username, password}) { //로그인 및 토큰 처리
+        login({commit}, {username, password}) { //로그인 처리
             // eslint-disable-next-line no-async-promise-executor
             return new Promise( async(resolve, reject) => {
                 try {
@@ -37,13 +31,10 @@ export default createStore({
                         withCredentials: true
                     });
                     if (res.status === 200) {
-                        // const accessToken = res.data.token;
-                        // cookies.set('accessToken', accessToken);
                         commit('needLogin', false);
                         alert(res.data.userId + '님 환영합니다!')
                         await router.push('/')
                     }
-                    // resolve(res.data.msg);
                 } catch (err) {
                     console.error(err);
                     reject(err);
@@ -62,7 +53,6 @@ export default createStore({
             }). catch(function (error) {
                 console.log('로그아웃 오류 : ' + error)
             })
-            // commit('removeToken')
             commit('needLogin', true)
             location.reload()
         }

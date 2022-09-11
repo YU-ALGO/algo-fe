@@ -16,17 +16,16 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link class="nav-link active" aria-current="page" :to="{ name: 'Stock' }">알레르기 정보</router-link>
+            <router-link class="nav-link active" aria-current="page" :to="{ name: 'Food' }">식품 정보</router-link>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               커뮤니티
             </a>
             <ul class="dropdown-menu">
-              <li><router-link class="dropdown-item" :to="{ name: 'FreeBoard' }">자유게시판</router-link></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li v-for="boards in boardsList" :key="boards.id">
+                <router-link class="dropdown-item" :to="`/boards/${boards.id}`">{{ boards.name }}</router-link>
+              </li>
             </ul>
           </li>
         </ul>
@@ -36,7 +35,8 @@
 <!--        </form>-->
         <div class="d-flex" v-if="needLogin">
           <router-link :to="{ name: 'Login' }" class="btn btn-primary me-2">로그인</router-link>
-          <router-link :to="{ name: 'Join' }" class="btn btn-primary">회원가입</router-link>
+          <router-link :to="{ name: 'Join' }" class="btn btn-primary me-2">회원가입</router-link>
+          <router-link :to="{ name: 'Admin' }" class="btn btn-primary">Admin</router-link>
         </div>
         <div class="d-flex" v-else>
           <router-link :to="{ name: 'Profile' }" class="btn btn-primary me-2">프로필</router-link>
@@ -48,12 +48,25 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
+import axios from 'axios'
 
 export default {
   setup() {
     const store = useStore()
+    const boardsList = ref(null)
+
+    const getBoardList = async () => {
+      try {
+        const res = await axios.get('http://munis.ddns.net:8088/api/v1/boards')
+        boardsList.value = res.data
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getBoardList()
 
     const needLogin = computed(() => {
       return store.getters['needLogin']
@@ -67,6 +80,7 @@ export default {
     return {
       needLogin,
       logout,
+      boardsList
     }
   },
 }

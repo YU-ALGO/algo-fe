@@ -1,5 +1,5 @@
 <template>
-  <h1>Stock View</h1>
+  <h1>Profile Page</h1>
 </template>
 
 <script>
