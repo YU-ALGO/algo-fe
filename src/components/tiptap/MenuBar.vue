@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import MenuItem from './MenuItem.vue'
 import Modal from './Modal.vue'
 
