@@ -24,7 +24,13 @@ export default function () {
 
     const axiosGet = async (url, onSuccess = null, onFailed = null) => {
         communicating.value = true
-        axios.get(creatURL(url)).then((resp) => {
+        axios.get(creatURL(url), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true
+        }).then((resp) => {
             return checkResult(resp, onSuccess, onFailed)
         })
     }

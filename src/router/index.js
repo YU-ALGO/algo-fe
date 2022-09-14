@@ -1,16 +1,45 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import MainView from '../views/index'
-import Profile from '../views/profile/index'
-import FoodView from '../views/food/index'
 import Join from '../components/Join'
 import Login from '../components/Login'
 import PostWrite from '../components/PostWrite'
+import NotFound from '../components/NotFound'
+import TermOfService from '../components/TermOfService'
+
+import MainView from '../views/index'
+import Profile from '../views/profile/index'
+import FoodView from '../views/food/index'
 import Board from '../views/boards/_id'
 // import Boards from '../views/boards/index'
 import Admin from '../views/admin/index'
 import PostView from '../views/boards/views/_id'
 
+import { createRouter, createWebHistory } from 'vue-router'
+import axios from "axios";
+
+const requireAuth = () => (to, from, next) => {
+  axios.get(`http://be.downbit.r-e.kr:8088/api/v1/admin`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    withCredentials: true
+  })
+      .then(function (res) {
+        console.log(res)
+        return next();
+      })
+      .catch(function (err) {
+        console.log('오류 : ' + err)
+        alert('관리자만 접속할 수 있습니다!')
+        router.push('/')
+      })
+};
+
 const routes = [
+  {
+    path: '/term',
+    name: 'Term',
+    component: TermOfService,
+  },
   {
     path: '/',
     name: 'Main',
@@ -55,11 +84,21 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: Admin,
+    beforeEnter: requireAuth()
   },
   {
     path: '/boards/views/:id',
     name: 'Post',
     component: PostView,
+  },
+  {
+    path: '/404',
+    name: 'notFound',
+    component: NotFound,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: "/404"
   },
 ]
 

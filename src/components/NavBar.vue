@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">DownBit</a>
+      <a class="navbar-brand" href="/">ALGo</a>
       <button
           class="navbar-toggler"
           type="button"
@@ -36,11 +36,11 @@
         <div class="d-flex" v-if="needLogin">
           <router-link :to="{ name: 'Login' }" class="btn btn-primary me-2">로그인</router-link>
           <router-link :to="{ name: 'Join' }" class="btn btn-primary me-2">회원가입</router-link>
-          <router-link :to="{ name: 'Admin' }" class="btn btn-primary">Admin</router-link>
         </div>
         <div class="d-flex" v-else>
           <router-link :to="{ name: 'Profile' }" class="btn btn-primary me-2">프로필</router-link>
-          <button @click="logout" class="btn btn-primary">로그아웃</button>
+          <button @click="logout" class="btn btn-primary me-2">로그아웃</button>
+          <router-link v-if="isAdmin" :to="{ name: 'Admin' }" class="btn btn-primary me-2">Admin</router-link>
         </div>
       </div>
     </div>
@@ -72,6 +72,10 @@ export default {
       return store.getters['needLogin']
     })
 
+    const isAdmin = computed(() => {
+      return store.getters['isAdmin']
+    })
+
     const logout = (() => {
       alert('사이트에서 로그아웃되었습니다!')
       store.dispatch('logout')
@@ -79,6 +83,7 @@ export default {
 
     return {
       needLogin,
+      isAdmin,
       logout,
       boardsList
     }

@@ -21,7 +21,13 @@
       <h2>게시판 이름 변경 (구현중)</h2>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
-          <label class="col-form-label">게시판 이름</label>
+          <label class="col-form-label">삭제할 게시판</label>
+        </div>
+        <div class="col-auto">
+          <select v-model="selectedModify" class="form-select">
+            <option value="0">게시판목록</option>
+            <option v-for="board2 in boardModifyNameList" :key="board2.id" :value="board2.id">{{ board2.name }}</option>
+          </select>
         </div>
         <div class="col-auto">
           <input class="form-control" disabled="disabled">
@@ -38,7 +44,7 @@
         <div class="col-auto">
           <select v-model="selected" class="form-select">
             <option value="0">게시판목록</option>
-            <option v-for="board in boardName" :key="board.id" :value="board.id">{{ board.name }}</option>
+            <option v-for="board in boardDeleteNameList" :key="board.id" :value="board.id">{{ board.name }}</option>
           </select>
         </div>
         <div class="col-auto">
@@ -57,14 +63,17 @@ import { ref } from "vue";
 
 export default {
   setup() {
-
     const inputBoardName = ref('')
     const selected = ref(0)
-    const boardName = ref('')
+    const selectedModify = ref(0)
+    const boardDeleteNameList = ref('')
+    const boardModifyNameList = ref('')
+
     const getBoardName = async () => {
       try {
         const res = await axios.get(`http://munis.ddns.net:8088/api/v1/boards`)
-        boardName.value = res.data
+        boardDeleteNameList.value = { ...res.data }
+        boardModifyNameList.value = { ...res.data }
       } catch (error) {
         console.log(error)
       }
@@ -112,8 +121,10 @@ export default {
       createBoards,
       modifyBoards,
       deleteBoards,
-      boardName,
+      boardDeleteNameList,
+      boardModifyNameList,
       selected,
+      selectedModify,
       inputBoardName,
     }
   }
