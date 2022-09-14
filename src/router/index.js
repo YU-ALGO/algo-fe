@@ -32,7 +32,7 @@ const requireAuth = () => (to, from, next) => {
         alert('관리자만 접속할 수 있습니다!')
         router.push('/')
       })
-};
+}
 
 const routes = [
   {
