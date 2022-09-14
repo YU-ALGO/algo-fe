@@ -36,7 +36,7 @@ export default createStore({
                             'Access-Control-Allow-Origin': '*',
                         },
                         withCredentials: true
-                    });
+                    })
                     if (res.status === 200) {
                         console.log('로그인 정보 : ' + res.data.isAdmin)
                         commit('needLogin', false);

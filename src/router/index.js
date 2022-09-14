@@ -13,7 +13,7 @@ import Admin from '../views/admin/index'
 import PostView from '../views/boards/views/_id'
 
 import { createRouter, createWebHistory } from 'vue-router'
-import axios from "axios";
+import axios from 'axios'
 
 const requireAuth = () => (to, from, next) => {
   axios.get(`http://be.downbit.r-e.kr:8088/api/v1/admin`, {
@@ -32,7 +32,7 @@ const requireAuth = () => (to, from, next) => {
         alert('관리자만 접속할 수 있습니다!')
         router.push('/')
       })
-};
+}
 
 const routes = [
   {

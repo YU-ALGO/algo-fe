@@ -4,7 +4,7 @@
       <h2>{{ boardName }}</h2>
       <button class="btn btn-primary" @click="moveToWritePage">글쓰기</button>
     </div>
-    <PostList />
+    <PostList/>
   </div>
 </template>
 
@@ -12,12 +12,13 @@
 import PostList from '@/components/PostList'
 import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
-import axios from "axios";
+import axios from 'axios'
 
 export default {
   components: {
     PostList,
   },
+
   setup() {
     const router = useRouter()
     const route = useRoute()
