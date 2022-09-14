@@ -44,10 +44,10 @@
 </template>
 
 <script>
+import { ref, reactive, computed } from 'vue'
+import axios from 'axios'
 import vue3Dropzone from 'vue3-dropzone'
 //import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-import axios from 'axios'
-import { ref, reactive, computed } from 'vue'
 
 export default {
   components: {
