@@ -4,20 +4,21 @@
       <h2>{{ boardName }}</h2>
       <button class="btn btn-primary" @click="moveToWritePage">글쓰기</button>
     </div>
-    <PostList />
+    <PostList/>
   </div>
 </template>
 
 <script>
-import PostList from '@/components/PostList'
-import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
-import axios from "axios";
+import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
+import PostList from '@compo/PostList'
 
 export default {
   components: {
     PostList,
   },
+
   setup() {
     const router = useRouter()
     const route = useRoute()

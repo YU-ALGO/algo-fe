@@ -56,10 +56,8 @@
 </template>
 
 <script>
-// import axios from "axios";
-
-import axios from "axios";
-import { ref } from "vue";
+import { ref } from 'vue'
+import axios from 'axios'
 
 export default {
   setup() {
@@ -127,7 +125,7 @@ export default {
       selectedModify,
       inputBoardName,
     }
-  }
+  },
 }
 </script>
 

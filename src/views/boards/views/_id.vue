@@ -4,19 +4,19 @@
   </div>
   <div v-else>
     <div class="mt-3">
-      작성자 : {{ postData.author }}
+      작성자: {{ postData.author }}
       <br/>
-      작성일 : {{ postData.created_at }}
+      작성일: {{ postData.created_at }}
     </div>
     <hr/>
     <div class="form-group">
       <label>제목</label>
-      <input v-model="postData.title" type="text" class="form-control">
+      <p class="form-control">{{ postData.title }}</p>
     </div>
-    <div class="col-12">  <!-- Todo 수정 상태일때만 표시 -->
+    <div class="col-12"> <!-- 필요성? -->
       <div class="form-group">
         <label>내용</label>
-        <textarea v-model="postData.content" class="form-control" cols="30" rows="10"> </textarea>
+        <p v-html="postData.content" class="form-control"></p>
       </div>
     </div>
   </div>
@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import { ref } from 'vue'
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
 
 export default {
   setup() {

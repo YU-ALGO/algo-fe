@@ -1,5 +1,5 @@
-import { axios } from '@bundled-es-modules/axios'
 import { ref } from 'vue'
+import { axios } from '@bundled-es-modules/axios'
 
 export default function () {
     const communicating = ref(false)

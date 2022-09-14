@@ -14,9 +14,8 @@
 </template>
 
 <script>
-
 import { ref, computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex';
+import { useStore } from 'vuex'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import useAxios from '@/modules/axios'
 import StarterKit from '@tiptap/starter-kit'
@@ -24,7 +23,7 @@ import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import MenuBar from './tiptap/MenuBar.vue'
+import MenuBar from '@compo/tiptap/MenuBar'
 import router from '@/router'
 
 export default {
