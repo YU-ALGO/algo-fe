@@ -11,9 +11,9 @@
     <hr/>
     <div class="form-group">
       <label>제목</label>
-      <p type="text" class="form-control">{{ postData.title }}</p>
+      <p class="form-control">{{ postData.title }}</p>
     </div>
-    <div class="col-12">
+    <div class="col-12"> <!-- 필요성? -->
       <div class="form-group">
         <label>내용</label>
         <p v-html="postData.content" class="form-control"></p>
@@ -25,9 +25,9 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import axios from 'axios'
 
 export default {
   setup() {

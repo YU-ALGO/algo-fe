@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import remixiconUrl from '../../RemixIcon_Fonts_v2.5.0/fonts/remixicon.symbol.svg'
+import remixiconUrl from '@/RemixIcon_Fonts_v2.5.0/fonts/remixicon.symbol.svg'
 
 export default {
   props: {

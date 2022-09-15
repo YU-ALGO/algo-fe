@@ -49,8 +49,8 @@
 
 <script>
 import { ref } from 'vue'
-import { useRoute } from "vue-router";
-import axios from "axios";
+import { useRoute } from 'vue-router'
+import axios from 'axios'
 
 export default {
   setup() {

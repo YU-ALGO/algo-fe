@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import PostList from '@/components/PostList'
-import { useRoute, useRouter } from 'vue-router'
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
+import PostList from '@compo/PostList'
 
 export default {
   components: {
