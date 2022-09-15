@@ -1,24 +1,49 @@
 <template>
-  <div class="d-flex text-center mt-md-5">
-    <main class="form-signin">
-      <h2>DownBit</h2>
-      <form>
-        <input type="text" v-model="username" id="username" class="form-control mb-2" placeholder="아이디" @keyup.enter="login"/>
-        <input type="password" v-model="password" id="password" class="form-control mb-3" placeholder="비밀번호" @keyup.enter="login"/>
-        <button class="btn btn-lg btn-primary btn-block me-2" type="button" @click="login">로그인</button>
-        <a href="http://anycar8515.iptime.org:8088/oauth2/authorization/kakao">
-          <img src="../assets/kakao_login_medium_narrow.png"/>
-        </a>
-      </form>
-    </main>
+  <div class="container">
+    <div class="row">
+      <div class="offset-md-2 col-lg-5 col-md-7 offset-lg-4 offset-md-3">
+        <div class="panel border bg-white">
+          <div class="panel-heading">
+            <h3 class="pt-3 font-weight-bold">ALGo 로그인</h3>
+          </div>
+          <div class="panel-body p-3">
+            <form>
+              <div class="form-group py-2">
+                <div class="input-field mb-2">
+                  <input type="text" v-model="username" id="username" class="form-control" placeholder="아이디" @keyup.enter="login" required/>
+                </div>
+              </div>
+              <div class="form-group py-2">
+                <div class="input-field">
+                  <input type="password" v-model="password" id="password" class="form-control" placeholder="비밀번호" @keyup.enter="login" required/>
+                </div>
+              </div>
+              <div class="form-inline row">
+                <div class="text-lg-end">
+                  <a href="#" id="forgot" class="font-weight-bold">비밀번호를 잊으셨나요?</a>
+                </div>
+              </div>
+              <button type="button" @click="login" class="btn btn-primary mx-auto w-100 mt-3">로그인</button>
+              <div class="text-center pt-4 text-muted">계정이 없으신가요? <a href="#" @click="moveToJoinPage">가입하기</a> </div>
+            </form>
+          </div>
+          <div class="mx-3 my-2 py-2 bordert">
+            <div class="text-center py-3">
+              <a href="http://anycar8515.iptime.org:8088/oauth2/authorization/kakao">
+                <img src="../assets/kakao_login_medium_narrow.png" alt=""/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
-// import useAxios from '@/modules/axios.js'
-// import router from '@/router'
+import router from "@/router";
 
 export default {
   setup() {
@@ -43,68 +68,139 @@ export default {
       }
     }
 
-    // const login = () => {
-    //   if (username.value && password.value) {
-    //     axiosPost('/api/v2/login', {
-    //       username: username.value,
-    //       password: password.value,
-    //     }, onSuccess, onFailed)
-    //   } else {
-    //     alert('아이디 또는 비밀번호를 입력해주세요.')
-    //   }
-    // }
-    //
-    // const onSuccess = (res) => {
-    //   console.log(res.token)
-    //   router.push('/')
-    // }
-    //
-    // const onFailed = (err) => {
-    //   console.error(err)
-    // }
+    const moveToJoinPage = () => {
+      router.push('/join')
+    }
 
     return {
       username,
       password,
       needLogin,
       login,
+      moveToJoinPage,
     }
   },
 }
 </script>
 
 <style scoped>
-.form-signin {
-  width: 100%;
-  max-width: 330px;
-  padding: 15px;
-  margin: auto;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
-.form-signin .checkbox {
-  font-weight: 400;
-}
-
-.form-signin > .form-control {
-  position: relative;
+* {
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
+  font-family: 'Poppins', sans-serif
 }
 
-.form-signin .form-control:focus {
-  z-index: 2;
+body {
+  height: 100vh;
+  background: linear-gradient(to top, #c9c9ff 50%, #9090fa 90%) no-repeat
 }
 
-.form-signin input[type='email'] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+.container {
+  margin: 50px auto
 }
 
-.form-signin > input[type='password'] {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+.panel-heading {
+  text-align: center;
+  margin-bottom: 10px
+}
+
+#forgot {
+  min-width: 100px;
+  margin-left: auto;
+  text-decoration: none
+}
+
+a:hover {
+  text-decoration: none
+}
+
+.form-inline label {
+  padding-left: 10px;
+  margin: 0;
+  cursor: pointer
+}
+
+.btn.btn-primary {
+  margin-top: 20px;
+  border-radius: 15px
+}
+
+.panel {
+  min-height: 380px;
+  box-shadow: 20px 20px 80px rgb(218, 218, 218);
+  border-radius: 12px
+}
+
+.input-field {
+  border-radius: 5px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  color: #4343ff
+}
+
+input[type='text'],
+input[type='password'] {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  width: 100%
+}
+
+.fa-eye-slash.btn {
+  border: none;
+  outline: none;
+  box-shadow: none
+}
+
+/*img {*/
+/*  width: 40px;*/
+/*  height: 40px;*/
+/*  object-fit: cover;*/
+/*  border-radius: 50%;*/
+/*  position: relative*/
+/*}*/
+
+a[target='_blank'] {
+  position: relative;
+  transition: all 0.1s ease-in-out
+}
+
+.bordert {
+  border-top: 1px solid #aaa;
+  position: relative
+}
+
+.bordert:after {
+  content: "또는";
+  position: absolute;
+  top: -13px;
+  left: 45%;
+  background-color: #fff;
+  padding: 0px 8px
+}
+
+@media(max-width: 360px) {
+  #forgot {
+    margin-left: 0;
+    padding-top: 10px
+  }
+
+  body {
+    height: 100%
+  }
+
+  .container {
+    margin: 30px 0
+  }
+
+  .bordert:after {
+    left: 25%
+  }
 }
 </style>

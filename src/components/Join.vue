@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="input-form col-md-12 mx-auto">
-      <h4 class="mb-3">회원가입</h4>
+      <h4 class="mb-3">ALGo 회원가입</h4>
       <form class="validation-form" novalidate>
         <div class="mb-3">
           <label for="username">아이디</label>
@@ -21,8 +21,9 @@
           <label for="nickname">닉네임</label>
           <input type="text" class="form-control" id="nickname" v-model="nickname" required>
         </div>
-        <div class="mb-4"></div>
-        <button class="btn btn-primary btn-block" type="button" @click="submit">가입하기</button>
+        <div class="mb-2"></div>
+        <button class="btn btn-primary me-3" type="button" @click="submit">가입하기</button>
+        <button class="btn btn-outline-dark" @click="moveToLoginPage">취소</button>
       </form>
     </div>
   </div>
@@ -81,6 +82,10 @@ export default {
       })
     }
 
+    const moveToLoginPage = () => {
+      router.push('/')
+    }
+
     return {
       username,
       password,
@@ -92,6 +97,7 @@ export default {
       pwMessage,
       resVal,
       submit,
+      moveToLoginPage,
     }
   },
 }

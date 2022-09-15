@@ -8,7 +8,7 @@
       <editor-content className="editor__content" :editor="editor"/>
     </div>
     <br/>
-    <button @click="write" class="btn btn-primary me-2" disabled="disabled">글쓰기</button>
+    <button @click="write" class="btn btn-primary me-2">글쓰기</button>
     <button class="btn btn-outline-dark m-lg-2" @click="moveToPostListPage">취소</button>
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
     onBeforeMount(() => {
       if (!needLogin.value) {
         alert('로그인이 필요합니다!')
-        router.push('/boards')
+        router.push('/login')
       }
     })
 

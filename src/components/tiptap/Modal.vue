@@ -8,13 +8,13 @@
         <button @click="tab = 2" :class="{ active: tab === 2 }">Upload (Simple)</button>
       </header>
 
-      <div v-if="tab == 0">
+      <div v-if="tab === 0">
         <p>Here is a test image URL</p>
         <pre>https://i.imgur.com/0ogkTp7.jpg</pre>
         <label for="url">Image URL:</label>
         <input v-model="imageSrc" id="url"/>
       </div>
-      <div v-if="tab == 1">
+      <div v-if="tab === 1">
         <vue3Dropzone
             ref="myVueDropzone"
             id="dropzone"
@@ -23,8 +23,7 @@
         >
         </vue3Dropzone>
       </div>
-      <div v-if="tab == 2">
-        <label for="up">Really simple input upload:</label>
+      <div v-if="tab === 2">
         <input type="file" @change="fileChange" id="up" ref="file"/>
       </div>
 

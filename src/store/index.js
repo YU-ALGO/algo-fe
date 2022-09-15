@@ -30,7 +30,7 @@ export default createStore({
             // eslint-disable-next-line no-async-promise-executor
             return new Promise( async(resolve, reject) => {
                 try {
-                    const res = await axios.post('http://be.downbit.r-e.kr:8088/api/v1/login', { username, password }, {
+                    const res = await axios.post('http://munis.ddns.net:8088/api/v1/login', { username, password }, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Access-Control-Allow-Origin': '*',
@@ -53,7 +53,7 @@ export default createStore({
             })
         },
         logout({ commit }) {
-            axios.post('http://be.downbit.r-e.kr:8088/logout', {}, {
+            axios.post('http://munis.ddns.net:8088/logout', {}, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
