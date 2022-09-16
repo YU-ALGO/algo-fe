@@ -1,15 +1,28 @@
 <template>
-  <h2>글쓰기</h2>
-  <div class="mt-2">
-    <input type="text" v-model="title" class="form-control" id="title" placeholder="제목">
-    <br/>
-    <div class="editor" v-if="editor">
-      <menu-bar className="editor__header" :editor="editor"/>
-      <editor-content className="editor__content" :editor="editor"/>
+  <div class="container">
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">새로운 글 등록</h5>
+        <div class="mt-3">
+          <div class="form-group">
+            <label>제목</label>
+            <input type="text" v-model="title" class="form-control mt-2" id="title" placeholder="글 제목을 입력해주세요." required>
+          </div>
+          <br/>
+          <div class="form-group">
+            <label>본문</label>
+            <div class="editor mt-2" v-if="editor">
+              <menu-bar className="editor__header" :editor="editor"/>
+              <editor-content className="editor__content" :editor="editor"/>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-3">
+          <button class="btn btn-primary" @click="moveToPostListPage">목록으로</button>
+          <button @click="write" class="btn btn-success me-2">글쓰기</button>
+        </div>
+      </div>
     </div>
-    <br/>
-    <button @click="write" class="btn btn-primary me-2">글쓰기</button>
-    <button class="btn btn-outline-dark m-lg-2" @click="moveToPostListPage">취소</button>
   </div>
 </template>
 
@@ -24,6 +37,7 @@ import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import MenuBar from './tiptap/MenuBar'
 import router from '@/router'
+import { useRoute } from 'vue-router'
 
 export default {
   components: {
@@ -33,6 +47,8 @@ export default {
 
   setup() {
     const { axiosPost } = useAxios()
+    const route = useRoute()
+    const boardId = route.params.id
     const title = ref('')
     const editor = useEditor({
       // content: '',
@@ -45,17 +61,23 @@ export default {
       ],
     })
 
-    const write = () => {
+    const write = async () => {
+      // console.log(boardId)
       // console.log('제목: ' + title.value)
       // console.log('내용: ' + editor.value.getHTML())
-      axiosPost('/api/v1/boards/1/posts', {
-        title: title.value,
-        content: editor.value.getHTML()
-      }, onSuccess, onFailed)
+      try {
+        await axiosPost(`/api/v1/boards/${boardId}/posts`, {
+          title: title.value,
+          content: editor.value.getHTML()
+        }, onSuccess, onFailed)
+      } catch (err) {
+        console.log(err)
+      }
     }
 
     const onSuccess = () => {
-
+      alert('게시글 업로드가 완료되었습니다!')
+      router.push(`/boards/${boardId}`)
     }
 
     const onFailed = () => {
@@ -63,7 +85,9 @@ export default {
     }
 
     const moveToPostListPage = () => {
-      router.go(-1)
+      if (confirm('글 작성을 취소하시겠습니까? \n변경사항은 저장되지 않습니다.')) {
+        router.push(`/boards/${boardId}`)
+      }
     }
 
     return {

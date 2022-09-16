@@ -31,31 +31,31 @@ export default {
     const items = [
       {
         icon: 'bold',
-        title: 'Bold',
+        title: '굵기 적용',
         action: () => props.editor.chain().focus().toggleBold().run(),
         isActive: () => props.editor.isActive('bold'),
       },
       {
         icon: 'italic',
-        title: 'Italic',
+        title: '기울이기 적용',
         action: () => props.editor.chain().focus().toggleItalic().run(),
         isActive: () => props.editor.isActive('italic'),
       },
       {
         icon: 'strikethrough',
-        title: 'Strike',
+        title: '취소선 적용',
         action: () => props.editor.chain().focus().toggleStrike().run(),
         isActive: () => props.editor.isActive('strike'),
       },
       {
         icon: 'code-view',
-        title: 'Code',
+        title: '소스코드 추가',
         action: () => props.editor.chain().focus().toggleCode().run(),
         isActive: () => props.editor.isActive('code'),
       },
       {
         icon: 'mark-pen-line',
-        title: 'Highlight',
+        title: '하이라이트 적용',
         action: () => props.editor.chain().focus().toggleHighlight().run(),
         isActive: () => props.editor.isActive('highlight'),
       },
@@ -82,13 +82,13 @@ export default {
       },
       {
         icon: 'list-unordered',
-        title: 'Bullet List',
+        title: '글 머리표',
         action: () => props.editor.chain().focus().toggleBulletList().run(),
         isActive: () => props.editor.isActive('bulletList'),
       },
       {
         icon: 'list-ordered',
-        title: 'Ordered List',
+        title: '문단 번호',
         action: () => props.editor.chain().focus().toggleOrderedList().run(),
         isActive: () => props.editor.isActive('orderedList'),
       },

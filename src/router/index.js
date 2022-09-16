@@ -31,7 +31,7 @@ const isAdmin = () => (to, from, next) => {
         return next()
       })
       .catch(function (err) {
-        console.log('오류 : ' + err)
+        //console.log('오류 : ' + err)
         alert('관리자만 접속할 수 있습니다.')
         router.push('/')
       })
@@ -71,7 +71,7 @@ const routes = [
     component: FoodView,
   },
   {
-    path: '/boards/write',
+    path: '/boards/:id/write',
     name: 'PostWrite',
     component: PostWrite,
     beforeEnter: isLogin()
@@ -114,6 +114,7 @@ const routes = [
     path: '/boards/views/:id',
     name: 'Post',
     component: PostView,
+    beforeEnter: isLogin()
   },
   {
     path: '/404',

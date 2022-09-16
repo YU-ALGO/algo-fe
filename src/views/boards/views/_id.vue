@@ -20,8 +20,9 @@
       </div>
     </div>
   </div>
-  <button class="btn btn-primary" disabled="disabled">등록</button>
-  <button class="btn btn-outline-dark m-lg-2" @click="moveToPostListPage">취소</button>
+  <button class="btn btn-primary me-2" disabled="disabled">수정</button>
+  <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
+  <button class="btn btn-outline-dark me-2" @click="moveToPostListPage">취소</button>
 </template>
 
 <script>
@@ -47,12 +48,30 @@ export default {
     const getPost = async () => {
       loading.value = true
       try {
-        const res = await axios.get(`http://munis.ddns.net:8088/api/v1/boards/1/posts/${postId}`)
+        const res = await axios.get(`http://be.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`)
         postData.value = res.data
         loading.value = false
       } catch (error) {
         loading.value = false
         console.log(error)
+      }
+    }
+
+    const deletePost = async () => {
+      if(confirm("정말 게시글을 삭제하시겠습니까?")) {
+        try {
+          await axios.delete(`http://be.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true
+          })
+          alert("게시글이 삭제되었습니다.")
+          router.go(-1)
+        } catch (err) {
+          alert('게시글을 삭제할 수 없습니다.')
+        }
       }
     }
 
@@ -67,6 +86,7 @@ export default {
       postData,
       loading,
       moveToPostListPage,
+      deletePost,
     }
   }
 }

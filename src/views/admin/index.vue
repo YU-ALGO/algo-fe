@@ -69,7 +69,7 @@ export default {
 
     const getBoardName = async () => {
       try {
-        const res = await axios.get(`http://munis.ddns.net:8088/api/v1/boards`)
+        const res = await axios.get(`http://be.downbit.r-e.kr:8088/api/v1/boards`)
         boardDeleteNameList.value = { ...res.data }
         boardModifyNameList.value = { ...res.data }
       } catch (error) {
@@ -81,8 +81,14 @@ export default {
 
     const createBoards = async () => {
       try {
-        await axios.post('http://munis.ddns.net:8088/api/v1/boards', {
+        await axios.post('http://be.downbit.r-e.kr:8088/api/v1/boards', {
           name: inputBoardName.value
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          withCredentials: true
         })
         alert("게시판이 생성되었습니다.")
         window.location.reload()
@@ -104,13 +110,21 @@ export default {
 
     const deleteBoards = async () => {
       if (selected.value !== 0) {
-        try {
-          const res = await axios.delete(`http://munis.ddns.net:8088/api/v1/boards/${selected.value}`)
-          alert("게시판이 삭제되었습니다.")
-          window.location.reload()
-          console.log(res)
-        } catch (err) {
-          console.log(err)
+        if (confirm("정말 게시판을 삭제하시겠습니까?")) {
+          try {
+            const res = await axios.delete(`http://be.downbit.r-e.kr:8088/api/v1/boards/${selected.value}`, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+              withCredentials: true
+            })
+            alert("게시판이 삭제되었습니다.")
+            window.location.reload()
+            console.log(res)
+          } catch (err) {
+            console.log(err)
+          }
         }
       }
     }

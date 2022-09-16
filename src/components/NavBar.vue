@@ -59,7 +59,12 @@ export default {
 
     const getBoardList = async () => {
       try {
-        const res = await axios.get('http://be.downbit.r-e.kr:8088/api/v1/boards')
+        const res = await axios.get('http://be.downbit.r-e.kr:8088/api/v1/boards', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          }
+        })
         boardsList.value = res.data
       } catch (error) {
         console.log(error)
@@ -76,10 +81,15 @@ export default {
       return store.getters['isAdmin']
     })
 
-    const logout = (() => {
-      alert('사이트에서 로그아웃되었습니다!')
-      store.dispatch('logout')
-    })
+    const logout = async () => {
+      try {
+        await store.dispatch('logout')
+        alert('사이트에서 로그아웃되었습니다!')
+        location.reload()
+      } catch(err) {
+        console.log(err)
+      }
+    }
 
     return {
       isLogin,

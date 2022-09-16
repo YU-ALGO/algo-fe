@@ -21,9 +21,12 @@
           <label for="nickname">닉네임</label>
           <input type="text" class="form-control" id="nickname" v-model="nickname" required>
         </div>
-        <div class="mb-2"></div>
-        <button class="btn btn-primary me-3" type="button" @click="submit">가입하기</button>
-        <button class="btn btn-outline-dark" @click="moveToLoginPage">취소</button>
+        <div class="form-inline row">
+          <div class="text-lg-end">
+            <button class="btn btn-primary me-3" type="button" @click="submit">가입하기</button>
+            <button class="btn btn-outline-dark" @click="moveToLoginPage">취소</button>
+          </div>
+        </div>
       </form>
     </div>
   </div>
@@ -49,7 +52,7 @@ export default {
 
     const idCheck = () => {
       if(username.value)
-        axiosGet(`/api/v2/users/${username.value}/exists`, getId, () => console.error())
+        axiosGet(`/api/v1/users/${username.value}/exists`, getId, () => console.error())
     }
 
     const pwCheck = () => {
@@ -70,7 +73,7 @@ export default {
     }
 
     const submit = () => {
-      axiosPost('/api/v2/signup', {
+      axiosPost('/api/v1/signup', {
         user_id : username.value,
         password : password.value,
         nickname : nickname.value

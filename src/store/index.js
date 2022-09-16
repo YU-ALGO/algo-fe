@@ -42,10 +42,10 @@ export default createStore({
                     if (res.status === 200) {
                         // console.log('로그인 정보 : ' + res.data.isAdmin)
                         commit('isLogin', true);
-                        alert(res.data.userId + '님 환영합니다!')
                         if (res.data.isAdmin) {
                             commit('isAdmin', true)
                         }
+                        alert(res.data.userId + '님 환영합니다!')
                         await router.push('/')
                     }
                 } catch (err) {
@@ -68,7 +68,6 @@ export default createStore({
             })
             commit('isLogin', false)
             commit('isAdmin', false)
-            location.reload()
         },
         isAdmin({ commit }) {
             try {

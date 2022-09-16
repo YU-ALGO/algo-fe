@@ -9,7 +9,7 @@
           <div class="panel-body p-3">
             <form>
               <div class="form-group py-2">
-                <div class="input-field mb-2">
+                <div class="input-field">
                   <input type="text" v-model="username" id="username" class="form-control" placeholder="아이디" @keyup.enter="login" required/>
                 </div>
               </div>
