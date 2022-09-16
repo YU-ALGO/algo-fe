@@ -14,8 +14,7 @@
 </template>
 
 <script>
-import { ref, computed, onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { ref } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import useAxios from '@/modules/axios'
 import StarterKit from '@tiptap/starter-kit'
@@ -33,13 +32,7 @@ export default {
   },
 
   setup() {
-    const store = useStore()
     const { axiosPost } = useAxios()
-
-    const needLogin = computed(() => {
-      return store.getters['needLogin']
-    })
-
     const title = ref('')
     const editor = useEditor({
       // content: '',

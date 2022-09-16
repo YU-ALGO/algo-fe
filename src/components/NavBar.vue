@@ -33,7 +33,7 @@
 <!--          <input class="form-control me-2" type="search" placeholder="검색" aria-label="Search">-->
 <!--          <button class="btn btn-outline-success me-2" type="submit">Search</button>-->
 <!--        </form>-->
-        <div class="d-flex" v-if="isLogin">
+        <div class="d-flex" v-if="!isLogin">
           <router-link :to="{ name: 'Login' }" class="btn btn-primary me-2">로그인</router-link>
           <router-link :to="{ name: 'Join' }" class="btn btn-primary me-2">회원가입</router-link>
         </div>
@@ -59,7 +59,7 @@ export default {
 
     const getBoardList = async () => {
       try {
-        const res = await axios.get('http://be2.downbit.r-e.kr:8088/api/v1/boards')
+        const res = await axios.get('http://be.downbit.r-e.kr:8088/api/v1/boards')
         boardsList.value = res.data
       } catch (error) {
         console.log(error)

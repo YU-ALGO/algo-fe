@@ -32,22 +32,22 @@ const isAdmin = () => (to, from, next) => {
       })
       .catch(function (err) {
         console.log('오류 : ' + err)
-        alert('관리자만 접속할 수 있습니다!')
+        alert('관리자만 접속할 수 있습니다.')
         router.push('/')
       })
 }
 
 const isLogin = () => (to, from, next) => {
-  if (!store.state.isLogin) {
+  if (store.state.isLogin) {  // 로그인 된 상태
     return next()
   } else {
-    alert('로그인이 필요합니다!')
+    alert('로그인이 필요한 서비스입니다.')
     router.push('/login')
   }
 }
 
 const loginCheck = () => (to, from, next) => {
-  if (store.state.isLogin) {
+  if (!store.state.isLogin) { // 로그인 되지 않은 상태
     return next();
   } else {
     alert('이미 로그인되어 있습니다.')

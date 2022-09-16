@@ -40,7 +40,7 @@ export default createStore({
                         withCredentials: true
                     })
                     if (res.status === 200) {
-                        console.log('로그인 정보 : ' + res.data.isAdmin)
+                        // console.log('로그인 정보 : ' + res.data.isAdmin)
                         commit('isLogin', true);
                         alert(res.data.userId + '님 환영합니다!')
                         if (res.data.isAdmin) {

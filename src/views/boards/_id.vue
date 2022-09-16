@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between mb-2 mt-2">
+    <div class="container mt-md-2">
       <h2>{{ boardName }}</h2>
-      <button class="btn btn-primary" @click="moveToWritePage">글쓰기</button>
     </div>
     <PostList/>
   </div>
@@ -27,7 +26,7 @@ export default {
 
     const getBoardName = async () => {
       try {
-        const res = await axios.get(`http://munis.ddns.net:8088/api/v1/boards/${boardId}`)
+        const res = await axios.get(`http://be.downbit.r-e.kr:8088/api/v1/boards/${boardId}`)
         boardName.value = res.data
       } catch (error) {
         console.log(error)
