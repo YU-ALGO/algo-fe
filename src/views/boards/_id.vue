@@ -12,7 +12,7 @@
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
-import PostList from '@compo/PostList'
+import PostList from '@/components/PostList'
 
 export default {
   components: {

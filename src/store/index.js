@@ -3,23 +3,25 @@ import axios from 'axios'
 import router from '@/router'
 import createPersistedState from 'vuex-persistedstate'
 
+const BASE_URL = 'http://be.downbit.r-e.kr:8088'
+
 export default createStore({
     namespaced: true,
     state: {
-        needLogin: true,
+        isLogin: false,
         isAdmin: false,
     },
     mutations: {
-        needLogin(state, data) {
-            state.needLogin = data;
+        isLogin(state, data) {
+            state.isLogin = data;
         },
         isAdmin(state, data) {
             state.isAdmin = data;
         }
     },
     getters: {
-        needLogin(state) {
-            return state.needLogin;
+        isLogin(state) {
+            return state.isLogin;
         },
         isAdmin(state) {
             return state.isAdmin;
@@ -30,7 +32,7 @@ export default createStore({
             // eslint-disable-next-line no-async-promise-executor
             return new Promise( async(resolve, reject) => {
                 try {
-                    const res = await axios.post('http://munis.ddns.net:8088/api/v1/login', { username, password }, {
+                    const res = await axios.post(BASE_URL+'/api/v1/login', { username, password }, {
                         headers: {
                             'Content-Type': 'application/json',
                             'Access-Control-Allow-Origin': '*',
@@ -39,7 +41,7 @@ export default createStore({
                     })
                     if (res.status === 200) {
                         console.log('로그인 정보 : ' + res.data.isAdmin)
-                        commit('needLogin', false);
+                        commit('isLogin', true);
                         alert(res.data.userId + '님 환영합니다!')
                         if (res.data.isAdmin) {
                             commit('isAdmin', true)
@@ -53,7 +55,7 @@ export default createStore({
             })
         },
         logout({ commit }) {
-            axios.post('http://munis.ddns.net:8088/logout', {}, {
+            axios.post(BASE_URL+'/logout', {}, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*',
@@ -64,13 +66,13 @@ export default createStore({
             }). catch(function (error) {
                 console.log('로그아웃 오류 : ' + error)
             })
-            commit('needLogin', true)
+            commit('isLogin', false)
             commit('isAdmin', false)
             location.reload()
         },
         isAdmin({ commit }) {
             try {
-                const res = axios.get(`http://munis.ddns.net:8088/api/v1/admin`)
+                const res = axios.get(BASE_URL+`/api/v1/admin`)
                 console.log(res)
             } catch (error) {
                 console.log(error)
@@ -80,7 +82,7 @@ export default createStore({
     },
     plugins: [
         createPersistedState({
-            paths: ['needLogin', 'isAdmin']
+            paths: ['isLogin', 'isAdmin']
         })
     ],
 })

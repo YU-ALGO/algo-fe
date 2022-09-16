@@ -2,7 +2,7 @@
   <div>
     <Modal ref="modal" @onConfirm="addImage"/>
     <template v-for="(item, index) in items">
-      <div className="divider" v-if="item.type === 'divider'" :key="`divider${index}`"/>
+      <div class="divider" v-if="item.type === 'divider'" :key="`divider${index}`"/>
       <MenuItem v-else :key="index" v-bind="item"/>
     </template>
   </div>
@@ -10,8 +10,8 @@
 
 <script>
 import { ref } from 'vue'
-import MenuItem from '@compo/tiptap/MenuItem'
-import Modal from '@compo/tiptap/Modal'
+import MenuItem from './MenuItem'
+import Modal from './Modal'
 
 export default {
   components: {

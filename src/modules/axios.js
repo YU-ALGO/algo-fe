@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default function () {
     const communicating = ref(false)
-    const BASE_URL = 'http://munis.ddns.net:8088'
+    const BASE_URL = 'http://be.downbit.r-e.kr:8088'
 
     const creatURL = (url) => {
         return url.startsWith('http') ? url : BASE_URL + url

@@ -52,8 +52,8 @@ export default {
     const password = ref(null)
     const store = useStore()
 
-    const needLogin = computed(() => {
-      return store.getters['needLogin']
+    const isLogin = computed(() => {
+      return store.getters['isLogin']
     })
 
     const login = async () => {
@@ -75,7 +75,7 @@ export default {
     return {
       username,
       password,
-      needLogin,
+      isLogin,
       login,
       moveToJoinPage,
     }

@@ -1,22 +1,25 @@
-import Join from '@compo/Join'
-import Login from '@compo/Login'
-import PostWrite from '@compo/PostWrite'
-import NotFound from '@compo/NotFound'
-import TermOfService from '@compo/TermOfService'
+import Join from '@/components/Join'
+import Login from '@/components/Login'
+import PostWrite from '@/components/PostWrite'
+import NotFound from '@/components/NotFound'
+import TermOfService from '@/components/TermOfService'
 
-import MainView from '@views/index'
-import Profile from '@views/profile/index'
-import FoodView from '@views/food/index'
-import Board from '@views/boards/_id'
+import MainView from '@/views/index'
+import Profile from '@/views/profile/index'
+import FoodView from '@/views/food/index'
+import Board from '@/views/boards/_id'
 // import Boards from '@views/boards/index'
-import Admin from '@views/admin/index'
-import PostView from '@views/boards/views/_id'
+import Admin from '@/views/admin/index'
+import PostView from '@/views/boards/views/_id'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import axios from 'axios'
+import store from '../store/index'
 
-const requireAuth = () => (to, from, next) => {
-  axios.get(`http://be.downbit.r-e.kr:8088/api/v1/admin`, {
+const BASE_URL = 'http://be.downbit.r-e.kr:8088'
+
+const isAdmin = () => (to, from, next) => {
+  axios.get(BASE_URL + `/api/v1/admin`, {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -25,13 +28,30 @@ const requireAuth = () => (to, from, next) => {
   })
       .then(function (res) {
         console.log(res)
-        return next();
+        return next()
       })
       .catch(function (err) {
         console.log('오류 : ' + err)
         alert('관리자만 접속할 수 있습니다!')
         router.push('/')
       })
+}
+
+const isLogin = () => (to, from, next) => {
+  if (!store.state.isLogin) {
+    return next()
+  } else {
+    alert('로그인이 필요합니다!')
+    router.push('/login')
+  }
+}
+
+const loginCheck = () => (to, from, next) => {
+  if (store.state.isLogin) {
+    return next();
+  } else {
+    alert('이미 로그인되어 있습니다.')
+  }
 }
 
 const routes = [
@@ -54,21 +74,25 @@ const routes = [
     path: '/boards/write',
     name: 'PostWrite',
     component: PostWrite,
+    beforeEnter: isLogin()
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
+    beforeEnter: loginCheck()
   },
   {
     path: '/join',
     name: 'Join',
     component: Join,
+    beforeEnter: loginCheck()
   },
   {
     path: '/profile',
     name: 'Profile',
     component: Profile,
+    beforeEnter: isLogin()
   },
   {
     path: '/boards/:id',
@@ -84,7 +108,7 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: Admin,
-    beforeEnter: requireAuth()
+    beforeEnter: isAdmin()
   },
   {
     path: '/boards/views/:id',

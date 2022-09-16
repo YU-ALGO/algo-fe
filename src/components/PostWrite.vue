@@ -23,7 +23,7 @@ import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import MenuBar from '@compo/tiptap/MenuBar'
+import MenuBar from './tiptap/MenuBar'
 import router from '@/router'
 
 export default {
@@ -38,13 +38,6 @@ export default {
 
     const needLogin = computed(() => {
       return store.getters['needLogin']
-    })
-
-    onBeforeMount(() => {
-      if (!needLogin.value) {
-        alert('로그인이 필요합니다!')
-        router.push('/login')
-      }
     })
 
     const title = ref('')
