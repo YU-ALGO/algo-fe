@@ -59,7 +59,7 @@ export default {
 
     const getBoardList = async () => {
       try {
-        const res = await axios.get('http://be.downbit.r-e.kr:8088/api/v1/boards', {
+        const res = await axios.get('http://be2.downbit.r-e.kr:8088/api/v1/boards', {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',

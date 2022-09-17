@@ -26,7 +26,7 @@ export default {
 
     const getBoardName = async () => {
       try {
-        const res = await axios.get(`http://be.downbit.r-e.kr:8088/api/v1/boards/${boardId}`)
+        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${boardId}`)
         boardName.value = res.data
       } catch (error) {
         console.log(error)

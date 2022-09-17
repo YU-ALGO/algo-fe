@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Admin Page</h2>
+    <h2 class="mt-2">Admin Page</h2>
     <hr/>
     <div>
       <h2>게시판 생성</h2>
@@ -9,7 +9,7 @@
           <label class="col-form-label">게시판 이름</label>
         </div>
         <div class="col-auto">
-          <input v-model="inputBoardName" class="form-control">
+          <input v-model="createBoardName" class="form-control" @keyup.enter="createBoards">
         </div>
         <div class="col-auto">
           <button class="btn btn-primary" @click="createBoards">만들기</button><br/>
@@ -18,10 +18,10 @@
     </div>
     <br/>
     <div>
-      <h2>게시판 이름 변경 (구현중)</h2>
+      <h2>게시판 이름 변경</h2>
       <div class="row g-3 align-items-center">
         <div class="col-auto">
-          <label class="col-form-label">삭제할 게시판</label>
+          <label class="col-form-label">변경할 게시판</label>
         </div>
         <div class="col-auto">
           <select v-model="selectedModify" class="form-select">
@@ -30,10 +30,10 @@
           </select>
         </div>
         <div class="col-auto">
-          <input class="form-control" disabled="disabled">
+          <input class="form-control" v-model="modifyBoardName" @keyup.enter="modifyBoards">
         </div>
         <div class="col-auto">
-          <button class="btn btn-primary" @click="modifyBoards" disabled="disabled">변경하기</button><br/>
+          <button class="btn btn-primary" @click="modifyBoards">변경하기</button><br/>
         </div>
       </div>
     </div>
@@ -61,7 +61,8 @@ import axios from 'axios'
 
 export default {
   setup() {
-    const inputBoardName = ref('')
+    const createBoardName = ref('')
+    const modifyBoardName = ref('')
     const selected = ref(0)
     const selectedModify = ref(0)
     const boardDeleteNameList = ref('')
@@ -69,9 +70,9 @@ export default {
 
     const getBoardName = async () => {
       try {
-        const res = await axios.get(`http://be.downbit.r-e.kr:8088/api/v1/boards`)
-        boardDeleteNameList.value = { ...res.data }
-        boardModifyNameList.value = { ...res.data }
+        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards`)
+        boardDeleteNameList.value = {...res.data}
+        boardModifyNameList.value = {...res.data}
       } catch (error) {
         console.log(error)
       }
@@ -81,8 +82,8 @@ export default {
 
     const createBoards = async () => {
       try {
-        await axios.post('http://be.downbit.r-e.kr:8088/api/v1/boards', {
-          name: inputBoardName.value
+        await axios.post('http://be2.downbit.r-e.kr:8088/api/v1/boards', {
+          name: createBoardName.value
         }, {
           headers: {
             'Content-Type': 'application/json',
@@ -98,21 +99,32 @@ export default {
     }
 
     const modifyBoards = async () => {
-      // try {
-      //   const res = await axios.patch('http://munis.ddns.net:8088/api/v1/boards/6', {
-      //     name: 'xpert'
-      //   })
-      //   console.log(res)
-      // } catch (err) {
-      //   console.log(err)
-      // }
+      if (selectedModify.value !== 0) {
+        if (confirm("정말 게시판 이름을 변경하시겠습니까?")) {
+          try {
+            await axios.patch(`http://munis.ddns.net:8088/api/v1/boards/${selectedModify.value}`, {
+              name: modifyBoardName.value
+            }, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              },
+              withCredentials: true
+            })
+            alert("게시판 이름이 수정되었습니다.")
+            window.location.reload()
+          } catch (err) {
+            console.log(err)
+          }
+        }
+      }
     }
 
     const deleteBoards = async () => {
       if (selected.value !== 0) {
         if (confirm("정말 게시판을 삭제하시겠습니까?")) {
           try {
-            const res = await axios.delete(`http://be.downbit.r-e.kr:8088/api/v1/boards/${selected.value}`, {
+            const res = await axios.delete(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${selected.value}`, {
               headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
@@ -137,7 +149,8 @@ export default {
       boardModifyNameList,
       selected,
       selectedModify,
-      inputBoardName,
+      createBoardName,
+      modifyBoardName,
     }
   },
 }

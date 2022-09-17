@@ -48,7 +48,7 @@ export default {
     const getPost = async () => {
       loading.value = true
       try {
-        const res = await axios.get(`http://be.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`)
+        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`)
         postData.value = res.data
         loading.value = false
       } catch (error) {
@@ -60,7 +60,7 @@ export default {
     const deletePost = async () => {
       if(confirm("정말 게시글을 삭제하시겠습니까?")) {
         try {
-          await axios.delete(`http://be.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`, {
+          await axios.delete(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`, {
             headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*',

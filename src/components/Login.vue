@@ -29,7 +29,7 @@
           </div>
           <div class="mx-3 my-2 py-2 bordert">
             <div class="text-center py-3">
-              <a href="http://anycar8515.iptime.org:8088/oauth2/authorization/kakao">
+              <a href="http://be.downbit.r-e.kr:8088/login/oauth2/code/kakao">
                 <img src="../assets/kakao_login_medium_narrow.png" alt=""/>
               </a>
             </div>

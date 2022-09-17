@@ -3,7 +3,7 @@ import axios from 'axios'
 import router from '@/router'
 import createPersistedState from 'vuex-persistedstate'
 
-const BASE_URL = 'http://be.downbit.r-e.kr:8088'
+const BASE_URL = 'http://be2.downbit.r-e.kr:8088'
 
 export default createStore({
     namespaced: true,
@@ -45,7 +45,7 @@ export default createStore({
                         if (res.data.isAdmin) {
                             commit('isAdmin', true)
                         }
-                        alert(res.data.userId + '님 환영합니다!')
+                        alert(res.data.nickname + '님 환영합니다!')
                         await router.push('/')
                     }
                 } catch (err) {

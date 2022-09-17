@@ -16,7 +16,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import axios from 'axios'
 import store from '@/store/index'
 
-const BASE_URL = 'http://be.downbit.r-e.kr:8088'
+const BASE_URL = 'http://be2.downbit.r-e.kr:8088'
 
 const isAdmin = () => (to, from, next) => {
   axios.get(BASE_URL + `/api/v1/admin`, {
@@ -33,7 +33,7 @@ const isAdmin = () => (to, from, next) => {
       .catch(function (err) {
         //console.log('오류 : ' + err)
         alert('관리자만 접속할 수 있습니다.')
-        router.push('/')
+        return next({name: 'Main'})
       })
 }
 
@@ -42,7 +42,7 @@ const isLogin = () => (to, from, next) => {
     return next()
   } else {
     alert('로그인이 필요한 서비스입니다.')
-    router.push('/login')
+    return next({name: 'Login'})
   }
 }
 
