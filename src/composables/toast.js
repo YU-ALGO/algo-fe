@@ -1,4 +1,4 @@
-import {onUnmounted, ref} from "vue";
+import { ref, onUnmounted } from 'vue'
 
 export const useToast = () => {
     const toastMessage = ref('')  // props를 이용해서 Toast 컴포넌트로 넘겨주기 위한 변수
