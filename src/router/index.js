@@ -13,28 +13,16 @@ import Admin from '@/views/admin/index.vue'
 import PostView from '@/views/boards/views/_id.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 import store from '@/store/index'
 
-const BASE_URL = 'http://be.downbit.r-e.kr:8088'
+const { axiosGet } = useAxios()
 
 const isAdmin = () => (to, from, next) => {
-  axios.get(BASE_URL + `/api/v1/admin`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
-    withCredentials: true
+  axiosGet('/api/v1/admin', next(), (err) => {
+    alert('관리자만 접속할 수 있습니다.')
+    router.push('/')
   })
-      .then(function (res) {
-        console.log(res)
-        return next()
-      })
-      .catch(function (err) {
-        //console.log('오류 : ' + err)
-        alert('관리자만 접속할 수 있습니다.')
-        router.push('/')
-      })
 }
 
 const isLogin = () => (to, from, next) => {

@@ -45,7 +45,6 @@ export default function () {
             },
             withCredentials: true
         }).then((resp) => {
-            console.log("response: " + resp.status)
             checkResult(resp, onSuccess, onFailed)
         })
     }
