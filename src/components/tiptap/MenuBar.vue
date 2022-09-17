@@ -10,8 +10,8 @@
 
 <script>
 import { ref } from 'vue'
-import MenuItem from './MenuItem'
-import Modal from './Modal'
+import MenuItem from '@compo/tiptap/MenuItem.vue'
+import Modal from '@compo/tiptap/Modal.vue'
 
 export default {
   components: {

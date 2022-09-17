@@ -9,11 +9,11 @@
 
 <script>
 import { useToast } from '@/composables/toast'
-import Toast from '@/components/Toast'
+import Toast from '@compo/Toast.vue'
 
 export default {
   components: {
-    Toast
+    Toast,
   },
 
   setup() {

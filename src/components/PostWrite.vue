@@ -35,7 +35,7 @@ import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import MenuBar from './tiptap/MenuBar'
+import MenuBar from '@compo/tiptap/MenuBar.vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 
