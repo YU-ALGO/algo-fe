@@ -28,10 +28,11 @@
 <script>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 
 export default {
   setup() {
+    const { axiosGet } = useAxios()
     const route = useRoute()
     const router = useRouter()
     const postId = route.params.id
@@ -44,23 +45,23 @@ export default {
       like_count: '',
     })
 
-    const post = ref(null)
+    const post = ref(null) // 무엇에 쓰는 변수인고?
     const getPost = async () => {
       loading.value = true
-      try {
-        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`)
-        postData.value = res.data
+      await axiosGet(`/api/v1/boards/1/posts/${postId}`
+      , (res) => {
+        postData.value = res
         loading.value = false
-      } catch (error) {
+      }, (err) => {
         loading.value = false
-        console.log(error)
-      }
+        console.log(err)
+      })
     }
 
     const deletePost = async () => {
       if(confirm("정말 게시글을 삭제하시겠습니까?")) {
         try {
-          await axios.delete(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`, {
+          await axios.delete(`http://be.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`, {
             headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*',

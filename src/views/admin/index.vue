@@ -57,7 +57,7 @@
 
 <script>
 import { ref } from 'vue'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 
 export default {
   setup() {
@@ -67,35 +67,29 @@ export default {
     const selectedModify = ref(0)
     const boardDeleteNameList = ref('')
     const boardModifyNameList = ref('')
+    const { axiosPost } = useAxios()
 
     const getBoardName = async () => {
-      try {
-        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards`)
-        boardDeleteNameList.value = {...res.data}
-        boardModifyNameList.value = {...res.data}
-      } catch (error) {
-        console.log(error)
-      }
+      await axiosGet('/api/v1/boards'
+      , (res) => {
+        boardDeleteNameList.value = { ...res }  // 객체이므로 reactive 권장
+        boardModifyNameList.value = { ...res }
+      }, (err) => {
+        console.log(err)
+      })
     }
 
     getBoardName()
 
     const createBoards = async () => {
-      try {
-        await axios.post('http://be2.downbit.r-e.kr:8088/api/v1/boards', {
-          name: createBoardName.value
-        }, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: true
-        })
-        alert("게시판이 생성되었습니다.")
+      await axiosPost('/api/v1/boards', {
+        name: inputBoardName.value
+      }, () => {
+        alert('게시판이 생성되었습니다.')
         window.location.reload()
-      } catch (err) {
+      }, (err) => {
         console.log(err)
-      }
+      })
     }
 
     const modifyBoards = async () => {

@@ -24,10 +24,11 @@
 
 <script>
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 
 export default {
   setup(props, context) {
+    const { axiosPost } = useAxios()
     const imageSrc = ref('')
     const show = ref(false)
     const file = ref(null)
@@ -55,9 +56,8 @@ export default {
     }
 
     const insertImage = () => {
-      const uploadUrl = 'https://httpbin.org/post'
-
-      axios.post(uploadUrl, formData).then((data) => {
+      axiosPost('https://httpbin.org/post', formData
+      , () => {
         imageSrc.value = 'https://source.unsplash.com/random/500x300'
         context.emit('onConfirm', {
           src: imageSrc.value,
