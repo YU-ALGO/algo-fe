@@ -57,6 +57,7 @@
 
 <script>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 
 export default {
@@ -67,6 +68,7 @@ export default {
     const selectedModify = ref(0)
     const boardDeleteNameList = ref('')
     const boardModifyNameList = ref('')
+    const router = useRouter()
     const { axiosPost } = useAxios()
 
     const getBoardName = async () => {
@@ -86,7 +88,7 @@ export default {
         name: inputBoardName.value
       }, () => {
         alert('게시판이 생성되었습니다.')
-        window.location.reload()
+        router.go(0)
       }, (err) => {
         console.log(err)
       })
@@ -106,7 +108,7 @@ export default {
               withCredentials: true
             })
             alert("게시판 이름이 수정되었습니다.")
-            window.location.reload()
+            router.go(0)
           } catch (err) {
             console.log(err)
           }
