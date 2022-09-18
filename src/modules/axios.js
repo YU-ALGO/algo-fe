@@ -1,65 +1,66 @@
-import { ref } from 'vue'
 import axios from 'axios'
 
-export default function () {
-    const communicating = ref(false)
-    const BASE_URL = 'http://be2.downbit.r-e.kr:8088'
+export default () => {
+  const BASE_URL = 'http://be2.downbit.r-e.kr:8088'
+  const CONFIG = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    withCredentials: true,
+  }
 
-    const creatURL = (url) => {
-        return url.startsWith('http') ? url : BASE_URL + url
-    }
+  const createURL = (url) => {
+    return url.startsWith('http') ? url : BASE_URL + url
+  }
 
-    const checkResult = (resp, onSuccess, onFailed) => {
-        communicating.value = false
-        if (resp.status === 200 || resp.status === 201) {
-            if (onSuccess) {
-                onSuccess(resp.data)
-            }
-        } else {
-            if (onFailed) {
-                onFailed(resp.data)
-            }
-        }
+  const checkResult = (resp, onSuccess, onFailed) => {
+    if (resp.status === 200 || resp.status === 201) {  // && resp.data.rsp === 'ok'
+      if (onSuccess) {
+        onSuccess(resp.data)
+      }
+    } else {
+      if (onFailed) {
+        onFailed(resp.data)
+      }
     }
+  }
 
-    const axiosGet = async (url, onSuccess = null, onFailed = null) => {
-        communicating.value = true
-        axios.get(creatURL(url), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-            },
-            withCredentials: true
-        }).then((resp) => {
-            return checkResult(resp, onSuccess, onFailed)
-        })
-    }
+  const axiosGet = async (url, onSuccess = null, onFailed = null) => {
+    axios.get(createURL(url), CONFIG).then((resp) => {
+      checkResult(resp, onSuccess, onFailed)
+    })
+  }
 
-    const axiosPost = async (url, data, onSuccess = null, onFailed = null) => {
-        communicating.value = true
-        axios.post(creatURL(url), JSON.stringify(data), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                // authorization: 'Bearer ' + cookies.get('accessToken'),
-            },
-            withCredentials: true
-        }).then((resp) => {
-            checkResult(resp, onSuccess, onFailed)
-        })
-    }
+  const axiosPost = async (url, data, onSuccess = null, onFailed = null) => {
+    axios.post(createURL(url), data, CONFIG).then((resp) => {
+      checkResult(resp, onSuccess, onFailed)
+    })
+  }
 
-    const axiosPut = async (url, data, onSuccess = null, onFailed = null) => {
-        communicating.value = true
-        axios.put(creatURL(url), data).then((resp) => {
-            checkResult(resp, onSuccess, onFailed)
-        })
-    }
+  const axiosPut = async (url, data, onSuccess = null, onFailed = null) => {
+    axios.put(createURL(url), data, CONFIG).then((resp) => {
+      checkResult(resp, onSuccess, onFailed)
+    })
+  }
 
-    return {
-        communicating,
-        axiosGet,
-        axiosPost,
-        axiosPut,
-    }
+  const axiosPatch = async (url, data, onSuccess = null, onFailed = null) => {
+    axios.patch(createURL(url), data, CONFIG).then((resp) => {
+      checkResult(resp, onSuccess, onFailed)
+    })
+  }
+
+  const axiosDelete = async (url, onSuccess = null, onFailed = null) => {
+    axios.delete(createURL(url), CONFIG).then((resp) => {
+      checkResult(resp, onSuccess, onFailed)
+    })
+  }
+
+  return {
+    axiosGet,
+    axiosPost,
+    axiosPut,
+    axiosPatch,
+    axiosDelete,
+  }
 }
