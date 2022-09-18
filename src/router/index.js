@@ -19,7 +19,7 @@ import store from '@/store/index'
 const { axiosGet } = useAxios()
 
 const isAdmin = () => (to, from, next) => {
-  axiosGet('/api/v1/admin', next(), (err) => {
+  axiosGet('/api/v1/admin', next(), () => {
     alert('관리자만 접속할 수 있습니다.')
     router.push('/')
   })
@@ -36,7 +36,7 @@ const isLogin = () => (to, from, next) => {
 
 const loginCheck = () => (to, from, next) => {
   if (!store.state.isLogin) { // 로그인 되지 않은 상태
-    return next();
+    return next()
   } else {
     alert('이미 로그인되어 있습니다.')
   }

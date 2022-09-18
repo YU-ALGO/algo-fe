@@ -52,7 +52,7 @@ export default {
 
     const idCheck = () => {
       if(username.value)
-        axiosGet(`/api/v1/users/${username.value}/exists`, getId, () => console.error())
+        axiosGet(`/api/v1/users/${username.value}/exists`, getId, (res) => console.error(res))
     }
 
     const pwCheck = () => {

@@ -20,17 +20,17 @@ export default {
 
   setup() {
     const { axiosGet } = useAxios()
-    const router = useRouter()
     const route = useRoute()
+    const router = useRouter()
     const boardId = route.params.id
     const boardName = ref('')
 
-    const getBoardName = async () => {
-      await axiosGet(`/api/v1/boards/${boardId}`
+    const getBoardName = () => {
+      axiosGet(`/api/v1/boards/${boardId}`
       , (res) => {
-        boardName.value = res
-      }, (err) => {
-        console.log(err)
+        boardName.value = res.data
+      }, (res) => {
+        console.error(res)
       })
     }
 

@@ -69,70 +69,58 @@ export default {
     const boardDeleteNameList = ref('')
     const boardModifyNameList = ref('')
     const router = useRouter()
-    const { axiosPost } = useAxios()
+    const { axiosGet, axiosPost, axiosPatch, axiosDelete } = useAxios()
 
-    const getBoardName = async () => {
-      await axiosGet('/api/v1/boards'
+    const getBoardName = () => {
+      axiosGet('/api/v1/boards'
       , (res) => {
-        boardDeleteNameList.value = { ...res }  // 객체이므로 reactive 권장
-        boardModifyNameList.value = { ...res }
-      }, (err) => {
-        console.log(err)
+        boardDeleteNameList.value = { ...res.data }  // 객체이므로 reactive 권장
+        boardModifyNameList.value = { ...res.data }
+      }, (res) => {
+        console.error(res)
       })
     }
 
     getBoardName()
 
-    const createBoards = async () => {
-      await axiosPost('/api/v1/boards', {
-        name: inputBoardName.value
+    const createBoards = () => {
+      axiosPost('/api/v1/boards', {
+        name: createBoardName.value
       }, () => {
         alert('게시판이 생성되었습니다.')
         router.go(0)
-      }, (err) => {
-        console.log(err)
+      }, (res) => {
+        console.error(res)
       })
     }
 
-    const modifyBoards = async () => {
+    const modifyBoards = () => {
       if (selectedModify.value !== 0) {
         if (confirm("정말 게시판 이름을 변경하시겠습니까?")) {
-          try {
-            await axios.patch(`http://munis.ddns.net:8088/api/v1/boards/${selectedModify.value}`, {
-              name: modifyBoardName.value
-            }, {
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-              },
-              withCredentials: true
-            })
+          axiosPatch(`/api/v1/boards/${selectedModify.value}`
+          , {
+            name: modifyBoardName.value
+          }, () => {
             alert("게시판 이름이 수정되었습니다.")
             router.go(0)
-          } catch (err) {
-            console.log(err)
-          }
+          }, (res) => {
+            console.error(res)
+          })
         }
       }
     }
 
-    const deleteBoards = async () => {
+    const deleteBoards = () => {
       if (selected.value !== 0) {
         if (confirm("정말 게시판을 삭제하시겠습니까?")) {
-          try {
-            const res = await axios.delete(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${selected.value}`, {
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-              },
-              withCredentials: true
-            })
-            alert("게시판이 삭제되었습니다.")
-            window.location.reload()
-            console.log(res)
-          } catch (err) {
-            console.log(err)
-          }
+          axiosDelete(`/api/v1/boards/${selected.value}`
+          , (res) => {
+            alert('게시판이 삭제되었습니다.')
+            router.go(0)
+            console.log(res.data)
+          }, (res) => {
+            console.error(res)
+          })
         }
       }
     }

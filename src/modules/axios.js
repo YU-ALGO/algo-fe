@@ -17,11 +17,11 @@ export default () => {
   const checkResult = (resp, onSuccess, onFailed) => {
     if (resp.status === 200 || resp.status === 201) {  // && resp.data.rsp === 'ok'
       if (onSuccess) {
-        onSuccess(resp.data)
+        onSuccess(resp)
       }
     } else {
       if (onFailed) {
-        onFailed(resp.data)
+        onFailed(resp)
       }
     }
   }

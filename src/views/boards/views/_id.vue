@@ -32,7 +32,7 @@ import useAxios from '@/modules/axios'
 
 export default {
   setup() {
-    const { axiosGet } = useAxios()
+    const { axiosGet, axiosDelete } = useAxios()
     const route = useRoute()
     const router = useRouter()
     const postId = route.params.id
@@ -46,33 +46,27 @@ export default {
     })
 
     const post = ref(null) // 무엇에 쓰는 변수인고?
-    const getPost = async () => {
+    const getPost = () => {
       loading.value = true
-      await axiosGet(`/api/v1/boards/1/posts/${postId}`
+      axiosGet(`/api/v1/boards/1/posts/${postId}`
       , (res) => {
-        postData.value = res
+        postData.value = res.data
         loading.value = false
-      }, (err) => {
+      }, (res) => {
         loading.value = false
-        console.log(err)
+        console.error(res)
       })
     }
 
-    const deletePost = async () => {
-      if(confirm("정말 게시글을 삭제하시겠습니까?")) {
-        try {
-          await axios.delete(`http://be.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-            },
-            withCredentials: true
-          })
+    const deletePost = () => {
+      if(confirm('정말 게시글을 삭제하시겠습니까?')) {
+        axiosDelete(`/api/v1/boards/1/posts/${postId}`
+        , () => {
           alert("게시글이 삭제되었습니다.")
           router.go(-1)
-        } catch (err) {
+        }, () => {
           alert('게시글을 삭제할 수 없습니다.')
-        }
+        })
       }
     }
 

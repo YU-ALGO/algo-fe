@@ -61,27 +61,16 @@ export default {
       ],
     })
 
-    const write = async () => {
-      // console.log(boardId)
-      // console.log('제목: ' + title.value)
-      // console.log('내용: ' + editor.value.getHTML())
-      try {
-        await axiosPost(`/api/v1/boards/${boardId}/posts`, {
-          title: title.value,
-          content: editor.value.getHTML()
-        }, onSuccess, onFailed)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-
-    const onSuccess = () => {
-      alert('게시글 업로드가 완료되었습니다!')
-      router.push(`/boards/${boardId}`)
-    }
-
-    const onFailed = () => {
-
+    const write = () => {
+      axiosPost(`/api/v1/boards/${boardId}/posts`, {
+        title: title.value,
+        content: editor.value.getHTML()
+      }, () => {
+        alert('게시글 업로드가 완료되었습니다!')
+        router.push(`/boards/${boardId}`)
+      }, (res) => {
+        console.error(res)
+      })
     }
 
     const moveToPostListPage = () => {

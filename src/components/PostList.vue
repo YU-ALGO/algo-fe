@@ -56,12 +56,13 @@
 <script>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 
 export default {
   setup() {
     const route = useRoute()
     const boardId = route.params.id
+    const { axiosGet } = useAxios()
 
     // Pagination
     const currentPage = ref(1)  // 현재 페이지
@@ -69,19 +70,19 @@ export default {
 
     const postList = ref(null)
 
-    const getPostList = async (page = currentPage.value) => {
+    const getPostList = (page = currentPage.value) => {
       currentPage.value = page
-      try {
-        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5`)
+      axiosGet(`/api/v1/boards/${boardId}/posts?page=${page}&size=5`
+      , (res) => {
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           postList.value = res.data
         } else {
           postList.value = null
         }
-      } catch (error) {
-        console.log(error)
-      }
+      }, (res) => {
+        console.error(res)
+      })
     }
 
     getPostList()

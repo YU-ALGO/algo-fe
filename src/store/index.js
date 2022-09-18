@@ -1,9 +1,9 @@
 import { createStore } from 'vuex'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 import router from '@/router'
 import createPersistedState from 'vuex-persistedstate'
 
-const BASE_URL = 'http://be2.downbit.r-e.kr:8088'
+const { axiosGet, axiosPost } = useAxios()
 
 export default createStore({
     namespaced: true,
@@ -30,52 +30,39 @@ export default createStore({
     actions: {
         login({commit}, {username, password}) { //로그인 처리
             // eslint-disable-next-line no-async-promise-executor
-            return new Promise( async(resolve, reject) => {
-                try {
-                    const res = await axios.post(BASE_URL+'/api/v1/login', { username, password }, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*',
-                        },
-                        withCredentials: true
-                    })
-                    if (res.status === 200) {
-                        // console.log('로그인 정보 : ' + res.data.isAdmin)
-                        commit('isLogin', true);
-                        if (res.data.isAdmin) {
-                            commit('isAdmin', true)
-                        }
-                        alert(res.data.nickname + '님 환영합니다!')
-                        await router.push('/')
+            return new Promise((resolve, reject) => {
+                axiosPost('/api/v1/login', {
+                    username, password
+                }, (res) => {
+                    commit('isLogin', true)
+                    if (res.data.isAdmin) {
+                        commit('isAdmin', true)
                     }
-                } catch (err) {
-                    console.error(err);
-                    reject(err);
-                }
+                    alert(res.data.nickname + '님 환영합니다!')
+                    router.push('/')  // await?
+                }, (res) => {
+                    console.error(res)
+                    reject(res)
+                })
             })
         },
         logout({ commit }) {
-            axios.post(BASE_URL+'/logout', {}, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                withCredentials: true
-            }).then(function (res) {
-                console.log('로그아웃 성공 : ' + res)
-            }). catch(function (error) {
-                console.log('로그아웃 오류 : ' + error)
+            axiosPost('/logout', {}
+            , (res) => {
+                console.log('로그아웃 성공: ' + res.data)
+            }, (res) => {
+                console.log('로그아웃 실패: ' + res.data)
             })
             commit('isLogin', false)
             commit('isAdmin', false)
         },
         isAdmin({ commit }) {
-            try {
-                const res = axios.get(BASE_URL+`/api/v1/admin`)
-                console.log(res)
-            } catch (error) {
-                console.log(error)
-            }
+            axiosGet('/api/v1/admin'
+            , (res) => {res
+                console.log(res.data)
+            }, (res) => {
+                console.error(res)
+            })
             commit('isAdmin', true)
         }
     },

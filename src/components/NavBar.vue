@@ -50,25 +50,21 @@
 <script>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import axios from 'axios'
+import useAxios from '@/modules/axios'
 
 export default {
   setup() {
     const store = useStore()
     const boardsList = ref(null)
+    const { axiosGet } = useAxios()
 
     const getBoardList = async () => {
-      try {
-        const res = await axios.get('http://be2.downbit.r-e.kr:8088/api/v1/boards', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          }
-        })
+      axiosGet('/api/v1/boards'
+      , (res) => {
         boardsList.value = res.data
-      } catch (error) {
-        console.log(error)
-      }
+      }, (res) => {
+        console.error(res)
+      })
     }
 
     getBoardList()
