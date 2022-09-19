@@ -1,4 +1,4 @@
-# Downbit Front-End
+# ALGo Front-End
 
 소공 프론트엔드입니당 :)
 
