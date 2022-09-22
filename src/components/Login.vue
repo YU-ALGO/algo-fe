@@ -29,8 +29,14 @@
           </div>
           <div class="mx-3 my-2 py-2 bordert">
             <div class="text-center py-3">
-              <a href="http://be.downbit.r-e.kr:8088/login/oauth2/code/kakao">
-                <img src="../assets/kakao_login_medium_narrow.png" alt=""/>
+              <a href="http://be.downbit.r-e.kr:8088/login/oauth2/code/kakao" class="px-2">
+                <img src="../assets/kakaoLogo.png" alt=""/>
+              </a>
+              <a href="#" class="px-2">
+                <img src="../assets/naverLogo.png" alt=""/>
+              </a>
+              <a href="#" class="px-2">
+                <img src="../assets/googleLogo.png" alt=""/>
               </a>
             </div>
           </div>
@@ -158,13 +164,13 @@ input[type='password'] {
   box-shadow: none
 }
 
-/*img {*/
-/*  width: 40px;*/
-/*  height: 40px;*/
-/*  object-fit: cover;*/
-/*  border-radius: 50%;*/
-/*  position: relative*/
-/*}*/
+img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  position: relative
+}
 
 a[target='_blank'] {
   position: relative;

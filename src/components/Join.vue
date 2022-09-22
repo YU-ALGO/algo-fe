@@ -9,6 +9,10 @@
           <span v-if="username" :style="[resVal === 1 ? 'color: red' : 'color: green']">{{ message }}</span>
         </div>
         <div class="mb-3">
+          <label for="nickname">닉네임</label>
+          <input type="text" class="form-control" id="nickname" v-model="nickname" required>
+        </div>
+        <div class="mb-3">
           <label for="password">비밀번호</label>
           <input type="password" class="form-control" id="password" v-model="password" required>
         </div>
@@ -16,10 +20,6 @@
           <label for="password">비밀번호 확인</label>
           <input type="password" class="form-control" id="passwordCheck" v-model="passwordCheck" @keyup="pwCheck()" required>
           <span v-if="passwordCheck" style="color: red">{{ pwMessage }}</span>
-        </div>
-        <div class="mb-3">
-          <label for="nickname">닉네임</label>
-          <input type="text" class="form-control" id="nickname" v-model="nickname" required>
         </div>
         <div class="form-inline row">
           <div class="text-lg-end">
@@ -63,7 +63,8 @@ export default {
     }
 
     const getId = (res) => {
-      if (res) {
+      // console.log(res.data)
+      if (res.data) {
         resVal.value = 1
         message.value = '이미 사용중이거나 탈퇴한 아이디입니다.'
       } else {
@@ -74,12 +75,12 @@ export default {
 
     const submit = () => {
       axiosPost('/api/v1/signup', {
-        user_id : username.value,
+        username : username.value,
         password : password.value,
         nickname : nickname.value
       }, () => {
         alert('회원가입 성공!')
-        router.push('/')
+        router.push('/login')
       }, () => {
         alert('회원가입 실패ㅠ')
       })
