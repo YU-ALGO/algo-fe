@@ -5,7 +5,7 @@
       <form class="validation-form" novalidate>
         <div class="mb-3">
           <label for="username">아이디</label>
-          <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck()" required>
+          <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck" required>
           <span v-if="username" :style="[resVal === 1 ? 'color: red' : 'color: green']">{{ message }}</span>
         </div>
         <div class="mb-3">
@@ -14,7 +14,7 @@
         </div>
         <div class="mb-3">
           <label for="password">비밀번호 확인</label>
-          <input type="password" class="form-control" id="passwordCheck" v-model="passwordCheck" @keyup="pwCheck()" required>
+          <input type="password" class="form-control" id="passwordCheck" v-model="passwordCheck" @keyup="pwCheck" required>
           <span v-if="passwordCheck" style="color: red">{{ pwMessage }}</span>
         </div>
         <div class="mb-3">
