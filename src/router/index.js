@@ -14,9 +14,10 @@ import PostView from '@/views/boards/views/_id.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import useAxios from '@/modules/axios'
-import store from '@/store/index'
+import { useAuth } from '@/composables/auth'
 
 const { axiosGet } = useAxios()
+const state = useAuth()
 
 const isAdmin = () => (to, from, next) => {
   axiosGet('/api/v1/admin', next(), () => {
@@ -26,7 +27,7 @@ const isAdmin = () => (to, from, next) => {
 }
 
 const isLogin = () => (to, from, next) => {
-  if (store.state.isLogin) {  // 로그인 된 상태
+  if (state.isLogin) {  // 로그인 된 상태
     return next()
   } else {
     alert('로그인이 필요한 서비스입니다.')
@@ -35,7 +36,7 @@ const isLogin = () => (to, from, next) => {
 }
 
 const loginCheck = () => (to, from, next) => {
-  if (!store.state.isLogin) { // 로그인 되지 않은 상태
+  if (!state.isLogin) { // 로그인 되지 않은 상태
     return next()
   } else {
     alert('이미 로그인되어 있습니다.')

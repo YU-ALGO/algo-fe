@@ -48,17 +48,19 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { ref, onMounted } from 'vue'
+import { useAuth } from '@/composables/auth'
 import useAxios from '@/modules/axios'
 
 export default {
   setup() {
-    const store = useStore()
-    const boardsList = ref(null)
     const { axiosGet } = useAxios()
+    const { state, authLogout } = useAuth()
+    const isLogin = ref(state.isLogin)
+    const isAdmin = ref(state.isAdmin)
+    const boardsList = ref(null)
 
-    const getBoardList = async () => {
+    const getBoardList = () => {
       axiosGet('/api/v1/boards'
       , (res) => {
         boardsList.value = res.data
@@ -67,31 +69,19 @@ export default {
       })
     }
 
-    getBoardList()
-
-    const isLogin = computed(() => {
-      return store.getters['isLogin']
-    })
-
-    const isAdmin = computed(() => {
-      return store.getters['isAdmin']
-    })
-
-    const logout = async () => {
-      try {
-        await store.dispatch('logout')
-        alert('사이트에서 로그아웃되었습니다!')
-        location.reload()
-      } catch(err) {
-        console.log(err)
-      }
+    const logout = () => {
+      authLogout()
     }
+
+    onMounted(() => {
+      getBoardList()
+    })
 
     return {
       isLogin,
       isAdmin,
+      boardsList,
       logout,
-      boardsList
     }
   },
 }
