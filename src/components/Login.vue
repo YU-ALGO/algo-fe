@@ -64,11 +64,10 @@ export default {
 
     const login = async () => {
       try {
-        const rs = await store.dispatch('login', {
+         await store.dispatch('login', {
           username: username.value,
           password: password.value,
         })
-        alert(rs)
       } catch (err) {
         alert('아이디 또는 비밀번호를 확인해주세요.')
       }

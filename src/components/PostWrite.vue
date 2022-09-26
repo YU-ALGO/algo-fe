@@ -6,7 +6,7 @@
         <div class="mt-3">
           <div class="form-group">
             <label>제목</label>
-            <input type="text" v-model="title" class="form-control mt-2" id="title" placeholder="글 제목을 입력해주세요." required>
+            <input type="text" v-model="title" class="form-control mt-2" id="title" placeholder="글 제목을 입력해주세요." maxlength="50" style="border: 3px solid black" required>
           </div>
           <br/>
           <div class="form-group">

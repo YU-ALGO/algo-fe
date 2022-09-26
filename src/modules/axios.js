@@ -15,6 +15,7 @@ export default () => {
   }
 
   const checkResult = (resp, onSuccess, onFailed) => {
+    // console.log('Response Status : ' + resp.status)
     if (resp.status === 200 || resp.status === 201) {  // && resp.data.rsp === 'ok'
       if (onSuccess) {
         onSuccess(resp)

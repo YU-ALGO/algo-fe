@@ -29,22 +29,34 @@ export default createStore({
     },
     actions: {
         login({commit}, {username, password}) { //로그인 처리
-            // eslint-disable-next-line no-async-promise-executor
-            return new Promise((resolve, reject) => {
-                axiosPost('/api/v1/login', {
-                    username, password
-                }, (res) => {
-                    commit('isLogin', true)
-                    if (res.data.isAdmin) {
-                        commit('isAdmin', true)
-                    }
-                    alert(res.data.nickname + '님 환영합니다!')
-                    router.push('/')  // await?
-                }, (res) => {
-                    console.error(res)
-                    reject(res)
-                })
+            axiosPost('/api/v1/login', {
+                username, password
+            }, (res) => {
+                commit('isLogin', true)
+                if (res.data.isAdmin)   commit('isAdmin', true)
+                alert(res.data.nickname + '님 환영합니다!')
+                router.push('/')
+            }, (res) => {
+                alert(res.data.status + ' Error! 로그인 실패')
             })
+            // // eslint-disable-next-line no-async-promise-executor
+            // return new Promise((resolve, reject) => {
+            //     axiosPost('/api/v1/login', {
+            //         username, password
+            //     }, (res) => {
+            //         console.log('로그인 성공')
+            //         commit('isLogin', true)
+            //         if (res.data.isAdmin) {
+            //             commit('isAdmin', true)
+            //         }
+            //         alert(res.data.nickname + '님 환영합니다!')
+            //         router.push('/')  // await?
+            //     }, (res) => {
+            //         console.log('로그인 실패')
+            //         console.error(res.data)
+            //         reject(res)
+            //     })
+            // })
         },
         logout({ commit }) {
             axiosPost('/logout', {}

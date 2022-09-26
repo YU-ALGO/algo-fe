@@ -1,6 +1,6 @@
 <template>
   <div v-if="loading">
-    Loading...
+    <NotFound/>
   </div>
   <div v-else>
     <div class="mt-3">
@@ -19,18 +19,22 @@
         <p v-html="postData.content" class="form-control"></p>
       </div>
     </div>
+    <button class="btn btn-primary me-2" disabled="disabled">수정</button>
+    <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
+    <button class="btn btn-outline-dark me-2" @click="moveToPostListPage">취소</button>
   </div>
-  <button class="btn btn-primary me-2" disabled="disabled">수정</button>
-  <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
-  <button class="btn btn-outline-dark me-2" @click="moveToPostListPage">취소</button>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
+import NotFound from '@compo/NotFound'
 
 export default {
+  components: {
+    NotFound,
+  },
   setup() {
     const { axiosGet, axiosDelete } = useAxios()
     const route = useRoute()
