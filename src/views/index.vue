@@ -17,7 +17,7 @@ export default {
   },
 
   setup() {
-    const { toastMessage, toastAlertType, showToast, triggerToast } = useToast();
+    const { toastMessage, toastAlertType, showToast, triggerToast } = useToast()
 
     triggerToast('안녕하세요', 'success')
 
