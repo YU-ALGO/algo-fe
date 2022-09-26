@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import useAxios from '@/modules/axios'
 
@@ -85,7 +85,10 @@ export default {
       })
     }
 
-    getPostList()
+    onMounted(() => {
+      getPostList()
+    })
+    
     return {
       postList,
       boardId,

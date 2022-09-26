@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 
@@ -45,8 +45,7 @@ export default {
       like_count: '',
     })
 
-    const post = ref(null) // 무엇에 쓰는 변수인고?
-    const getPost = () => {
+    onMounted(() => {  // get post
       loading.value = true
       axiosGet(`/api/v1/boards/1/posts/${postId}`
       , (res) => {
@@ -56,7 +55,7 @@ export default {
         loading.value = false
         console.error(res)
       })
-    }
+    })
 
     const deletePost = () => {
       if(confirm('정말 게시글을 삭제하시겠습니까?')) {
@@ -74,10 +73,7 @@ export default {
       router.go(-1)
     }
 
-    getPost()
-
     return {
-      post,
       postData,
       loading,
       moveToPostListPage,

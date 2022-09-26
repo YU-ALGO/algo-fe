@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 
@@ -71,7 +71,7 @@ export default {
     const router = useRouter()
     const { axiosGet, axiosPost, axiosPatch, axiosDelete } = useAxios()
 
-    const getBoardName = () => {
+    onMounted(() => {  // get board name
       axiosGet('/api/v1/boards'
       , (res) => {
         boardDeleteNameList.value = { ...res.data }  // 객체이므로 reactive 권장
@@ -79,9 +79,7 @@ export default {
       }, (res) => {
         console.error(res)
       })
-    }
-
-    getBoardName()
+    })
 
     const createBoards = () => {
       axiosPost('/api/v1/boards', {

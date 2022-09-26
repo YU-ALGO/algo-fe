@@ -60,22 +60,18 @@ export default {
     const isAdmin = ref(state.isAdmin)
     const boardsList = ref(null)
 
-    const getBoardList = () => {
+    onMounted(() => {  // get boards list
       axiosGet('/api/v1/boards'
       , (res) => {
         boardsList.value = res.data
       }, (res) => {
         console.error(res)
       })
-    }
+    })
 
     const logout = () => {
       authLogout()
     }
-
-    onMounted(() => {
-      getBoardList()
-    })
 
     return {
       isLogin,
