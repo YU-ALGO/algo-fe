@@ -47,30 +47,19 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { ref } from 'vue'
+import { useAuth } from '@/composables/auth'
 import router from '@/router'
 
 export default {
   setup() {
-    // const { axiosPost } = useAxios()
     const username = ref(null)
     const password = ref(null)
-    const store = useStore()
+    const { state, authLogin } = useAuth()
+    const isLogin = ref(state.isLogin)
 
-    const isLogin = computed(() => {
-      return store.getters['isLogin']
-    })
-
-    const login = async () => {
-      try {
-         await store.dispatch('login', {
-          username: username.value,
-          password: password.value,
-        })
-      } catch (err) {
-        alert('아이디 또는 비밀번호를 확인해주세요.')
-      }
+    const login = () => {
+      authLogin(username.value, password.value)
     }
 
     const moveToJoinPage = () => {

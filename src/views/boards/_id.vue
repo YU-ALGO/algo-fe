@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 import PostList from '@compo/PostList.vue'
@@ -28,7 +28,7 @@ export default {
     const boardName = ref('')
     const loading = ref(false)
 
-    const getBoardName = () => {
+    onMounted(() => {  // get board name
       loading.value = true
       axiosGet(`/api/v1/boards/${boardId}`
       , (res) => {
@@ -38,9 +38,7 @@ export default {
         console.error(res)
             loading.value = false
       })
-    }
-
-    getBoardName()
+    })
 
     const moveToWritePage = () => {
       router.push({

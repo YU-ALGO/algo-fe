@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from "axios";
 
@@ -109,8 +109,10 @@ export default {
       }
     }
 
-    getPostList()
-
+    onMounted(() => {
+      getPostList()
+    })
+    
     return {
       selected,
       postList,
