@@ -5,21 +5,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useRoute } from 'vue-router'
 import NavBar from '@compo/NavBar.vue'
 
-export default {
-  components: {
-    NavBar,
-  },
-  setup() {
-    const route = useRoute()
-    return {
-      route,
-    }
-  },
-}
+const route = useRoute()
 </script>
 
 <style scoped>
