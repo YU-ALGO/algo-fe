@@ -48,21 +48,21 @@ export default createStore({
         },
         logout({ commit }) {
             axiosPost('/logout', {}
-            , (res) => {
-                console.log('로그아웃 성공: ' + res.data)
-            }, (res) => {
-                console.log('로그아웃 실패: ' + res.data)
-            })
+                , (res) => {
+                    console.log('로그아웃 성공: ' + res.data)
+                }, (res) => {
+                    console.log('로그아웃 실패: ' + res.data)
+                })
             commit('isLogin', false)
             commit('isAdmin', false)
         },
         isAdmin({ commit }) {
             axiosGet('/api/v1/admin'
-            , (res) => {res
-                console.log(res.data)
-            }, (res) => {
-                console.error(res)
-            })
+                , (res) => {
+                    console.log(res.data)
+                }, (res) => {
+                    console.error(res)
+                })
             commit('isAdmin', true)
         }
     },

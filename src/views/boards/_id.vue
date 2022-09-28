@@ -1,9 +1,9 @@
 <template>
+  <div v-if="loading">
+    <NotFound/>
+  </div>
   <div>
-    <div class="container mt-md-2">
-      <h2>{{ boardName }}</h2>
-    </div>
-    <PostList/>
+    <PostList :boardName="boardName"/>
   </div>
 </template>
 
@@ -12,10 +12,12 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 import PostList from '@compo/PostList.vue'
+import NotFound from '@compo/NotFound'
 
 export default {
   components: {
     PostList,
+    NotFound,
   },
 
   setup() {
@@ -24,13 +26,17 @@ export default {
     const router = useRouter()
     const boardId = route.params.id
     const boardName = ref('')
+    const loading = ref(false)
 
     const getBoardName = () => {
+      loading.value = true
       axiosGet(`/api/v1/boards/${boardId}`
       , (res) => {
         boardName.value = res.data
+            loading.value = false
       }, (res) => {
         console.error(res)
+            loading.value = false
       })
     }
 
@@ -46,6 +52,7 @@ export default {
       boardId,
       boardName,
       moveToWritePage,
+      loading,
     }
   }
 }
