@@ -63,7 +63,8 @@ export default {
     }
 
     const getId = (res) => {
-      if (res) {
+      // console.log(res.data)
+      if (res.data) {
         resVal.value = 1
         message.value = '이미 사용중이거나 탈퇴한 아이디입니다.'
       } else {
