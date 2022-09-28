@@ -1,7 +1,5 @@
 import { reactive } from 'vue'
 import useAxios from '@/modules/axios'
-import router from '@/router'
-
 
 export const useAuth = () => {
   const state = reactive({ isLogin: false, isAdmin: false })
@@ -14,11 +12,12 @@ export const useAuth = () => {
       if (res.data.isAdmin) {
         state.isAdmin = true
       }
-      alert(res.data.nickname + '님 환영합니다!')
-      router.push('/')
+      alert(res.data.nickname + "님 환영합니다!")
+      // 성공 callback은 Login.vue에서 직접 처리
     }, () => {
       alert('아이디 또는 비밀번호를 확인해주세요.')
     })
+
   }
 
   const authLogout = () => {

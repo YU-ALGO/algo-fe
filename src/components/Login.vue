@@ -60,6 +60,7 @@ export default {
 
     const login = () => {
       authLogin(username.value, password.value)
+      router.push('/')
     }
 
     const moveToJoinPage = () => {
