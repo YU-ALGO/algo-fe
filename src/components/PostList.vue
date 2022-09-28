@@ -39,7 +39,7 @@
                 <td style="width: 800px"><a :href="`/boards/views/${post.id}`">{{ post.title }}</a></td>
                 <td style="width: 100px">{{ post.author }}</td>
                 <td style="width: 300px">{{ post.created_at }}</td>
-                <td style="width: 100px">0</td>
+                <td style="width: 100px">{{ post.view_count }}</td>
                 <td style="width: 100px">{{ post.like_count }}</td>
               </tr>
               </tbody>
