@@ -48,29 +48,38 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useAuth } from '@/composables/auth'
+import { ref, onMounted, computed } from 'vue'
 import useAxios from '@/modules/axios'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
+    const store = useStore(); //vuex 스토어 사용
     const { axiosGet } = useAxios()
-    const { state, authLogout } = useAuth()
-    const isLogin = ref(state.isLogin)
-    const isAdmin = ref(state.isAdmin)
+    const isAdmin = ref(false)
     const boardsList = ref(null)
 
     onMounted(() => {  // get boards list
       axiosGet('/api/v1/boards'
       , (res) => {
         boardsList.value = res.data
-      }, (res) => {
-        console.error(res)
+      }, () => {
+        alert('게시판 목록을 불러올 수 없습니다.')
       })
+      // axiosGet('/api/v1/token/validate'
+      //     , () => {
+      //     isLogin.value = true;
+      //   }, () => {
+      //   alert('토큰오류')
+      // })
     })
 
-    const logout = () => {
-      authLogout()
+    const isLogin = computed(() => {
+      return store.getters['isLogin'];
+    })
+
+    const logout = async () => {
+      store.dispatch('logout').catch((err) => console.error(err))
     }
 
     return {

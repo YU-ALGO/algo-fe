@@ -75,7 +75,8 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import axios from "axios";
+import useAxios from '@/modules/axios'
+import axios from 'axios'
 
 export default {
   props: {
@@ -85,6 +86,7 @@ export default {
     }
   },
   setup() {
+    const { axiosGet } = useAxios()
     const selected = ref('1')
     const route = useRoute()
     const boardId = route.params.id
@@ -96,6 +98,17 @@ export default {
 
     const getPostList = async (page = currentPage.value) => {
       currentPage.value = page
+      // axiosGet(`/api/v1/boards/${boardId}/posts?page=${page}&size=5`
+      // , (res) => {
+      //   numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+      //   if (res.data.length !== 0) {
+      //     postList.value = res.data
+      //   } else {
+      //     postList.value = null
+      //   }
+      // }, (err) => {
+      //   console.error(err)
+      // })
       try {
         const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5`)
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])

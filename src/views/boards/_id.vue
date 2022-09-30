@@ -2,7 +2,7 @@
   <div v-if="loading">
     <NotFound/>
   </div>
-  <div>
+  <div v-else>
     <PostList :boardName="boardName"/>
   </div>
 </template>

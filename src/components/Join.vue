@@ -52,7 +52,7 @@ export default {
 
     const idCheck = () => {
       if(username.value)
-        axiosGet(`/api/v1/users/${username.value}/exists`, getId, (res) => console.error(res))
+        axiosGet(`/api/v1/users/${username.value}/exists`, getId, (err) => console.error(err))
     }
 
     const pwCheck = () => {
@@ -75,13 +75,14 @@ export default {
 
     const submit = () => {
       axiosPost('/api/v1/signup', {
-        username : username.value,
-        password : password.value,
-        nickname : nickname.value
+        username: username.value,
+        password: password.value,
+        nickname: nickname.value
       }, () => {
         alert('회원가입 성공!')
         router.push('/login')
-      }, () => {
+      }, (err) => {
+        console.error(err)
         alert('회원가입 실패ㅠ')
       })
     }

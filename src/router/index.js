@@ -8,26 +8,27 @@ import MainView from '@views/index.vue'
 import Profile from '@views/profile/index.vue'
 import FoodView from '@views/food/index.vue'
 import Board from '@views/boards/_id.vue'
-// import Boards from '@views/boards/index'
-import Admin from '@/views/admin/index.vue'
 import PostView from '@/views/boards/views/_id.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import useAxios from '@/modules/axios'
-import { useAuth } from '@/composables/auth'
+import store from '@/store/index'
 
 const { axiosGet } = useAxios()
-const state = useAuth()
 
 const isAdmin = () => (to, from, next) => {
-  axiosGet('/api/v1/admin', next(), () => {
-    alert('관리자만 접속할 수 있습니다.')
-    router.push('/')
-  })
+  if (store.state.isLogin) {
+    axiosGet('/api/v1/admin', next(), () => {
+      alert('관리자만 접속할 수 있습니다.')
+      router.push('/')
+    })
+  } else {
+    alert('로그인이 필요한 서비스입니다.')
+  }
 }
 
 const isLogin = () => (to, from, next) => {
-  if (state.isLogin) {  // 로그인 된 상태
+  if (store.state.isLogin) {  // 로그인 된 상태
     return next()
   } else {
     alert('로그인이 필요한 서비스입니다.')
@@ -36,7 +37,7 @@ const isLogin = () => (to, from, next) => {
 }
 
 const loginCheck = () => (to, from, next) => {
-  if (!state.isLogin) { // 로그인 되지 않은 상태
+  if (!store.state.isLogin) {
     return next()
   } else {
     alert('이미 로그인되어 있습니다.')
@@ -63,7 +64,8 @@ const routes = [
     path: '/boards/:id/write',
     name: 'PostWrite',
     component: PostWrite,
-    beforeEnter: isLogin()
+    beforeEnter: isLogin(),
+    props: true,
   },
   {
     path: '/login',
@@ -88,15 +90,10 @@ const routes = [
     name: 'Board',
     component: Board,
   },
-  // {
-  //   path: '/boards',
-  //   name: 'boards',
-  //   component: Boards,
-  // },
   {
     path: '/admin',
     name: 'Admin',
-    component: Admin,
+    component: () => import(/* webpackChunkName: "about" */ '@/views/admin/index'),
     beforeEnter: isAdmin()
   },
   {

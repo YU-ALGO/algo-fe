@@ -48,18 +48,22 @@
 
 <script>
 import { ref } from 'vue'
-import { useAuth } from '@/composables/auth'
 import router from '@/router'
+import { useStore } from 'vuex' // vuex 스토어 사용
 
 export default {
   setup() {
     const username = ref(null)
     const password = ref(null)
-    const { state, authLogin } = useAuth()
-    const isLogin = ref(state.isLogin)
+    const store = useStore() //vuex 스토어 사용
 
-    const login = () => {
-      authLogin(username.value, password.value)
+    const login = async () => {
+      store.dispatch('login', {
+        username: username.value,
+        password: password.value
+      }).catch((err) => {
+        console.error(err)
+      })
     }
 
     const moveToJoinPage = () => {
@@ -69,7 +73,6 @@ export default {
     return {
       username,
       password,
-      isLogin,
       login,
       moveToJoinPage,
     }

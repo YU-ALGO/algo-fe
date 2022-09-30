@@ -1,8 +1,10 @@
 <template>
+  {{ boardId }}
   <div class="container">
     <div class="card mt-4">
       <div class="card-body">
-        <h5 class="card-title">새로운 글 등록</h5>
+        <h5 v-if="!editable" class="card-title">새로운 글 등록</h5>
+        <h5 v-else class="card-title">게시글 수정</h5>
         <div class="mt-3">
           <div class="form-group">
             <label>제목</label>
@@ -12,14 +14,15 @@
           <div class="form-group">
             <label>본문</label>
             <div class="editor mt-2" v-if="editor">
-              <menu-bar className="editor__header" :editor="editor"/>
-              <editor-content className="editor__content" :editor="editor"/>
+              <MenuBar className="editor__header" :editor="editor"/>
+              <EditorContent className="editor__content" :editor="editor"/>
             </div>
           </div>
         </div>
         <div class="d-flex justify-content-between mt-3">
           <button class="btn btn-primary" @click="moveToPostListPage">목록으로</button>
-          <button @click="write" class="btn btn-success me-2">글쓰기</button>
+          <button v-if="!editable" @click="onSave" class="btn btn-success me-2">글쓰기</button>
+          <button v-else @click="onSave" class="btn btn-success me-2">수정하기</button>
         </div>
       </div>
     </div>
@@ -27,7 +30,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import useAxios from '@/modules/axios'
 import StarterKit from '@tiptap/starter-kit'
@@ -46,12 +49,16 @@ export default {
   },
 
   setup() {
-    const { axiosPost } = useAxios()
+    const { axiosPost, axiosGet, axiosPatch } = useAxios()
     const route = useRoute()
-    const boardId = route.params.id
+    // const boardId =
+    const postId = route.params.id
+    const editable = ref(route.query.editable)
     const title = ref('')
+    const content = ref('')
+
     const editor = useEditor({
-      // content: '',
+      content: '',
       extensions: [
         StarterKit,
         Highlight,
@@ -61,29 +68,61 @@ export default {
       ],
     })
 
-    const write = () => {
-      axiosPost(`/api/v1/boards/${boardId}/posts`, {
-        title: title.value,
-        content: editor.value.getHTML()
-      }, () => {
-        alert('게시글 업로드가 완료되었습니다!')
-        router.push(`/boards/${boardId}`)
-      }, (res) => {
-        console.error(res)
-      })
+    const onSave = () => {
+      if (editable.value) {
+        axiosPatch(`/api/v1/boards/1/posts/${postId}`, {
+          title: title.value,
+          content: editor.value.getHTML()
+        }, () => {
+          alert('게시글 수정이 완료되었습니다!')
+          router.go(-1)
+        }, (err) => {
+          console.error(err)
+        })
+      } else {
+        axiosPost(`/api/v1/boards/${postId}/posts`, {
+          title: title.value,
+          content: editor.value.getHTML()
+        }, () => {
+          alert('게시글 업로드가 완료되었습니다!')
+          router.push(`/boards/${postId}`)
+        }, (err) => {
+          console.error(err)
+        })
+      }
     }
 
     const moveToPostListPage = () => {
       if (confirm('글 작성을 취소하시겠습니까? \n변경사항은 저장되지 않습니다.')) {
-        router.push(`/boards/${boardId}`)
+        router.go(-1)
       }
     }
+
+    const getPostData = () => {
+      axiosGet(`/api/v1/boards/1/posts/${postId}`
+          , (res) => {
+            title.value = res.data.title
+            content.value = res.data.content
+            editor.value.commands.setContent(content.value)
+          }, (err) => {
+            console.error(err)
+          })
+    }
+
+    onMounted(() => {
+      if (editable.value) {
+        getPostData()
+      }
+    })
 
     return {
       title,
       editor,
-      write,
+      onSave,
       moveToPostListPage,
+      postId,
+      // boardId,
+      editable,
     }
   },
 }
