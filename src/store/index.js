@@ -1,8 +1,10 @@
 import { createStore } from 'vuex'
 import useAxios from '@/modules/axios'
 import createPersistedState from 'vuex-persistedstate'
+import { useCookies } from 'vue3-cookies'
 
 const { axiosPost } = useAxios()
+const { cookies } = useCookies();
 
 export default createStore({
     namespaced: true,
@@ -61,8 +63,13 @@ export default createStore({
                 commit('isAdmin', false)
                 commit('nickname', null)
                 commit('username', null)
+                cookies.remove('isAdmin')
+                cookies.remove('isLogin')
                 window.location.href = '/'
             })
+        },
+        async socialLogin({ commit }) {
+            commit('isLogin', true)
         }
     },
     plugins: [

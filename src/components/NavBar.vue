@@ -33,7 +33,7 @@
 <!--          <input class="form-control me-2" type="search" placeholder="검색" aria-label="Search">-->
 <!--          <button class="btn btn-outline-success me-2" type="submit">Search</button>-->
 <!--        </form>-->
-        <div class="d-flex" v-if="!isLogin">
+        <div class="d-flex" v-if="!isLogin && !isSocialLogin">
           <router-link :to="{ name: 'Login' }" class="btn btn-primary me-2">로그인</router-link>
           <router-link :to="{ name: 'Join' }" class="btn btn-primary me-2">회원가입</router-link>
         </div>
@@ -48,16 +48,18 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import {ref, onMounted } from 'vue'
 import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
+import { useCookies } from "vue3-cookies";
 
 export default {
   setup() {
     const store = useStore(); //vuex 스토어 사용
     const { axiosGet } = useAxios()
-    const isAdmin = ref(false)
+    const isAdmin = store.getters['isAdmin']
     const boardsList = ref(null)
+    const { cookies } = useCookies();
 
     onMounted(() => {  // get boards list
       axiosGet('/api/v1/boards'
@@ -74,19 +76,29 @@ export default {
       // })
     })
 
-    const isLogin = computed(() => {
-      return store.getters['isLogin'];
-    })
+    // const isLogin = () => {
+    //   if(store.getters['isLogin'] || cookies.get("isLogin")) {
+    //     return true
+    //   } else {
+    //     return false;
+    //   }
+    // }
+
+    const isLogin = store.getters['isLogin']
+    const isSocialLogin = ref(cookies.get('isLogin'))
 
     const logout = async () => {
-      store.dispatch('logout').catch((err) => console.error(err))
+      await store.dispatch('logout').catch((err) => console.error(err))
     }
+
+
 
     return {
       isLogin,
       isAdmin,
       boardsList,
       logout,
+      isSocialLogin,
     }
   },
 }

@@ -79,6 +79,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
+import axios from "axios";
 
 export default {
   setup() {

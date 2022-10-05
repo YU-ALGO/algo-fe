@@ -23,7 +23,7 @@
                   <a href="#" id="forgot" class="font-weight-bold">비밀번호를 잊으셨나요?</a>
                 </div>
               </div>
-              <button @click="login" class="btn btn-primary mx-auto w-100 mt-3">로그인</button>
+              <button type="button" @click="login" class="btn btn-primary mx-auto w-100 mt-3">로그인</button>
               <div class="text-center pt-4 text-muted">계정이 없으신가요? <a href="#" @click="moveToJoinPage">가입하기</a> </div>
             </form>
           </div>
@@ -31,6 +31,7 @@
             <div class="text-center py-3">
 <!--              <button type="button" class="px-2" onclick="window.open('http://www.naver.com','네이버','popup, height=600, width=400')"><img src="../assets/kakaoLogo.png"></button>-->
               <a href="http://be.downbit.r-e.kr:8088/oauth2/authorization/kakao" class="px-2">
+<!--              <a style="cursor: pointer" @click="kakaoLogin" class="px-2">-->
                 <img src="../assets/kakaoLogo.png" alt=""/>
               </a>
               <a href="http://be.downbit.r-e.kr:8088/oauth2/authorization/naver" class="px-2">
@@ -51,12 +52,17 @@
 import { ref } from 'vue'
 import router from '@/router'
 import { useStore } from 'vuex' // vuex 스토어 사용
+import useAxios from '@/modules/axios.js'
+
+import axios from "axios";
 
 export default {
   setup() {
     const username = ref(null)
     const password = ref(null)
     const store = useStore() //vuex 스토어 사용
+
+    const { axiosGet } = useAxios()
 
     const login = async () => {
       store.dispatch('login', {
@@ -67,19 +73,25 @@ export default {
       })
     }
 
+    // const kakaoLogin = () => {
+    //   axios.get('http://be.downbit.r-e.kr:8088/oauth2/authorization/kakao')
+    //       .then((res) => {
+    //         console.log(res.data)
+    //       })
+    //       .catch((error) => {
+    //         console.error(error)
+    //       })
+    // }
+
     const moveToJoinPage = () => {
       router.push('/join')
     }
-
-    const openPopup = () => {
-      window.open()
-    }
-
     return {
       username,
       password,
       login,
       moveToJoinPage,
+      // kakaoLogin,
     }
   },
 }
