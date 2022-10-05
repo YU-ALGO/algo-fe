@@ -15,16 +15,16 @@ export default () => {
   }
 
   const axiosGet = async (url, onSuccess = null, onFailed = null) => {
-     axios.get(createURL(url), CONFIG)
-     .then((resp) => {
-       if (onSuccess) {
-         onSuccess(resp)
-       }
-     }).catch((err) => {
-       if (onFailed) {
-         onFailed(err)
-       }
-     })
+    axios.get(createURL(url), CONFIG)
+    .then((resp) => {
+      if (onSuccess) {
+        onSuccess(resp)
+      }
+    }).catch((err) => {
+      if (onFailed) {
+        onFailed(err)
+      }
+    })
   }
 
   const axiosPost = async (url, data, onSuccess = null, onFailed = null) => {

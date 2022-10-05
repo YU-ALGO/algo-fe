@@ -32,9 +32,10 @@
       <!-- Comments body-->
       <div class="row card-body">
         <!-- Comment form-->
-        <form class="mb-4">
+        <form>
           <textarea
               class="form-control mb-3" rows="3" v-model="comment"
+              style="resize:none; overflow: hidden"
               placeholder="댓글을 남겨보세요"
               @keydown="resize"
               @keyup="resize"
@@ -43,33 +44,29 @@
         </form>
         <!-- Comment with nested comments-->
         <div class="mb-4">
-          <!-- Parent comment-->
-          <div class="ms-3">
-            <div class="fw-bold">Commenter Name</div>
-            If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-            <!-- Child comment 1-->
-            <div class="d-flex mt-4">
-              <div class="ms-3">
-                <div class="fw-bold">Commenter Name</div>
-                And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
-              </div>
-            </div>
-            <!-- Child comment 2-->
-            <div class="d-flex mt-4">
-              <div class="ms-3">
-                <div class="fw-bold">Commenter Name</div>
-                When you put money directly to a problem, it makes a good headline.
-              </div>
-            </div>
+          <div :class="comment.parent === 0 ? 'mt-4 ms-3' : 'mt-2 ms-5'" v-for="comment in commentList" :key="comment.id">
+            <div class="fw-bold">{{ comment.author }}</div>
+            <div v-if="!comment.is_deleted">{{ comment.content }}</div>
+            <div v-else>삭제된 댓글입니다.</div>
+            <div><code>{{ comment.created_at }}</code></div>
           </div>
         </div>
-        <!-- Single comment-->
-        <div class="d-flex">
-          <div class="ms-3">
-            <div class="fw-bold">Commenter Name</div>
-            When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
-          </div>
-        </div>
+      </div>
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center">
+        <nav aria-label="Comment list page navigation">
+          <ul class="pagination">
+            <li v-if="currCommPage !== 1" class="page-item">
+              <a style="cursor: pointer" class="page-link" @click="getCommentList(currCommPage - 1)">이전</a>
+            </li>
+            <li v-for="page in numOfCommPage" :key="page" class="page-item" :class="currCommPage === page ? 'active' : ''">
+              <a style="cursor: pointer" class="page-link" @click="getCommentList(page)">{{ page }}</a>
+            </li>
+            <li v-if="currCommPage !== numOfCommPage" class="page-item">
+              <a style="cursor: pointer" class="page-link" @click="getCommentList(currCommPage + 1)">다음</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
@@ -83,13 +80,11 @@ import axios from "axios";
 
 export default {
   setup() {
+    const { axiosGet, axiosDelete, axiosPost } = useAxios()
     const route = useRoute()
     const router = useRouter()
     const postId = route.params.id
     const loading = ref(false)
-    const comment = ref('')
-    const textarea = ref(null)
-    const { axiosGet, axiosDelete, axiosPost } = useAxios()
 
     const postData = ref({
       title: '',
@@ -101,17 +96,12 @@ export default {
       is_like: '',
     })
 
-    onMounted(() => {
-      loading.value = true
-      axiosGet(`/api/v1/boards/1/posts/${postId}`
-      , (res) => {
-        postData.value = res.data
-        loading.value = false
-      }, (err) => {
-        loading.value = false
-        console.error(err)
-      })
-    })
+    // comment variables
+    const textarea = ref(null)
+    const comment = ref('')
+    const commentList = ref(null)
+    const currCommPage = ref(1)
+    const numOfCommPage = ref(1)
 
     const moveToPostListPage = () => {
       router.go(-1)
@@ -160,24 +150,80 @@ export default {
         content: comment.value,
         parent: 0
       }, () => {
-        alert(comment.value)
-        // 댓글 등록 기능 필요
+        router.go()
       }, (err) => {
-        alert(err)
+        console.error(err)
       })
     }
+
+    const getCommentList = async (page = currCommPage.value) => {
+      currCommPage.value = page
+      // axiosGet(`/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`
+      //     , (res) => {
+      //       numOfCommPage.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+      // //       console.log(res.headers)
+      //       if (res.data.length !== 0) {
+      //         commentList.value = res.data
+      //       } else {
+      //         commentList.value = []
+      //       }
+      //     }, (err) => {
+      //       commentList.value = []
+      //       console.error(err)
+      //     })
+      try {
+        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          withCredentials: true,
+        })
+        numOfCommPage.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+        console.log(res)
+        if (res.data.length !== 0) {
+          commentList.value = res.data
+        } else {
+          commentList.value = []
+        }
+      } catch (err) {
+        console.error(err)
+      }
+
+    }
+
+    onMounted(() => {
+      loading.value = true
+
+      // get post data
+      axiosGet(`/api/v1/boards/1/posts/${postId}`
+          , (res) => {
+            postData.value = res.data
+            loading.value = false
+          }, (err) => {
+            loading.value = false
+            console.error(err)
+          })
+
+      // get comments data
+      getCommentList()
+    })
 
     return {
       postId,
       loading,
       postData,
       comment,
+      currCommPage,
+      numOfCommPage,
+      commentList,
       textarea,
       moveToPostListPage,
       deletePost,
       thumbsUp,
       resize,
       addComment,
+      getCommentList,
     }
   }
 }
