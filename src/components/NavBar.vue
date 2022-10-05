@@ -64,7 +64,7 @@ export default {
       , (res) => {
         boardsList.value = res.data
       }, () => {
-        alert('게시판 목록을 불러올 수 없습니다.')
+        alert('백엔드 연결 실패 : 게시판 목록을 불러올 수 없습니다.')
       })
       // axiosGet('/api/v1/token/validate'
       //     , () => {

@@ -18,12 +18,18 @@ const { axiosGet } = useAxios()
 
 const isAdmin = () => (to, from, next) => {
   if (store.state.isLogin) {
-    axiosGet('/api/v1/admin', next(), () => {
+    if (store.state.isAdmin) {
+      axiosGet('/api/v1/admin', next(), () => {
+        alert('관리자만 접속할 수 있습니다.')
+        router.go(-1)
+      })
+    } else {
       alert('관리자만 접속할 수 있습니다.')
-      router.push('/')
-    })
+      router.go(-1)
+    }
   } else {
     alert('로그인이 필요한 서비스입니다.')
+    router.push('/login')
   }
 }
 
@@ -41,6 +47,7 @@ const loginCheck = () => (to, from, next) => {
     return next()
   } else {
     alert('이미 로그인되어 있습니다.')
+    router.go(-1)
   }
 }
 

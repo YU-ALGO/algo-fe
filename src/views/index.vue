@@ -48,21 +48,46 @@
       </div>
     </div>
   </div>
+
+  <br/>
+  <div class="d-flex justify-content-around">
+    <YoutubeVue3 :videoid="video1.video_id" :loop="video1.loop" :autoplay="0" :width="480" :height="320"/>
+    <YoutubeVue3 :videoid="video2.video_id" :loop="video2.loop" :autoplay="0" :width="480" :height="320"/>
+  </div>
+  <br/>
+  <div>
+  </div>
   <Footer/>
 </template>
 
 <script>
 import ImageGlide from '@compo/ImageGlide'
 import Footer from '@compo/Footer'
+import { YoutubeVue3 } from 'youtube-vue3'  // https://github.com/stepanowon/youtube-vue3
 
 export default {
   components: {
     ImageGlide,
     Footer,
+    YoutubeVue3,
   },
 
   setup() {
+    const video1 = {
+      video_id : "Cxzzg7L3Xgc",
+      loop : 1
+    }
+    const video2 = {
+      video_id : "AgiixN6fiZI",
+      loop : 1,
+      autoPlay : 1,
+    }
 
+
+    return {
+      video1,
+      video2,
+    }
   }
 }
 </script>

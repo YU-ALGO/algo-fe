@@ -3,8 +3,8 @@
     <div class="input-form col-md-12 mx-auto">
       <h4 class="mb-3">ALGo 회원가입</h4>
       <form class="validation-form" novalidate>
-        <div class="mb-3">
-          <label for="username">아이디</label>
+        <div class="mb-3 input">
+          <label for="username">이메일 주소</label>
           <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck" required>
           <span v-if="username" :style="[resVal === 1 ? 'color: red' : 'color: green']">{{ message }}</span>
         </div>
