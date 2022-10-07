@@ -1,5 +1,4 @@
 <template>
-  {{ boardId }}
   <div class="container">
     <div class="card mt-4">
       <div class="card-body">
@@ -51,7 +50,6 @@ export default {
   setup() {
     const { axiosPost, axiosGet, axiosPatch } = useAxios()
     const route = useRoute()
-    // const boardId =
     const postId = route.params.id
     const editable = ref(route.query.editable)
     const title = ref('')
@@ -121,7 +119,6 @@ export default {
       onSave,
       moveToPostListPage,
       postId,
-      // boardId,
       editable,
     }
   },

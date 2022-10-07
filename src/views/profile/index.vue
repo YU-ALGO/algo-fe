@@ -1,4 +1,5 @@
 <template>
+  <MessageModal ref="modal"/>
   <div class="container">
     <div class="main-body">
       <div class="row gutters-sm">
@@ -12,7 +13,7 @@
 <!--                  <p class="text-secondary mb-1">직업</p>-->
                   <p class="text-muted font-size-sm">일반회원</p>
 <!--                  <button class="btn btn-primary me-2">팔로우</button>-->
-                  <button class="btn btn-primary">쪽지</button>
+                  <button class="btn btn-primary" @click="message">쪽지</button>
                   <br/>
                   <button class="btn btn-primary mt-2">프로필 사진 변경</button>
                 </div>
@@ -33,7 +34,7 @@
                     {{ username }}
                   </div>
                   <div v-else>
-                    <input type="text" class="form-control" v-model="username">
+                    <input type="text" class="form-control">
                   </div>
                 </div>
               </div>
@@ -48,7 +49,7 @@
                     {{ nickname }}
                   </div>
                   <div v-else>
-                    <input type="text" class="form-control" v-model="nickname">
+                    <input type="text" class="form-control">
                   </div>
                 </div>
               </div>
@@ -109,23 +110,34 @@
 
 <script>
 import store from "@/store/index"
+import MessageModal from '@compo/MessageModal'
 import { ref } from 'vue'
 
 export default {
+  components: {
+    MessageModal,
+  },
   setup() {
     const nickname = ref(store.getters['nickname'])
     const username = ref(store.getters['username'])
     const editProfile = ref(false)  // 프로필 수정 상태인지 확인
 
+    const modal = ref(null) // 쪽지 모달
+
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
+    }
+
+    const message = () => {
+      modal.value.showModal()
     }
 
     return {
       nickname,
       username,
       editProfile,
-      editProfileChange
+      editProfileChange,
+      message,
     }
   }
 }

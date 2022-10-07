@@ -175,7 +175,7 @@ export default {
         const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': '*'
           },
           withCredentials: true,
         })

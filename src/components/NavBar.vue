@@ -87,10 +87,13 @@ export default {
     const isLogin = store.getters['isLogin']
     const isSocialLogin = ref(cookies.get('isLogin'))
 
+    if(isSocialLogin.value) {
+      store.dispatch('socialLogin')
+    }
+
     const logout = async () => {
       await store.dispatch('logout').catch((err) => console.error(err))
     }
-
 
 
     return {

@@ -1,22 +1,33 @@
 <template>
+
   <div class="container">
     <div class="card mt-4 shadow p-3 mb-5 bg-body">
       <div class="card-body">
         <h4 class="card-title mb-4">{{ boardName }}</h4>
-
         <div class="row">
-          <div class="col-12 col-md-2 align-self-lg-end">
-            <select v-model="selected" class="form-select">
-              <option value="1">제목</option>
-              <option value="2">내용</option>
-              <option value="3">작성자</option>
+          <div class="col-2">
+            <select v-model="selectedSort" class="form-select">
+              <option value="createdAt,DESC">작성일</option>
+              <option value="viewCount,DESC">조회수</option>
+              <option value="likeCount,DESC">추천수</option>
             </select>
           </div>
-          <div class="col-12 col-md-8">
-            <input type="text" class="form-control"/>
+          <div class="col">
+            <div class="row justify-content-end">
+              <div class="col-2">
+                <select v-model="selectedSearch" class="form-select">
+                  <option value="TITLE">제목</option>
+                  <option value="AUTHOR">작성자</option>
+                  <option value="TITAUTH">제목 + 작성자</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" v-model="searchText" @keyup.enter="searchPost" />
+              </div>
+              <div class="col-1">
+                <button class="btn btn-primary mx-auto w-100" @click="searchPost">검색</button>
+              </div>
           </div>
-          <div class="col-12 col-md-2 align-self-center">
-            <button class="btn btn-primary mx-auto w-100">검색</button>
           </div>
         </div>
 
@@ -36,7 +47,10 @@
               <tbody v-if="postList">
               <tr v-for="post in postList" :key="post.id">
                 <th style="width: 100px" scope="row">{{ post.id }}</th>
-                <td style="width: 800px"><a :href="`/boards/views/${post.id}`">{{ post.title }}</a></td>
+                <td style="width: 800px">
+                  <a style="color:black; text-decoration:none; font-weight:bold" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
+                  <label v-show="post.comment_count !== 0" style="color:#D31900">[{{post.comment_count}}]</label>
+                </td>
                 <td style="width: 100px">{{ post.author }}</td>
                 <td style="width: 300px">{{ post.created_at }}</td>
                 <td style="width: 100px">{{ post.view_count }}</td>
@@ -73,7 +87,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useAxios from '@/modules/axios'
 import axios from 'axios'
@@ -87,14 +101,19 @@ export default {
   },
   setup() {
     const { axiosGet } = useAxios()
-    const selected = ref('1')
     const route = useRoute()
     const boardId = route.params.id
 
     // Pagination
     const currentPage = ref(1)  // 현재 페이지
     const numberOfPages = ref(1)
-    const postList = ref(null)
+    const postList = ref('')
+
+    // Search
+    const selectedSearch = ref('TITLE')
+    const searchText = ref('')  // 검색
+
+    const selectedSort = ref('createdAt,DESC') // 정렬
 
     const getPostList = async (page = currentPage.value) => {
       currentPage.value = page
@@ -110,11 +129,11 @@ export default {
       //   console.error(err)
       // })
       try {
-        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5`)
+        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-        console.log(res)
         if (res.data.length !== 0) {
           postList.value = res.data
+          // console.log(postList)
         } else {
           postList.value = null
         }
@@ -123,17 +142,28 @@ export default {
       }
     }
 
+    const searchPost = () => {
+      getPostList(1)
+    }
+
     onMounted(() => {
       getPostList()
     })
+
+    watch(selectedSort, () => {
+      getPostList(1)
+    })
     
     return {
-      selected,
+      selectedSearch,
+      selectedSort,
       postList,
       boardId,
       currentPage,
       numberOfPages,
       getPostList,
+      searchPost,
+      searchText,
     }
   }
 }

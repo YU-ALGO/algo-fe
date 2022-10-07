@@ -32,7 +32,7 @@ export default {
       loading.value = true
       axiosGet(`/api/v1/boards/${boardId}`
       , (res) => {
-        boardName.value = res.data
+        boardName.value = res.data.toString()
             loading.value = false
       }, (res) => {
         console.error(res)
