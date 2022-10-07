@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = defineConfig({
   devServer: {
-    allowedHosts: ['downbit.r-e.kr']
+    allowedHosts: ['downbit.r-e.kr', 'web.downbit.r-e.kr']
   },
   transpileDependencies: true,
   lintOnSave: false,

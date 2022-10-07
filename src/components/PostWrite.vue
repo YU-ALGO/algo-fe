@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, watchEffect } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import useAxios from '@/modules/axios'
 import StarterKit from '@tiptap/starter-kit'
@@ -111,7 +111,14 @@ export default {
       if (editable.value) {
         getPostData()
       }
+      watchEffect(() => {
+        console.log(editor.value.getHTML())
+      })
     })
+
+    // watch(content, () => {
+    //   console.log(content.value)
+    // })
 
     return {
       title,

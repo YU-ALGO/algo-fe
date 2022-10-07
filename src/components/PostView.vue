@@ -13,8 +13,8 @@
         <p v-html="postData.content" class=""></p>
 
         <div class="form-inline row mt-2">
-          <div class="text-lg-end mt-2">
-            <button type="button" @click="thumbsUp" class="btn" :class="postData.is_like ? 'btn-warning' : 'btn-outline-warning'">
+          <div class="text-end mt-2">
+            <button type="button" @click="thumbsUp" class="btn me-2" :class="postData.is_like ? 'btn-warning' : 'btn-outline-warning'">
               <svg v-if="!postData.is_like" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up" viewBox="0 0 16 16">
                 <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z"></path>
               </svg>
@@ -23,9 +23,9 @@
               </svg>
             </button>
             <!--            <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button>-->
-            <router-link class="btn btn-primary m-2" :to="{name: 'PostWrite', query : { editable: true }}">수정</router-link>
-            <button class="btn btn-danger" @click="deletePost">삭제</button>
-            <button class="btn btn-primary m-2" @click="moveToPostListPage">목록</button>
+            <router-link class="btn btn-primary me-2" :to="{name: 'PostWrite', query : { editable: true }}">수정</router-link>
+            <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
+            <button class="btn btn-primary" @click="moveToPostListPage">목록</button>
           </div>
         </div>
       </div>
@@ -34,7 +34,8 @@
         <!-- Comment form-->
         <form>
           <textarea
-              class="form-control mb-3" rows="3" v-model="comment"
+              class="form-control mb-3"
+              v-model="comment"
               style="resize:none; overflow: hidden"
               placeholder="댓글을 남겨보세요"
               @keydown="resize"
@@ -43,12 +44,39 @@
           <button class="btn btn-primary float-end" type="button" @click="addComment">등록</button>
         </form>
         <!-- Comment with nested comments-->
-        <div class="mb-4">
-          <div :class="comment.parent === 0 ? 'mt-4 ms-3' : 'mt-2 ms-5'" v-for="comment in commentList" :key="comment.id">
-            <div class="fw-bold">{{ comment.author }}</div>
-            <div v-if="!comment.is_deleted">{{ comment.content }}</div>
-            <div v-else>삭제된 댓글입니다.</div>
-            <div><code>{{ comment.created_at }}</code></div>
+        <div class="row mb-4">
+          <div :class="comment.parent === null ? 'mt-2 ms-3' : 'mt-2 ms-5'" v-for="comment in commentList" :key="comment.id">
+            <div class="row mb-4">
+              <div class="col-11">
+                <div class="fw-bold">{{ comment.author }}</div>
+                <div v-if="!comment.is_deleted">{{ comment.content }}</div>
+                <div v-else>삭제된 댓글입니다.</div>
+                <div><code>{{ comment.created_at }}</code></div>
+              </div>
+              <div class="col-1">
+                <button class="menu-item" data-bs-toggle="dropdown" aria-expanded="false">
+                  <svg><use :xlink:href="`${remixiconUrl}#ri-more-2-fill`"/></svg>
+                </button>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-item" @click="modifyId = comment.id">수정</li>
+                  <li class="dropdown-item" @click="deleteComment(comment.id)">삭제</li>
+                  <li class="dropdown-item" @click="comment.id">답글 달기</li>
+                </ul>
+              </div>
+            </div>
+            <form v-if="comment.id === modifyId">
+              <textarea
+                  class="form-control mb-3"
+                  v-model="comment2"
+                  style="resize:none; overflow: hidden"
+                  @keydown="modifyResize(comment.id)"
+                  @keyup="modifyResize(comment.id)"
+                  ref="modifyTextarea">{{ comment.content }}</textarea>
+              <div class="text-end">
+                <button class="btn btn-primary me-2" type="button" @click="modifyComment(comment.id)">수정</button>
+                <button class="btn btn-secondary" type="button" @click="modifyId = -1">취소</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -76,11 +104,11 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
-import axios from "axios";
+import remixiconUrl from '@/RemixIcon_Fonts_v2.5.0/fonts/remixicon.symbol.svg'
 
 export default {
   setup() {
-    const { axiosGet, axiosDelete, axiosPost } = useAxios()
+    const { axiosGet, axiosPost, axiosDelete, axiosPatch } = useAxios()
     const route = useRoute()
     const router = useRouter()
     const postId = route.params.id
@@ -103,6 +131,11 @@ export default {
     const currCommPage = ref(1)
     const numOfCommPage = ref(1)
 
+    // modify variables
+    const modifyId = ref(-1)
+    const comment2 = ref('')  // modify comment string variable
+    const modifyTextarea = ref(null)
+
     const moveToPostListPage = () => {
       router.go(-1)
     }
@@ -122,15 +155,17 @@ export default {
     const thumbsUp = () => {  // 게시글 추천
       if (postData.value.is_like) {
         if(confirm('추천을 취소하시겠습니까??')) {
-          axiosDelete(`/api/v1/boards/1/posts/${postId}/likes`, () => {
-            location.reload()
-          }, () => {
-            alert('추천취소 실패ㅠ')
-          })
+          axiosDelete(`/api/v1/boards/1/posts/${postId}/likes`
+              , () => {
+                location.reload()
+              }, () => {
+                alert('추천취소 실패ㅠ')
+              })
         }
       } else {
         if(confirm('이 게시글을 추천하시겠습니까?')) {
-          axiosPost(`/api/v1/boards/1/posts/${postId}/likes`, {}
+          axiosPost(`/api/v1/boards/1/posts/${postId}/likes`
+              , {}
               , () => {
                 location.reload()
               }, () => {
@@ -145,10 +180,32 @@ export default {
       textarea.value.style.height = (12 + textarea.value.scrollHeight) + 'px'
     }
 
-    const addComment = () => {
+    const modifyResize = (commentId) => {
+      if (modifyId.value === commentId) {
+        modifyTextarea.value.style.height = '1px'
+        modifyTextarea.value.style.height = (12 + modifyTextarea.value.scrollHeight) + 'px'
+      }
+    }
+    const getCommentList = (page = currCommPage.value) => {
+      currCommPage.value = page
+      axiosGet(`/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`
+          , (res) => {
+            numOfCommPage.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+            if (res.data.length !== 0) {
+              commentList.value = res.data
+            } else {
+              commentList.value = []
+            }
+          }, (err) => {
+            commentList.value = []
+            console.error(err)
+          })
+    }
+
+    const addComment = () => {  // 댓글 답글 구분 기능 필요
       axiosPost(`/api/v1/boards/1/posts/${postId}/comments`, {
         content: comment.value,
-        parent: 0
+        parent: null
       }, () => {
         router.go()
       }, (err) => {
@@ -156,40 +213,26 @@ export default {
       })
     }
 
-    const getCommentList = async (page = currCommPage.value) => {
-      currCommPage.value = page
-      // axiosGet(`/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`
-      //     , (res) => {
-      //       numOfCommPage.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-      // //       console.log(res.headers)
-      //       if (res.data.length !== 0) {
-      //         commentList.value = res.data
-      //       } else {
-      //         commentList.value = []
-      //       }
-      //     }, (err) => {
-      //       commentList.value = []
-      //       console.error(err)
-      //     })
-      try {
-        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          },
-          withCredentials: true,
-        })
-        numOfCommPage.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-        console.log(res)
-        if (res.data.length !== 0) {
-          commentList.value = res.data
-        } else {
-          commentList.value = []
-        }
-      } catch (err) {
+    const modifyComment = (commentId) => {
+      axiosPatch(`/api/v1/boards/1/posts/${postId}/comments/${commentId}`, {
+        content: comment2.value
+      }, () => {
+        router.go()
+      }, (err) => {
         console.error(err)
-      }
+      })
+    }
 
+    const deleteComment = (commentId) => {
+      if (confirm('댓글을 삭제하시겠습니까?')) {
+        axiosDelete(`/api/v1/boards/1/posts/${postId}/comments/${commentId}`
+            , () => {
+              router.go()
+            }, (err) => {
+              alert('삭제할 수 없습니다.')
+              console.error(err)
+            })
+      }
     }
 
     onMounted(() => {
@@ -214,16 +257,23 @@ export default {
       loading,
       postData,
       comment,
+      comment2,
       currCommPage,
       numOfCommPage,
       commentList,
       textarea,
+      modifyTextarea,
       moveToPostListPage,
       deletePost,
       thumbsUp,
       resize,
-      addComment,
+      modifyResize,
       getCommentList,
+      addComment,
+      modifyComment,
+      deleteComment,
+      remixiconUrl,
+      modifyId,
     }
   }
 }

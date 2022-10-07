@@ -44,7 +44,7 @@ export default createStore({
     actions: {
         async login({ commit }, memberInfo) {
             await axiosPost('/api/v1/login', memberInfo, (res) => {
-                alert(res.data.nickname + "님 환영합니다!")
+                // alert(res.data.nickname + "님 환영합니다!")
                 commit('isLogin', true)
                 if (res.data.isAdmin) {
                     commit('isAdmin', true)
@@ -58,7 +58,7 @@ export default createStore({
         },
         async logout( {commit} ) {
             await axiosPost('/logout',{}, ()=> {
-                alert('사이트에서 로그아웃 되었습니다!')
+                // alert('사이트에서 로그아웃 되었습니다!')
                 commit('isLogin', false)
                 commit('isAdmin', false)
                 commit('nickname', null)
