@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export default () => {
-  const BASE_URL = 'http://be2.downbit.r-e.kr:8088'
+  const BASE_URL = 'http://be2.algo.r-e.kr:8088'
   const CONFIG = {
     headers: {
       'Content-Type': 'application/json',

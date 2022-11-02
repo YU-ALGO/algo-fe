@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, watchEffect } from 'vue'
+import { ref, onMounted, watchEffect } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import useAxios from '@/modules/axios'
 import StarterKit from '@tiptap/starter-kit'

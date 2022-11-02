@@ -1,13 +1,14 @@
 <template>
-  <Profile />
+  <h1>으아아아아아앙</h1>
+  <MessageModal />
 </template>
 
 <script>
-import Profile from '@compo/Profile.vue'
+import MessageModal from '@compo/MessageModal'
 
 export default {
   components: {
-    Profile,
+    MessageModal,
   },
   setup() {
 

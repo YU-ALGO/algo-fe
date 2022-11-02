@@ -12,22 +12,20 @@
               <option value="likeCount,DESC">추천수</option>
             </select>
           </div>
-          <div class="col">
-            <div class="row justify-content-end">
-              <div class="col-2">
-                <select v-model="selectedSearch" class="form-select">
-                  <option value="TITLE">제목</option>
-                  <option value="AUTHOR">작성자</option>
-                  <option value="TITAUTH">제목 + 작성자</option>
-                </select>
-              </div>
-              <div class="col-3">
-                <input type="text" class="form-control" v-model="searchText" @keyup.enter="searchPost" />
-              </div>
-              <div class="col-1">
-                <button class="btn btn-primary mx-auto w-100" @click="searchPost">검색</button>
-              </div>
+          <div class="col-2 ms-auto">
+            <select v-model="selectedSearch" class="form-select">
+              <option value="TITLE">제목</option>
+              <option value="AUTHOR">작성자</option>
+              <option value="TITAUTH">제목 + 작성자</option>
+            </select>
           </div>
+          <div class="col-4">
+            <div class="input-group">
+              <input type="search" class="form-control" v-model="searchText" @keyup.enter="searchPost" placeholder="Search"/>
+              <button class="btn btn-primary" @click="searchPost">
+                <i class="ri-search-line"></i>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -67,7 +65,7 @@
         </div>
         <div class="d-flex justify-content-center">
           <!-- Pagination -->
-          <nav aria-label="Page navigation example">
+          <nav aria-label="Page navigation">
             <ul class="pagination">
               <li v-if="currentPage !== 1" class="page-item">
                 <a style="cursor: pointer" class="page-link" @click="getPostList(currentPage - 1)">이전</a>
@@ -89,7 +87,7 @@
 <script>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import useAxios from '@/modules/axios'
+// import useAxios from '@/modules/axios'
 import axios from 'axios'
 
 export default {
@@ -100,7 +98,7 @@ export default {
     }
   },
   setup() {
-    const { axiosGet } = useAxios()
+    // const { axiosGet } = useAxios()
     const route = useRoute()
     const boardId = route.params.id
 
@@ -112,7 +110,6 @@ export default {
     // Search
     const selectedSearch = ref('TITLE')
     const searchText = ref('')  // 검색
-
     const selectedSort = ref('createdAt,DESC') // 정렬
 
     const getPostList = async (page = currentPage.value) => {
@@ -129,7 +126,8 @@ export default {
       //   console.error(err)
       // })
       try {
-        const res = await axios.get(`http://be2.downbit.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
+        // const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts?page=1&size=5`)
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           postList.value = res.data

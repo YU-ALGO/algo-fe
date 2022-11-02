@@ -74,11 +74,11 @@ export default {
 
   setup() {
     const video1 = {
-      video_id : "Cxzzg7L3Xgc",
+      video_id : "fo2vhh8cbfI",
       loop : 1
     }
     const video2 = {
-      video_id : "AgiixN6fiZI",
+      video_id : "XFO5w3lDbBA",
       loop : 1,
       autoPlay : 1,
     }

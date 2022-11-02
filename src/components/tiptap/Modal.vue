@@ -13,7 +13,7 @@
           <button @click="closeModal" class="btn btn-outline-secondary">
             닫기
           </button>
-          <button class="btn btn-success" @click="insertImage" :disabled="!validImage">
+          <button class="btn btn-success" @click="uploadImage" :disabled="!validImage">
             추가
           </button>
         </div>
@@ -25,6 +25,7 @@
 <script>
 import { ref, computed } from 'vue'
 import useAxios from '@/modules/axios'
+import axios from 'axios' // 임시로 사용
 
 export default {
   setup(props, context) {
@@ -51,20 +52,40 @@ export default {
 
     const fileChange = () => {
       formData.append('image', file.value.files[0])
-      console.log(file.value.files)
+      // console.log(file.value.files)
       fileName.value = file.value.files[0].name
     }
 
-    const insertImage = () => {
-      axiosPost('https://httpbin.org/post', formData
-      , () => {
-        imageSrc.value = 'https://source.unsplash.com/random/500x300'
-        context.emit('onConfirm', {
-          src: imageSrc.value,
-          // alt: 'YOU CAN ADD ALT',
-          // title: 'YOU CAN ADD TITLE'
-        })
-        closeModal()
+    const uploadImage = () => { // 서버에 이미지 업로드
+      axios.post('http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts/images', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: true,
+      }).then((res) => {
+        insertImage(res.data)
+      }).catch((error) => {
+        console.error(error)
+      })
+    }
+
+    const insertImage = (imageUrl) => { // 이미지 글쓰기 본문에 삽입
+      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts/images/${imageUrl}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: true,
+      }).then((response) => {
+            console.log(response)
+            imageSrc.value = response.data
+            context.emit('onConfirm', {
+              src: imageSrc.value
+            })
+            closeModal()
+          }).catch((err) => {
+        console.error(err)
       })
     }
 
@@ -76,7 +97,7 @@ export default {
       showModal,
       fileChange,
       closeModal,
-      insertImage,
+      uploadImage,
     }
   },
 }

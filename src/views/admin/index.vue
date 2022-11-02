@@ -1,54 +1,192 @@
 <template>
-  <div>
-    <h2 class="mt-2">Admin Page</h2>
-    <hr/>
-    <div>
-      <h2>게시판 생성</h2>
-      <div class="row g-3 align-items-center">
-        <div class="col-auto">
-          <label class="col-form-label">게시판 이름</label>
-        </div>
-        <div class="col-auto">
-          <input v-model="createBoardName" class="form-control" @keyup.enter="createBoards">
-        </div>
-        <div class="col-auto">
-          <button class="btn btn-primary" @click="createBoards">만들기</button><br/>
-        </div>
+  <div class="row">
+    <div class="col-2 mt-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end sticky-top">
+          <nav class="nav nav-pills flex-column">
+            <a class="nav-link" href="#Board_Manage">게시판 관리</a>
+            <a class="nav-link" href="#User_Manage">전체 회원 관리</a>
+            <a class="nav-link" href="#Youtube_URL">Youtube URL 관리</a>
+          </nav>
+        </nav>
       </div>
     </div>
-    <br/>
-    <div>
-      <h2>게시판 이름 변경</h2>
-      <div class="row g-3 align-items-center">
-        <div class="col-auto">
-          <label class="col-form-label">변경할 게시판</label>
+    <!-- 게시판 관리 -->
+    <div class="col-8" >
+      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Board_Manage">
+        <h2 class="mt-2">Admin Page(게시판 관리)</h2>
+        <hr/>
+        <div>
+          <h2>게시판 생성</h2>
+          <div class="row g-3 align-items-center">
+            <div class="col-auto">
+              <label class="col-form-label">게시판 이름</label>
+            </div>
+            <div class="col-auto">
+              <input v-model="createBoardName" class="form-control" @keyup.enter="createBoards">
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-primary" @click="createBoards">만들기</button>
+              <br/>
+            </div>
+          </div>
         </div>
-        <div class="col-auto">
-          <select v-model="selectedModify" class="form-select">
-            <option value="0">게시판목록</option>
-            <option v-for="board2 in boardModifyNameList" :key="board2.id" :value="board2.id">{{ board2.name }}</option>
-          </select>
+        <br/>
+        <div>
+          <h2>게시판 이름 변경</h2>
+          <div class="row g-3 align-items-center">
+            <div class="col-auto">
+              <label class="col-form-label">변경할 게시판</label>
+            </div>
+            <div class="col-auto">
+              <select v-model="selectedModify" class="form-select">
+                <option value="0">게시판목록</option>
+                <option v-for="board2 in boardModifyNameList" :key="board2.id" :value="board2.id">{{
+                    board2.name
+                  }}
+                </option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <input class="form-control" v-model="modifyBoardName" @keyup.enter="modifyBoards">
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-primary" @click="modifyBoards">변경하기</button>
+              <br/>
+            </div>
+          </div>
         </div>
-        <div class="col-auto">
-          <input class="form-control" v-model="modifyBoardName" @keyup.enter="modifyBoards">
-        </div>
-        <div class="col-auto">
-          <button class="btn btn-primary" @click="modifyBoards">변경하기</button><br/>
+        <br/>
+        <div>
+          <h2>게시판 삭제</h2>
+          <div class="row g-3 align-items-center">
+            <div class="col-auto">
+              <select v-model="selected" class="form-select">
+                <option value="0">게시판목록</option>
+                <option v-for="board in boardDeleteNameList" :key="board.id" :value="board.id">{{ board.name }}</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-danger" @click="deleteBoards">삭제하기</button>
+              <br/>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <br/>
-    <div>
-      <h2>게시판 삭제</h2>
-      <div class="row g-3 align-items-center">
-        <div class="col-auto">
-          <select v-model="selected" class="form-select">
-            <option value="0">게시판목록</option>
-            <option v-for="board in boardDeleteNameList" :key="board.id" :value="board.id">{{ board.name }}</option>
-          </select>
+
+
+      <!-- 전체 회원 관리 -->
+      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="User_Manage">
+        <h2 class="mt-2">Admin Page(전체 회원 관리)</h2>
+        <hr/>
+        <div>
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">닉네임</th>
+              <th scope="col">이메일</th>
+              <th scope="col">회원등급</th>
+              <th scope="col">가입일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+            </tr>
+            </tbody>
+          </table>
+          <hr/>
+          <div class="row">
+            <div class="col-4 ms-auto">
+              <nav aria-label="...">
+                <ul class="pagination">
+                  <li class="page-item disabled">
+                    <a class="page-link">Previous</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">2</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div class="col-4">
+              <button type="button" class="btn btn-danger" style="float:right">삭제</button>
+            </div>
+          </div>
         </div>
-        <div class="col-auto">
-          <button class="btn btn-danger" @click="deleteBoards">삭제하기</button><br/>
+      </div>
+
+      <!-- Youtube URL 관리 -->
+      <div class="row card mt-4 shadow p-3 mb-5 bg-body">
+        <h2 class="mt-2">Admin Page(Youtube URL 관리)</h2>
+        <hr/>
+        <div>
+          <div class="row g-3 align-items-center">
+            <div class="col-10">
+              <input class="form-control" id="message_title" name="message_title" type="text" maxlength="100" required>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-primary">추가</button>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+            </tr>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-danger" style="float:right">삭제</button>
         </div>
       </div>
     </div>
@@ -56,8 +194,8 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import {ref, onMounted} from 'vue'
+import {useRouter} from 'vue-router'
 import useAxios from '@/modules/axios'
 
 export default {
@@ -69,16 +207,16 @@ export default {
     const boardDeleteNameList = ref('')
     const boardModifyNameList = ref('')
     const router = useRouter()
-    const { axiosGet, axiosPost, axiosPatch, axiosDelete } = useAxios()
+    const {axiosGet, axiosPost, axiosPatch, axiosDelete} = useAxios()
 
     onMounted(() => {  // get board name
       axiosGet('/api/v1/boards'
-      , (res) => {
-        boardDeleteNameList.value = { ...res.data }  // 객체이므로 reactive 권장
-        boardModifyNameList.value = { ...res.data }
-      }, (res) => {
-        console.error(res)
-      })
+          , (res) => {
+            boardDeleteNameList.value = {...res.data}  // 객체이므로 reactive 권장
+            boardModifyNameList.value = {...res.data}
+          }, (res) => {
+            console.error(res)
+          })
     })
 
     const createBoards = () => {
@@ -96,14 +234,14 @@ export default {
       if (selectedModify.value !== 0) {
         if (confirm("정말 게시판 이름을 변경하시겠습니까?")) {
           axiosPatch(`/api/v1/boards/${selectedModify.value}`
-          , {
-            name: modifyBoardName.value
-          }, () => {
-            alert("게시판 이름이 수정되었습니다.")
-            router.go(0)
-          }, (res) => {
-            console.error(res)
-          })
+              , {
+                name: modifyBoardName.value
+              }, () => {
+                alert("게시판 이름이 수정되었습니다.")
+                router.go(0)
+              }, (res) => {
+                console.error(res)
+              })
         }
       }
     }
@@ -112,13 +250,13 @@ export default {
       if (selected.value !== 0) {
         if (confirm("정말 게시판을 삭제하시겠습니까?")) {
           axiosDelete(`/api/v1/boards/${selected.value}`
-          , (res) => {
-            alert('게시판이 삭제되었습니다.')
-            router.go(0)
-            console.log(res.data)
-          }, (res) => {
-            console.error(res)
-          })
+              , (res) => {
+                alert('게시판이 삭제되었습니다.')
+                router.go(0)
+                console.log(res.data)
+              }, (res) => {
+                console.error(res)
+              })
         }
       }
     }
