@@ -126,7 +126,7 @@ export default {
       //   console.error(err)
       // })
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
         // const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts?page=1&size=5`)
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
