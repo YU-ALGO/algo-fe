@@ -25,7 +25,7 @@
       <div class="card-body">
         <h4 class="card-title mb-4">식품 정보</h4>
         <div class="input-group mb-3">
-          <input type="search" class="form-control" placeholder="식품명을 검색하세요.">
+          <input type="search" class="form-control" placeholder="식품명을 입력하세요.">
           <button type="button" class="btn btn-primary">
             <i class="ri-search-line"></i>
           </button>
@@ -276,7 +276,7 @@
           <div class="accordion-item">
             <div class="accordion-header">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#rightMenu">
-                최근 본 식품
+                추천 식품
               </button>
             </div>
             <div id="rightMenu" class="accordion-collapse collapse show">

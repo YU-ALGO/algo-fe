@@ -23,7 +23,7 @@
               <i v-else class="ri-thumb-up-fill"></i>
             </button>
             <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
-            <router-link class="btn btn-primary me-2" :to="{ name: 'PostWrite', query : { editable: true } }">수정</router-link>
+            <router-link class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { editable: true } }">수정</router-link>
             <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
             <button class="btn btn-primary" @click="moveToPostListPage">목록</button>
           </div>
@@ -41,37 +41,43 @@
               @keydown="resize"
               @keyup="resize"
               ref="textarea"></textarea>
-          <button class="btn btn-primary float-end" type="button" @click="addComment(null)">등록</button>
+          <button class="btn btn-primary float-end" type="button" @click="addComment">등록</button>
         </form>
         <!-- Comment with nested comments-->
         <div class="mb-4">
           <div :class="comment.parent === null ? 'mt-2 ms-3' : 'mt-2 ms-5'" v-for="comment in commentList" :key="comment.id">
-            <div class="row mb-4">
-              <div class="col-11" @mouseover="onMouseover" @mouseout="onMouseout">
-                <div class="fw-bold">{{ comment.author }}</div>
-                <div v-if="!comment.is_deleted">{{ comment.content }}</div>
-                <div v-else>삭제된 댓글입니다.</div>
-                <div><code>{{ comment.created_at }}</code></div>
+            <div class="row justify-content-end mb-4">
+              <div class="col">
+                <div v-if="!comment.is_deleted">
+                  <span class="fw-bold me-3">{{ comment.author }}</span>
+                  <code>{{ comment.created_at === comment.modified_at ? comment.created_at : comment.modified_at + ' (수정됨)' }}</code>
+                  <div>{{ comment.content }}</div>
+                </div>
+                <div v-else>
+                  <span class="invisible fw-bold me-3">deleted</span>
+                  <code class="invisible">deleted</code>
+                  <div>[삭제된 댓글입니다.]</div>
+                </div>
               </div>
-              <div class="col-1">
-                <button :class="commMenuBtn" data-bs-toggle="dropdown">
+              <div v-if="!comment.is_deleted" class="col-1">
+                <button class="menu-item" data-bs-toggle="dropdown">
                   <i class="ri-more-2-fill"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end">
+                <ul class="dropdown-menu dropdown-menu-end text-center" style="min-width: 1px">
                   <li class="dropdown-item" @click="modifyId = comment.id; newComment = comment.content">수정</li>
                   <li class="dropdown-item" @click="deleteComment(comment.id)">삭제</li>
-                  <li class="dropdown-item" @click="subCommId = comment.id">답글 달기</li>
+                  <li v-if="comment.parent === null" class="dropdown-item" @click="subCommId = comment.id; subComment = ''">답글</li>
                 </ul>
               </div>
             </div>
             <!-- modify comment form -->
-            <form v-if="comment.id === modifyId">
+            <form v-show="comment.id === modifyId">
               <textarea
                   class="form-control mb-3"
                   v-model="newComment"
                   style="resize:none; overflow: hidden"
-                  @keydown="modifyResize(comment.id)"
-                  @keyup="modifyResize(comment.id)"
+                  @keydown="modifyResize"
+                  @keyup="modifyResize"
                   ref="modifyTextarea"></textarea>
               <div class="text-end">
                 <button class="btn btn-primary me-2" type="button" @click="modifyComment(comment.id)">수정</button>
@@ -79,16 +85,16 @@
               </div>
             </form>
             <!-- add sub-comment form -->
-            <form v-if="comment.id === subCommId">
+            <form v-show="comment.id === subCommId">
               <textarea
                   class="form-control mb-3"
                   v-model="subComment"
                   style="resize:none; overflow: hidden"
-                  @keydown="modifyResize(comment.id)"
-                  @keyup="modifyResize(comment.id)"
-                  ref="modifyTextarea"></textarea>
+                  @keydown="subResize"
+                  @keyup="subResize"
+                  ref="subTextarea"></textarea>
               <div class="text-end">
-                <button class="btn btn-primary me-2" type="button" @click="addComment(comment.id)">등록</button>
+                <button class="btn btn-primary me-2" type="button" @click="addSubComment(comment.id)">등록</button>
                 <button class="btn btn-secondary" type="button" @click="subCommId = -1; subComment = ''">취소</button>
               </div>
             </form>
@@ -132,16 +138,15 @@ export default {
       title: '',
       content: '',
       author: '',
-      created_at: '',
-      view_count: '',
       like_count: '',
       is_like: '',
+      view_count: '',
+      created_at: '',
     })
 
     // comment variables
     const textarea = ref(null)
     const comment = ref('')
-    const commMenuBtn = ref('btn-outline-light')
     const commentList = ref(null)
     const currCommPage = ref(1)
     const numOfCommPage = ref(1)
@@ -154,6 +159,7 @@ export default {
     // sub-comment variables
     const subCommId = ref(-1)
     const subComment = ref('')
+    const subTextarea = ref(null)
 
     const moveToPostListPage = () => {
       router.go(-1)
@@ -199,11 +205,18 @@ export default {
       textarea.value.style.height = (12 + textarea.value.scrollHeight) + 'px'
     }
 
-    const modifyResize = (commentId) => {
-      if (modifyId.value === commentId) {
-        modifyTextarea.value.style.height = '1px'
-        modifyTextarea.value.style.height = (12 + modifyTextarea.value.scrollHeight) + 'px'
-      }
+    const modifyResize = () => {
+      modifyTextarea.value.map((textarea) => {
+        textarea.style.height = '1px'
+        textarea.style.height = (12 + textarea.scrollHeight) + 'px'
+      })
+    }
+
+    const subResize = () => {
+      subTextarea.value.map((textarea) => {
+        textarea.style.height = '1px'
+        textarea.style.height = (12 + textarea.scrollHeight) + 'px'
+      })
     }
 
     const getCommentList = (page = currCommPage.value) => {
@@ -222,18 +235,20 @@ export default {
           })
     }
 
-    const onMouseover = () => {
-      commMenuBtn.value = 'btn-outline-dark'
-    }
-
-    const onMouseout = () => {
-      commMenuBtn.value = 'btn btn-outline-light'
-    }
-
-    const addComment = (parentCommId) => {  // 댓글 답글 구분 기능 필요
-      console.log('parentID: ' + parentCommId)
+    const addComment = () => {
       axiosPost(`/api/v1/boards/1/posts/${postId}/comments`, {
         content: comment.value,
+        parent: null
+      }, () => {
+        router.go()
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const addSubComment = (parentCommId) => {
+      axiosPost(`/api/v1/boards/1/posts/${postId}/comments`, {
+        content: subComment.value,
         parent: parentCommId
       }, () => {
         router.go()
@@ -284,9 +299,6 @@ export default {
       loading,
       postData,
       comment,
-      commMenuBtn,
-      onMouseover,
-      onMouseout,
       subComment,
       newComment,
       currCommPage,
@@ -294,6 +306,7 @@ export default {
       commentList,
       textarea,
       modifyTextarea,
+      subTextarea,
       modifyId,
       subCommId,
       moveToPostListPage,
@@ -301,8 +314,10 @@ export default {
       thumbsUp,
       resize,
       modifyResize,
+      subResize,
       getCommentList,
       addComment,
+      addSubComment,
       modifyComment,
       deleteComment,
     }

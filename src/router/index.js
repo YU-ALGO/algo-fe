@@ -3,7 +3,6 @@ import Login from '@compo/Login.vue'
 import PostWrite from '@compo/PostWrite.vue'
 import NotFound from '@compo/NotFound.vue'
 import TermOfService from '@compo/TermOfService.vue'
-import MessageModal from '@compo/MessageModal.vue'
 
 import MainView from '@views/index.vue'
 import Profile from '@views/profile/index.vue'
@@ -53,11 +52,6 @@ const loginCheck = () => (to, from, next) => {
 }
 
 const routes = [
-  {
-    path: '/msg',
-    name: 'Message',
-    component: MessageModal,
-  },
   {
     path: '/term',
     name: 'Term',
