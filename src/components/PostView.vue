@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="loading">
     <div class="d-flex m-5 p-5 justify-content-center">
       <div class="spinner-border m-5 text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -47,14 +47,14 @@
         <div class="mb-4">
           <div :class="comment.parent === null ? 'mt-2 ms-3' : 'mt-2 ms-5'" v-for="comment in commentList" :key="comment.id">
             <div class="row mb-4">
-              <div class="col-11">
+              <div class="col-11" @mouseover="onMouseover" @mouseout="onMouseout">
                 <div class="fw-bold">{{ comment.author }}</div>
                 <div v-if="!comment.is_deleted">{{ comment.content }}</div>
                 <div v-else>삭제된 댓글입니다.</div>
                 <div><code>{{ comment.created_at }}</code></div>
               </div>
               <div class="col-1">
-                <button class="menu-item" data-bs-toggle="dropdown">
+                <button :class="commMenuBtn" data-bs-toggle="dropdown">
                   <i class="ri-more-2-fill"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -126,7 +126,7 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const postId = route.params.id
-    const loading = ref(false)
+    const loading = ref(true)
 
     const postData = ref({
       title: '',
@@ -141,6 +141,7 @@ export default {
     // comment variables
     const textarea = ref(null)
     const comment = ref('')
+    const commMenuBtn = ref('btn-outline-light')
     const commentList = ref(null)
     const currCommPage = ref(1)
     const numOfCommPage = ref(1)
@@ -204,6 +205,7 @@ export default {
         modifyTextarea.value.style.height = (12 + modifyTextarea.value.scrollHeight) + 'px'
       }
     }
+
     const getCommentList = (page = currCommPage.value) => {
       currCommPage.value = page
       axiosGet(`/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`
@@ -218,6 +220,14 @@ export default {
             commentList.value = []
             console.error(err)
           })
+    }
+
+    const onMouseover = () => {
+      commMenuBtn.value = 'btn-outline-dark'
+    }
+
+    const onMouseout = () => {
+      commMenuBtn.value = 'btn btn-outline-light'
     }
 
     const addComment = (parentCommId) => {  // 댓글 답글 구분 기능 필요
@@ -259,9 +269,9 @@ export default {
       axiosGet(`/api/v1/boards/1/posts/${postId}`
           , (res) => {
             postData.value = res.data
-            loading.value = true
-          }, (err) => {
             loading.value = false
+          }, (err) => {
+            loading.value = true
             console.error(err)
           })
 
@@ -274,6 +284,9 @@ export default {
       loading,
       postData,
       comment,
+      commMenuBtn,
+      onMouseover,
+      onMouseout,
       subComment,
       newComment,
       currCommPage,
