@@ -51,7 +51,7 @@
 import {ref, onMounted } from 'vue'
 import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
-import { useCookies } from "vue3-cookies";
+import { useCookies } from 'vue3-cookies'
 
 export default {
   setup() {

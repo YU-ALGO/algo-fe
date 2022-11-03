@@ -54,8 +54,6 @@ import router from '@/router'
 import { useStore } from 'vuex' // vuex 스토어 사용
 import useAxios from '@/modules/axios.js'
 
-import axios from "axios";
-
 export default {
   setup() {
     const username = ref(null)

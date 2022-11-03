@@ -1,6 +1,6 @@
 <template>
   <h1>으아아아아아앙</h1>
-  <MessageModal />
+  <MessageModal/>
 </template>
 
 <script>

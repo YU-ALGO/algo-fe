@@ -23,7 +23,7 @@
               <i v-else class="ri-thumb-up-fill"></i>
             </button>
             <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
-            <router-link class="btn btn-primary me-2" :to="{name: 'PostWrite', query : { editable: true }}">수정</router-link>
+            <router-link class="btn btn-primary me-2" :to="{ name: 'PostWrite', query : { editable: true } }">수정</router-link>
             <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
             <button class="btn btn-primary" @click="moveToPostListPage">목록</button>
           </div>
@@ -221,7 +221,7 @@ export default {
     }
 
     const addComment = (parentCommId) => {  // 댓글 답글 구분 기능 필요
-      console.log(parentCommId)
+      console.log('parentID: ' + parentCommId)
       axiosPost(`/api/v1/boards/1/posts/${postId}/comments`, {
         content: comment.value,
         parent: parentCommId

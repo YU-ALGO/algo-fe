@@ -4,7 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import { useCookies } from 'vue3-cookies'
 
 const { axiosPost } = useAxios()
-const { cookies } = useCookies();
+const { cookies } = useCookies()
 
 export default createStore({
     namespaced: true,
