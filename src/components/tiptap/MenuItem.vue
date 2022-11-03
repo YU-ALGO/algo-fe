@@ -5,15 +5,11 @@
       @click="action"
       :title="title"
   >
-    <svg class="remix">
-      <use :xlink:href="`${remixiconUrl}#ri-${icon}`"/>
-    </svg>
+    <i :class="`ri-${icon}`"></i>
   </button>
 </template>
 
 <script>
-import remixiconUrl from '@/RemixIcon_Fonts_v2.5.0/fonts/remixicon.symbol.svg'
-
 export default {
   props: {
     icon: {
@@ -32,12 +28,6 @@ export default {
       type: Function,
       default: null,
     },
-  },
-
-  setup() {
-    return {
-      remixiconUrl,
-    }
   },
 }
 </script>
