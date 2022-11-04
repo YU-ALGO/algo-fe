@@ -12,8 +12,8 @@
             <div id="leftMenu" class="accordion-collapse collapse show">
               <div class="accordion-body">
                 <ul class="list-group list-group-flush text-center">
-                  <li class="list-group-item">ㅎㅇ</li>
-                  <li class="list-group-item">ㄹㅇㅋㅋ</li>
+                  <li class="list-group-item">민트 초코</li>
+                  <li class="list-group-item">하와이안 피자</li>
                 </ul>
               </div>
             </div>
@@ -282,10 +282,11 @@
             <div id="rightMenu" class="accordion-collapse collapse show">
               <div class="accordion-body">
                 <ul class="list-group list-group-flush text-center">
-                  <li class="list-group-item">딸기 당근</li>
+                  <li class="list-group-item">딸기</li>
+                  <li class="list-group-item">당근</li>
                   <li class="list-group-item">수박</li>
                   <li class="list-group-item">참외</li>
-                  <li class="list-group-item">메론 게임</li>
+                  <li class="list-group-item">메론</li>
                 </ul>
               </div>
             </div>

@@ -45,8 +45,8 @@
               <tr v-for="post in postList" :key="post.id">
                 <th style="width: 100px" scope="row">{{ post.id }}</th>
                 <td style="width: 800px">
-                  <a style="color:black; text-decoration:none; font-weight:bold" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
-                  <label v-show="post.comment_count !== 0" style="color:#D31900">[{{post.comment_count}}]</label>
+                  <a class="text-body text-decoration-none fw-bold" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
+                  <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{post.comment_count}}]</label>
                 </td>
                 <td style="width: 100px">{{ post.author }}</td>
                 <td style="width: 300px">{{ post.created_at }}</td>

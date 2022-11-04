@@ -38,7 +38,7 @@
           <router-link :to="{ name: 'Join' }" class="btn btn-primary me-2">회원가입</router-link>
         </div>
         <div class="d-flex" v-else>
-          <router-link :to="{ name: 'Profile' }" class="btn btn-primary me-2">프로필</router-link>
+          <router-link :to="`/profile/${nickname}`" class="btn btn-primary me-2">프로필</router-link>
           <button @click="logout" class="btn btn-primary me-2">로그아웃</button>
           <router-link v-if="isAdmin" :to="{ name: 'Admin' }" class="btn btn-primary me-2">Admin</router-link>
         </div>
@@ -48,18 +48,19 @@
 </template>
 
 <script>
-import {ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
 import { useCookies } from 'vue3-cookies'
 
 export default {
   setup() {
-    const store = useStore(); //vuex 스토어 사용
     const { axiosGet } = useAxios()
-    const isAdmin = store.getters['isAdmin']
+    const store = useStore() //vuex 스토어 사용
+    const isAdmin = ref(store.getters['isAdmin'])
+    const nickname = ref(store.getters['nickname'])
     const boardsList = ref(null)
-    const { cookies } = useCookies();
+    const { cookies } = useCookies()
 
     onMounted(() => {  // get boards list
       axiosGet('/api/v1/boards'
@@ -99,6 +100,7 @@ export default {
     return {
       isLogin,
       isAdmin,
+      nickname,
       boardsList,
       logout,
       isSocialLogin,

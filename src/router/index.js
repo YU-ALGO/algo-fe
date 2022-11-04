@@ -5,10 +5,10 @@ import NotFound from '@compo/NotFound.vue'
 import TermOfService from '@compo/TermOfService.vue'
 
 import MainView from '@views/index.vue'
-import Profile from '@views/profile/index.vue'
-import FoodView from '@views/food/index.vue'
 import Board from '@views/boards/_id.vue'
 import PostView from '@/views/boards/views/_id.vue'
+import FoodView from '@views/food/index.vue'
+import Profile from '@views/profile/_nickname.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import useAxios from '@/modules/axios'
@@ -87,7 +87,7 @@ const routes = [
     beforeEnter: loginCheck()
   },
   {
-    path: '/profile',
+    path: '/profile/:nickname',
     name: 'Profile',
     component: Profile,
     beforeEnter: isLogin()

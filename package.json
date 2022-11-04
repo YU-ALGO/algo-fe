@@ -26,6 +26,7 @@
     "vue-router": "^4.0.3",
     "vue3-cookies": "^1.0.6",
     "vue3-dropzone": "^2.0.1",
+    "vue3-form-validation": "^5.1.0",
     "vue3-youtube": "^0.1.9",
     "vuex": "^4.0.0",
     "vuex-persistedstate": "^4.1.0",

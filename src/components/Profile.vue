@@ -8,7 +8,7 @@
               <div class="d-flex flex-column align-items-center text-center">
                 <img src="https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2" alt="Admin" class="rounded-circle" width="150">
                 <div class="mt-3">
-                  <h4>{{ nickname }}</h4>
+                  <h4>{{ oldNickname }}</h4>
                   <!--                  <p class="text-secondary mb-1">직업</p>-->
                   <p class="text-muted font-size-sm">일반회원</p>
                   <!--                  <button class="btn btn-primary me-2">팔로우</button>-->
@@ -48,15 +48,15 @@
                 </div>
                 <div class="col-sm-9 text-secondary">
                   <div v-if="!editProfile">
-                    {{ nickname }}
+                    {{ oldNickname }}
                   </div>
                   <div v-else>
                     <div class="row">
                       <div class="col">
-                        <input type="text" class="form-control">
+                        <input v-model="nickname" type="text" class="form-control">
                       </div>
                       <div class="col">
-                        <button class="btn btn-primary">중복확인</button>
+                        <button class="btn btn-primary" @click="nicknameCheck">중복확인</button>
                       </div>
                     </div>
                   </div>
@@ -82,6 +82,16 @@
                 </div>
               </div>
               <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0">한 줄 소개</h6>
+                </div>
+                <div class="col-sm-9 text-secondary">
+                  없음
+                </div>
+              </div>
+
+              <hr>
               <div class="row justify-content-around">
                 <div class="col-lg-6 col-sm-12 text-lg-start text-center">
                   <button class="btn btn-info " @click="editProfileChange">
@@ -95,6 +105,9 @@
                 </div>
 
                 <div class="col-lg-6 col-sm-12 text-lg-end text-center" v-if="editProfile">
+                  <button class="btn btn-primary m-2" @click="editProfileChange">
+                    저장
+                  </button>
                   <button class="btn btn-primary " @click="editProfileChange">
                     비밀번호 수정
                   </button>
@@ -117,12 +130,13 @@
         <div class="modal-body">
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <button class="nav-link active" data-bs-toggle="tab" @click="getRecvMsgList(1, false)">전체 쪽지</button>
-              <button class="nav-link" data-bs-toggle="tab" @click="getRecvMsgList(1, true)">안읽음</button>
-              <button class="nav-link" data-bs-toggle="tab" @click="getSendMsgList(1)">보낸 쪽지함</button>
-              <button class="nav-link" data-bs-toggle="tab">차단 목록</button>
+              <button class="nav-link active" data-bs-toggle="tab" @click="[resetSearch(), getRecvMsgList(1, false)]">전체 쪽지</button>
+              <button class="nav-link" data-bs-toggle="tab" @click="[resetSearch(), getRecvMsgList(1, true)]">안읽음</button>
+              <button class="nav-link" data-bs-toggle="tab" @click="[resetSearch(), getSendMsgList(1)]">보낸 쪽지함</button>
+              <button class="nav-link" data-bs-toggle="tab" @click="[resetSearch(), getBlockUserList(1)]">차단 목록</button>
             </div>
-            <div class="row mt-3 mb-3">
+
+            <div v-if="msgMode !== 4" class="row mt-3 mb-3">
               <div class="col-2">
                 <select v-model="selectedSearch" class="form-select">
                   <option value="TITLE">제목</option>
@@ -139,21 +153,30 @@
                 </div>
               </div>
             </div>
+
           </nav>
           <table class="table">
             <thead>
-            <tr>
+            <tr v-if="msgMode === 4">
+              <th scope="col">#</th>
+              <th scope="col">닉네임</th>
+              <th scope="col">차단일시</th>
+              <th scope="col"></th>
+            </tr>
+
+            <tr v-else>
               <th scope="col" class="first">
                 <label style="display: inline;">
                   <input type="checkbox" value="Y">
                 </label>
               </th>
-              <th v-if="msgMode === 3" scope="col">받은사람</th>
+              <th v-if="msgMode === 3" scope="col">받는사람</th>
               <th v-else scope="col">보낸사람</th>
               <th scope="col">제목</th>
-              <th scope="col" class="last">날짜</th>
+              <th scope="col">날짜</th>
               <th v-show="msgMode === 3" scope="col">수신확인</th>
             </tr>
+
             </thead>
             <tbody v-if="msgMode === 3">
             <tr v-for="msg in sendMsgList" :key="msg.id">
@@ -165,6 +188,16 @@
               <td>{{ msg.created_at }}</td>
               <td v-if="msg.read_time">{{ msg.read_time }}</td>
               <td v-else>읽지 않음</td>
+            </tr>
+            </tbody>
+            <tbody v-else-if="msgMode === 4">
+            <tr v-for="user in blockUserList" :key="user.id">
+              <th scope="row">
+                <input type="checkbox" name="checkbox_name" value="checkbox_value">
+              </th>
+              <td>{{ user.block_id }}</td>
+              <td>{{ user.created_at }}</td>
+              <td><button class="btn btn-success" @click="setUnblockUser(user.id)">차단해제</button></td>
             </tr>
             </tbody>
             <tbody v-else>
@@ -188,16 +221,19 @@
                 <li v-if="currentPage !== 1" class="page-item">
                   <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, false)">이전</a>
                   <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, true)">이전</a>
+                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage - 1)">이전</a>
                   <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage - 1)">이전</a>
                 </li>
                 <li v-for="page in numberOfPages" :key="page" class="page-item" :class="currentPage === page ? 'active' : ''">
                   <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, false)">{{ page }}</a>
                   <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, true)">{{ page }}</a>
+                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(page)">{{ page }}</a>
                   <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(page)">{{ page }}</a>
                 </li>
                 <li v-if="currentPage !== numberOfPages" class="page-item">
                   <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, false)">다음</a>
                   <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, true)">다음</a>
+                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage + 1)">다음</a>
                   <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage + 1)">다음</a>
                 </li>
               </ul>
@@ -209,7 +245,7 @@
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Write_Message_Modal">
             쪽지 작성
           </button>
-          <button type="button" class="btn btn-danger">삭제</button>
+          <button v-if="msgMode !== 4" class="btn btn-danger">삭제</button>
           <button type="button" @click="pageRefresh" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
         </div>
       </div>
@@ -218,39 +254,38 @@
 
   <!-- 쪽지 작성 -->
   <div class="modal fade" id="Write_Message_Modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="Write_Message_ModalLabel"
-         aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="Write_Message_ModalLabel">쪽지 작성</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Write_Message_ModalLabel">쪽지 작성</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="message_title"  class="form-label">제목</label>
+            <input class="form-control" v-model="title" id="message_title" name="message_title" type="text" maxlength="20" required>
           </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="message_title"  class="form-label">제목</label>
-              <input class="form-control" v-model="title" id="message_title" name="message_title" type="text" maxlength="20" required>
-            </div>
-            <div class="mb-3">
-              <label for="message_receiver" class="form-label">받는사람</label>
-              <input v-if="!isReply" class="form-control" v-model="receiver_name" id="message_receiver" name="message_receiver" type="text" maxlength="20" required>
-              <input v-else class="form-control" v-model="receiver_name" id="message_receiver" name="message_receiver" type="text" maxlength="20" disabled>
-            </div>
-            <div class="mb-3">
-              <label for="message_content" class="form-label">내용</label>
-              <textarea class="form-control" v-model="content" rows="5" required></textarea>
-            </div>
+          <div class="mb-3">
+            <label for="message_receiver" class="form-label">받는사람</label>
+            <input v-if="!isReply" class="form-control" v-model="receiver_name" id="message_receiver" name="message_receiver" type="text" maxlength="20" required>
+            <input v-else class="form-control" v-model="receiver_name" id="message_receiver" name="message_receiver" type="text" maxlength="20" disabled>
           </div>
-          <div class="modal-footer">
-            <button id="write_button" @click="sendMessage" class="btn btn-primary">전송</button>
-            <button type="button" @click="pageRefresh" class="btn btn-secondary" data-bs-dismiss="modal"
-                    id="closeJoinBtn">
-              닫기
-            </button>
+          <div class="mb-3">
+            <label for="message_content" class="form-label">내용</label>
+            <textarea class="form-control" v-model="content" rows="5" required></textarea>
           </div>
+        </div>
+        <div class="modal-footer">
+          <button id="write_button" @click="sendMessage" class="btn btn-primary">전송</button>
+          <button type="button" @click="[resetSearch(), refreshMsg(msgMode)]" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
+            닫기
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
   <!-- 쪽지 상세화면 -->
   <div class="modal fade" id="Detail_Message_Modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="Detail_Message_ModalLabel" aria-hidden="true">
@@ -258,12 +293,6 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="Detail_Message_ModalLabel">쪽지 상세화면</h1>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
-            받은 쪽지함
-          </button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Send_Message_Modal">
-            보낸 쪽지함
-          </button>
         </div>
         <div class="modal-body">
           <table class="table">
@@ -294,53 +323,15 @@
           <button type="button" @click="replyOption(msgData.sender_name)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Write_Message_Modal">
             답장
           </button>
-          <button type="button" @click="pageRefresh" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 차단 목록 -->
-  <div class="modal fade" id="Block_Message_Modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="Block_Message_ModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="Block_Message_ModalLabel">차단 목록</h1>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
-            받은 쪽지함
+          <button class="btn btn-danger" @click="setBlockUser(msgData.sender_name)">
+            차단
           </button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Send_Message_Modal">
-            보낸 쪽지함
+          <button class="btn btn-danger" @click="deleteMsg(msgData.id)">
+            삭제
           </button>
-        </div>
-        <div class="modal-body">
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">닉네임</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>황종근</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>도현관</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>삼병철</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger">차단 해제</button>
-          <button type="button" @click="pageRefresh" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button type="button" @click="refreshMsg(msgMode)" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
+            닫기
+          </button>
         </div>
       </div>
     </div>
@@ -348,31 +339,50 @@
 </template>
 
 <script>
-import store from "@/store/index"
 import { ref, onMounted } from 'vue'
 import useAxios from '@/modules/axios'
-import axios from "axios";
+import { useStore } from 'vuex'
+import axios from 'axios'
 
 export default {
-
   setup() {
-    const { axiosPost, axiosGet } = useAxios()
-    const nickname = ref(store.getters['nickname'])
+    const { axiosPost, axiosGet, axiosDelete } = useAxios()
+    const store = useStore()
+    const oldNickname = ref(store.getters['nickname'])
+    const nickname = ref('')
     const username = ref(store.getters['username'])
     const editProfile = ref(false)  // 프로필 수정 상태인지 확인
-
+    const isNickAvail = ref(false)
+    const modalShow = ref(false)
     // Pagination
     const currentPage = ref(1)  // 현재 페이지
     const numberOfPages = ref(1)
 
-    const isReply = ref(false)
-    const msgMode = ref(1)  // 1: 전체 쪽지, 2: 안읽음, 3: 보낸 쪽지함
+    const isReply = ref(false)  // 답장 상태인지 확인
+    const msgMode = ref(1)  // 1: 전체 쪽지, 2: 안읽음, 3: 보낸 쪽지함, 4: 차단
 
     const selectedSearch = ref('TITLE')
     const searchText = ref('')
 
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
+    }
+
+    const nicknameCheck = () => {
+      if(nickname.value === store.getters['nickname']) {
+        alert('현재 닉네임과 동일합니다.')
+      }
+      else {
+        axiosGet(`/api/v1/users/${nickname.value}/exists`, (res) => {
+          if (res.data) {
+            alert('이미 사용중인 닉네임입니다.')
+          } else {
+            alert('사용가능한 닉네임입니다.')
+          }
+        }, (err) => {
+          console.error(err)
+        })
+      }
     }
 
     // 쪽지 작성
@@ -398,14 +408,21 @@ export default {
 
     const recvMsgList = ref('')
     const sendMsgList = ref('')
+    const blockUserList = ref('')
 
     const resetSearch = () => {
       selectedSearch.value = 'TITLE'
       searchText.value = ''
+      isReply.value = false
+      receiver_name.value = ''
     }
 
     const getRecvMsgList = async(page = currentPage.value, notRead) => {  // 수신함 목록 받아오기
-      msgMode.value = 1
+      if (notRead) {
+        msgMode.value = 2
+      } else {
+        msgMode.value = 1
+      }
       currentPage.value = page
       try {
         const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
@@ -417,7 +434,6 @@ export default {
         })
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
-          console.log(res.data)
           recvMsgList.value = res.data
         } else {
           recvMsgList.value = null
@@ -427,7 +443,7 @@ export default {
       }
     }
 
-    const getSendMsgList = async (page = currentPage.value) => {  // 발신함 목록 받아오기
+    const getSendMsgList = async(page = currentPage.value) => {  // 발신함 목록 받아오기
       msgMode.value = 3
       currentPage.value = page
       try {
@@ -449,7 +465,50 @@ export default {
       }
     }
 
+    const getBlockUserList = async(page = currentPage.value) => { // 차단 유저 목록 가져오기
+      msgMode.value = 4
+      currentPage.value = page
+      try {
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          withCredentials: true,
+        })
+        numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+        if (res.data.length !== 0) {
+          blockUserList.value = res.data
+        } else {
+          blockUserList.value = null
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const setBlockUser = (sender_name) => { // 유저 차단
+      if(confirm(sender_name+"님을 차단하시겠습니까?")) {
+        axiosPost('/api/v1/users/blocks', {
+          blockUserName : sender_name
+        }, () => {
+          alert('차단되었습니다.')
+        }, (err) => {
+          console.error(err)
+        })
+      }
+    }
+
+    const setUnblockUser = (block_id) => {
+      axiosDelete(`/api/v1/users/blocks/${block_id}`, () => {
+        getBlockUserList(1)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
     const msgData = ref({ // 메시지 데이터
+      id: '',
       title: '',
       content: '',
       sender_name: '',
@@ -465,7 +524,7 @@ export default {
       })
     }
 
-    const replyOption = (sender) => {
+    const replyOption = (sender) => { // 답장일 경우 받는 사람 이름 고정
       receiver_name.value = sender
       isReply.value = true
     }
@@ -473,28 +532,58 @@ export default {
     const unReadCount = ref('')
 
     onMounted(() => {
+      modalShow.value = true
       axiosGet(`/api/v1/messages/non_read_counts`, (res) => {
         unReadCount.value = res.data
       }, (err) => {
         console.error(err)
       })
+      nickname.value = oldNickname.value
     })
 
-    const pageRefresh = () => {
+    const pageRefresh = () => { // 모달창을 빠져 나갔을 때 Profile 페이지 새로고침
       window.location.reload()
       isReply.value = false
     }
 
     const searchMessage = () => {
-      getRecvMsgList(1, false)
+      if (msgMode.value === 1) {
+        getRecvMsgList(1, false)
+      } else if (msgMode.value === 2) {
+        getRecvMsgList(1, true)
+      } else if (msgMode.value === 3) {
+        getSendMsgList(1)
+      }
     }
 
+    const deleteMsg = (message_id) => {
+      if(confirm("쪽지를 삭제하시겠습니까?")) {
+        axiosDelete(`/api/v1/messages/${message_id}`, () => {
+          alert('삭제되었습니다.')
+          window.location.reload()
+        }, (err) => {
+          console.error(err)
+        })
+      }
+    }
+
+    const refreshMsg = (msg) => {
+      if (msg === 1) getRecvMsgList(1, false)
+      else if (msg === 2) getRecvMsgList(1, true)
+      else if (msg === 3) getSendMsgList(1)
+      else getBlockUserList(1)
+    }
 
     return {
+      modalShow,
+
+      oldNickname,
       nickname,
       username,
       editProfile,
       editProfileChange,
+      nicknameCheck,
+      isNickAvail,
 
       title,
       receiver_name,
@@ -517,6 +606,12 @@ export default {
       searchText,
       searchMessage,
       resetSearch,
+      getBlockUserList,
+      setBlockUser,
+      blockUserList,
+      setUnblockUser,
+      deleteMsg,
+      refreshMsg,
     }
   }
 }

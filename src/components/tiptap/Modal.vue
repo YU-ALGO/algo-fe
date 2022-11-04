@@ -95,8 +95,8 @@ export default {
       file,
       validImage,
       showModal,
-      fileChange,
       closeModal,
+      fileChange,
       uploadImage,
     }
   },

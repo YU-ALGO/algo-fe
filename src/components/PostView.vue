@@ -1,11 +1,13 @@
 <template>
-  <div v-if="loading">
-    <div class="d-flex m-5 p-5 justify-content-center">
-      <div class="spinner-border m-5 text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
+  <!-- load fail -->
+  <div v-if="loading === -1">
+    <NotFound/>
   </div>
+  <!-- loading -->
+  <div v-else-if="loading === 0">
+    <Loading/>
+  </div>
+  <!-- load success -->
   <div v-else class="container">
     <div class="card mt-4 shadow p-3 mb-5 bg-body">
       <div class="card-body">
@@ -33,14 +35,7 @@
       <div class="row card-body">
         <!-- Comment form-->
         <form>
-          <textarea
-              class="form-control mb-2"
-              v-model="comment"
-              style="resize:none; overflow: hidden"
-              placeholder="댓글을 남겨보세요"
-              @keydown="resize"
-              @keyup="resize"
-              ref="textarea"></textarea>
+          <textarea class="form-control mb-2" v-model="comment" placeholder="댓글을 남겨보세요" @keydown="resize" @keyup="resize" style="resize:none; overflow: hidden"/>
           <button class="btn btn-primary float-end" type="button" @click="addComment">등록</button>
         </form>
         <!-- Comment with nested comments-->
@@ -59,40 +54,28 @@
                   <div>[삭제된 댓글입니다.]</div>
                 </div>
               </div>
-              <div v-if="!comment.is_deleted" class="col-1">
+              <div v-if="!comment.is_deleted && !(comment.author !== nickname && comment.parent !== null)" class="col-1">
                 <button class="menu-item" data-bs-toggle="dropdown">
                   <i class="ri-more-2-fill"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end text-center" style="min-width: 1px">
-                  <li class="dropdown-item" @click="modifyId = comment.id; newComment = comment.content">수정</li>
-                  <li class="dropdown-item" @click="deleteComment(comment.id)">삭제</li>
+                  <li v-if="comment.author === nickname" class="dropdown-item" @click="modifyId = comment.id; newComment = comment.content">수정</li>
+                  <li v-if="comment.author === nickname" class="dropdown-item" @click="deleteComment(comment.id)">삭제</li>
                   <li v-if="comment.parent === null" class="dropdown-item" @click="subCommId = comment.id; subComment = ''">답글</li>
                 </ul>
               </div>
             </div>
             <!-- modify comment form -->
-            <form v-show="comment.id === modifyId">
-              <textarea
-                  class="form-control mb-3"
-                  v-model="newComment"
-                  style="resize:none; overflow: hidden"
-                  @keydown="modifyResize"
-                  @keyup="modifyResize"
-                  ref="modifyTextarea"></textarea>
+            <form v-if="comment.id === modifyId">
+              <textarea class="form-control mb-3" v-model="newComment" @keydown="resize" @keyup="resize" style="resize:none; overflow: hidden"/>
               <div class="text-end">
                 <button class="btn btn-primary me-2" type="button" @click="modifyComment(comment.id)">수정</button>
                 <button class="btn btn-secondary" type="button" @click="modifyId = -1; newComment = ''">취소</button>
               </div>
             </form>
             <!-- add sub-comment form -->
-            <form v-show="comment.id === subCommId">
-              <textarea
-                  class="form-control mb-3"
-                  v-model="subComment"
-                  style="resize:none; overflow: hidden"
-                  @keydown="subResize"
-                  @keyup="subResize"
-                  ref="subTextarea"></textarea>
+            <form v-if="comment.id === subCommId">
+              <textarea class="form-control mb-3" v-model="subComment" @keydown="resize" @keyup="resize" style="resize:none; overflow: hidden"/>
               <div class="text-end">
                 <button class="btn btn-primary me-2" type="button" @click="addSubComment(comment.id)">등록</button>
                 <button class="btn btn-secondary" type="button" @click="subCommId = -1; subComment = ''">취소</button>
@@ -125,14 +108,21 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
+import { useStore } from 'vuex'
+import Loading from '@compo/Loading'
 
 export default {
+  components: {
+    Loading,
+  },
   setup() {
     const { axiosGet, axiosPost, axiosDelete, axiosPatch } = useAxios()
+    const store = useStore()
     const route = useRoute()
     const router = useRouter()
     const postId = route.params.id
-    const loading = ref(true)
+    const loading = ref(0)
+    const nickname = ref(store.getters['nickname'])
 
     const postData = ref({
       title: '',
@@ -145,7 +135,6 @@ export default {
     })
 
     // comment variables
-    const textarea = ref(null)
     const comment = ref('')
     const commentList = ref(null)
     const currCommPage = ref(1)
@@ -154,12 +143,10 @@ export default {
     // modify variables
     const modifyId = ref(-1)
     const newComment = ref('')  // modify comment string variable
-    const modifyTextarea = ref(null)
 
     // sub-comment variables
     const subCommId = ref(-1)
     const subComment = ref('')
-    const subTextarea = ref(null)
 
     const moveToPostListPage = () => {
       router.go(-1)
@@ -200,23 +187,9 @@ export default {
       }
     }
 
-    const resize = () => {
-      textarea.value.style.height = '1px'
-      textarea.value.style.height = (12 + textarea.value.scrollHeight) + 'px'
-    }
-
-    const modifyResize = () => {
-      modifyTextarea.value.map((textarea) => {
-        textarea.style.height = '1px'
-        textarea.style.height = (12 + textarea.scrollHeight) + 'px'
-      })
-    }
-
-    const subResize = () => {
-      subTextarea.value.map((textarea) => {
-        textarea.style.height = '1px'
-        textarea.style.height = (12 + textarea.scrollHeight) + 'px'
-      })
+    const resize = (evt) => {
+      evt.target.style.height = '1px'
+      evt.target.style.height = (12 + evt.target.scrollHeight) + 'px'
     }
 
     const getCommentList = (page = currCommPage.value) => {
@@ -284,9 +257,9 @@ export default {
       axiosGet(`/api/v1/boards/1/posts/${postId}`
           , (res) => {
             postData.value = res.data
-            loading.value = false
+            loading.value = 1
           }, (err) => {
-            loading.value = true
+            loading.value = -1
             console.error(err)
           })
 
@@ -296,25 +269,21 @@ export default {
 
     return {
       postId,
-      loading,
       postData,
+      loading,
+      nickname,
       comment,
-      subComment,
       newComment,
+      subComment,
       currCommPage,
       numOfCommPage,
       commentList,
-      textarea,
-      modifyTextarea,
-      subTextarea,
       modifyId,
       subCommId,
       moveToPostListPage,
       deletePost,
       thumbsUp,
       resize,
-      modifyResize,
-      subResize,
       getCommentList,
       addComment,
       addSubComment,
