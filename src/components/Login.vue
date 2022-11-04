@@ -10,7 +10,7 @@
             <form>
               <div class="form-group py-2">
                 <div class="input-field">
-                  <input type="text" v-model="username" id="username" class="form-control" placeholder="아이디" @keyup.enter="login" required/>
+                  <input type="text" v-model="username" id="username" class="form-control" placeholder="이메일 주소" @keyup.enter="login" required/>
                 </div>
               </div>
               <div class="form-group py-2">
@@ -29,13 +29,15 @@
           </div>
           <div class="mx-3 my-2 py-2 bordert">
             <div class="text-center py-3">
-              <a href="http://be.downbit.r-e.kr:8088/login/oauth2/code/kakao" class="px-2">
+<!--              <button type="button" class="px-2" onclick="window.open('http://www.naver.com','네이버','popup, height=600, width=400')"><img src="../assets/kakaoLogo.png"></button>-->
+              <a href="http://be.downbit.r-e.kr:8088/oauth2/authorization/kakao" class="px-2">
+<!--              <a style="cursor: pointer" @click="kakaoLogin" class="px-2">-->
                 <img src="../assets/kakaoLogo.png" alt=""/>
               </a>
-              <a href="#" class="px-2">
+              <a href="http://be.downbit.r-e.kr:8088/oauth2/authorization/naver" class="px-2">
                 <img src="../assets/naverLogo.png" alt=""/>
               </a>
-              <a href="#" class="px-2">
+              <a href="http://be.downbit.r-e.kr:8088/oauth2/authorization/google" class="px-2">
                 <img src="../assets/googleLogo.png" alt=""/>
               </a>
             </div>
@@ -48,31 +50,46 @@
 
 <script>
 import { ref } from 'vue'
-import { useAuth } from '@/composables/auth'
 import router from '@/router'
+import { useStore } from 'vuex' // vuex 스토어 사용
+import useAxios from '@/modules/axios.js'
 
 export default {
   setup() {
     const username = ref(null)
     const password = ref(null)
-    const { state, authLogin } = useAuth()
-    const isLogin = ref(state.isLogin)
+    const store = useStore() //vuex 스토어 사용
 
-    const login = () => {
-      authLogin(username.value, password.value)
-      router.push('/')
+    const { axiosGet } = useAxios()
+
+    const login = async () => {
+      store.dispatch('login', {
+        username: username.value,
+        password: password.value
+      }).catch((err) => {
+        console.error(err)
+      })
     }
+
+    // const kakaoLogin = () => {
+    //   axios.get('http://be.downbit.r-e.kr:8088/oauth2/authorization/kakao')
+    //       .then((res) => {
+    //         console.log(res.data)
+    //       })
+    //       .catch((error) => {
+    //         console.error(error)
+    //       })
+    // }
 
     const moveToJoinPage = () => {
       router.push('/join')
     }
-
     return {
       username,
       password,
-      isLogin,
       login,
       moveToJoinPage,
+      // kakaoLogin,
     }
   },
 }

@@ -3,7 +3,7 @@
             <div class="glide__track" data-glide-el="track">
               <ul class="glide__slides">
                 <li class="glide__slide">
-                  <img src="https://t1.daumcdn.net/cfile/tistory/99D056425B45C7922C" alt="아이유2" height="300" width="500">
+                  <img src="https://www.foodsafetykorea.go.kr/uploadimg/20221024/20221024013603_1666586163317.jpg" alt="아이유2" height="300" width="500">
                 </li>
                 <li class="glide__slide">
                   <img src="https://image.newsis.com/2018/01/22/NISI20180122_0000097809_web.jpg" alt="교수님1" height="300" width="500">
@@ -13,9 +13,9 @@
                 </li>
               </ul>
             </div>
-            <div class="mt-2 glide__arrows" data-glide-el="controls">
-              <button class="btn btn-primary me-2" data-glide-dir="<">이전</button>
-              <button class="btn btn-primary" data-glide-dir=">">다음</button>
+            <div class="glide__arrows d-flex justify-content-center mt-2" data-glide-el="controls">
+              <button class="btn btn-primary me-1" data-glide-dir="<">이전</button>
+              <button class="btn btn-primary ms-1" data-glide-dir=">">다음</button>
             </div>
           </div>
 </template>
@@ -31,5 +31,5 @@ export default {
 </script>
 
 <style scoped>
-@import '@glidejs/glide/dist/css/glide.core.min.css';
+@import '@glidejs/glide/dist/css/glide.core.min.css'
 </style>

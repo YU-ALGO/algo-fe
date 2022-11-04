@@ -33,12 +33,12 @@
 <!--          <input class="form-control me-2" type="search" placeholder="검색" aria-label="Search">-->
 <!--          <button class="btn btn-outline-success me-2" type="submit">Search</button>-->
 <!--        </form>-->
-        <div class="d-flex" v-if="!isLogin">
+        <div class="d-flex" v-if="!isLogin && !isSocialLogin">
           <router-link :to="{ name: 'Login' }" class="btn btn-primary me-2">로그인</router-link>
           <router-link :to="{ name: 'Join' }" class="btn btn-primary me-2">회원가입</router-link>
         </div>
         <div class="d-flex" v-else>
-          <router-link :to="{ name: 'Profile' }" class="btn btn-primary me-2">프로필</router-link>
+          <router-link :to="`/profile/${nickname}`" class="btn btn-primary me-2">프로필</router-link>
           <button @click="logout" class="btn btn-primary me-2">로그아웃</button>
           <router-link v-if="isAdmin" :to="{ name: 'Admin' }" class="btn btn-primary me-2">Admin</router-link>
         </div>
@@ -49,35 +49,61 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useAuth } from '@/composables/auth'
 import useAxios from '@/modules/axios'
+import { useStore } from 'vuex'
+import { useCookies } from 'vue3-cookies'
 
 export default {
   setup() {
     const { axiosGet } = useAxios()
-    const { state, authLogout } = useAuth()
-    const isLogin = ref(state.isLogin)
-    const isAdmin = ref(state.isAdmin)
+    const store = useStore() //vuex 스토어 사용
+    const isAdmin = ref(store.getters['isAdmin'])
+    const nickname = ref(store.getters['nickname'])
     const boardsList = ref(null)
+    const { cookies } = useCookies()
 
     onMounted(() => {  // get boards list
       axiosGet('/api/v1/boards'
       , (res) => {
         boardsList.value = res.data
-      }, (res) => {
-        console.error(res)
+      }, () => {
+        alert('백엔드 연결 실패 : 게시판 목록을 불러올 수 없습니다.')
       })
+      // axiosGet('/api/v1/token/validate'
+      //     , () => {
+      //     isLogin.value = true;
+      //   }, () => {
+      //   alert('토큰오류')
+      // })
     })
 
-    const logout = () => {
-      authLogout()
+    // const isLogin = () => {
+    //   if(store.getters['isLogin'] || cookies.get("isLogin")) {
+    //     return true
+    //   } else {
+    //     return false;
+    //   }
+    // }
+
+    const isLogin = store.getters['isLogin']
+    const isSocialLogin = ref(cookies.get('isLogin'))
+
+    if(isSocialLogin.value) {
+      store.dispatch('socialLogin')
     }
+
+    const logout = async () => {
+      await store.dispatch('logout').catch((err) => console.error(err))
+    }
+
 
     return {
       isLogin,
       isAdmin,
+      nickname,
       boardsList,
       logout,
+      isSocialLogin,
     }
   },
 }

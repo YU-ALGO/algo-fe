@@ -9,7 +9,7 @@
   </div>
   <!-- load success -->
   <div v-else>
-    <PostList :boardName="boardName"/>
+    <Profile/>
   </div>
 </template>
 
@@ -17,13 +17,13 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
-import PostList from '@compo/PostList.vue'
+import Profile from '@compo/Profile.vue'
 import NotFound from '@compo/NotFound'
 import Loading from '@compo/Loading'
 
 export default {
   components: {
-    PostList,
+    Profile,
     NotFound,
     Loading,
   },
@@ -32,31 +32,21 @@ export default {
     const { axiosGet } = useAxios()
     const route = useRoute()
     const router = useRouter()
-    const boardId = route.params.id
-    const boardName = ref('')
-    const loading = ref(0)
+    const nickname = route.params.nickname
+    const loading = ref(1)
 
-    onMounted(() => {  // get board name
-      axiosGet(`/api/v1/boards/${boardId}`
-      , (res) => {
-        boardName.value = res.data.toString()
-            loading.value = 1
-      }, (res) => {
-        console.error(res)
-            loading.value = -1
-      })
+    onMounted(() => {
+      // axiosGet(`/api/v1/profiles/${nickname}`
+      // , (res) => {
+      //   console.log(res)
+      //   loading.value = 1
+      // }, (res) => {
+      //   console.error(res)
+      //       loading.value = -1
+      // })
     })
 
-    const moveToWritePage = () => {
-      router.push({
-        name: 'PostWrite'
-      })
-    }
-
     return {
-      boardId,
-      boardName,
-      moveToWritePage,
       loading,
     }
   }

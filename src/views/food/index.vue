@@ -1,10 +1,14 @@
 <template>
-  <h1>Food Page</h1>
+  <Food/>
 </template>
 
 <script>
-export default {
+import Food from '@compo/Food.vue'
 
+export default {
+  components: {
+    Food,
+  },
 }
 </script>
 
