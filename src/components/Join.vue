@@ -6,25 +6,26 @@
         <label for="username" :style="!emailValidation ? 'color: red' : ''">이메일 주소</label>
         <div class="row">
           <div class="col-9">
-            <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck()" @keyup.enter="sendVerifyMail" maxlength="50" :disabled="sendMail">
+            <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck" @keyup.enter="sendVerifyMail" maxlength="50" :disabled="sendMail">
             <p v-show="!emailValidation" style="color: red"> 이메일 주소를 다시 확인해주세요. </p>
             <p v-show="!resVal" style="color: red"> 이미 사용중인 이메일입니다. </p>
           </div>
-          <div class="col-md-auto">
+          <div class="col-auto">
             <button class="btn btn-primary" @click="sendVerifyMail" :disabled="sendMail">인증번호 받기</button>
           </div>
         </div>
         <div class="row mt-2">
           <div class="col-8">
-            <input type="tel" v-model="code" class="form-control" placeholder="인증번호 입력하세요" maxlength="6" :disabled="!sendMail">
+            <input type="tel" v-model="code" class="form-control" placeholder="인증번호 입력하세요" maxlength="6" :disabled="!isCodeValidate">
           </div>
-          <div class="col-md-auto">
-            <button class="btn btn-primary" @click="checkCode" :disabled="!sendMail">인증 확인</button>
+          <div class="col-auto">
+            <button class="btn btn-primary" @click="checkCode" :disabled="!isCodeValidate">인증 확인</button>
           </div>
-          <div class="col-md-auto">
-            <button class="btn btn-primary" @click="resendVerifyMail" :disabled="!sendMail">재전송</button>
+          <div class="col-auto">
+            <button class="btn btn-primary" @click="resendVerifyMail" :disabled="!isCodeValidate">재전송</button>
           </div>
           <p v-show="!codeValidation" style="color: red"> 인증번호가 일치하지 않습니다. </p>
+          <p v-show="codeValidation" style="color: green"> 인증번호가 일치합니다. </p>
         </div>
       </div>
       <div class="mb-3">
@@ -45,93 +46,99 @@
       <div class="mb-3">
         <label>알레르기 정보</label>
         <div class="card p-3 mb-3 bg-body">
-          <div>
+          <div v-for="data in checkData" :key="data.id">
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op1">
-              <label class="form-check-label" for="inlineCheckbox1">오징어</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op2">
-              <label class="form-check-label" for="inlineCheckbox2">난류</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op3">
-              <label class="form-check-label" for="inlineCheckbox2">닭</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op4">
-              <label class="form-check-label" for="inlineCheckbox2">밀</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op5">
-              <label class="form-check-label" for="inlineCheckbox2">견과류</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op6">
-              <label class="form-check-label" for="inlineCheckbox2">우유</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op7">
-              <label class="form-check-label" for="inlineCheckbox2">돼지고기</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op8">
-              <label class="form-check-label" for="inlineCheckbox2">소고기</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op9">
-              <label class="form-check-label" for="inlineCheckbox2">조개류</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op10">
-              <label class="form-check-label" for="inlineCheckbox2">아황산류</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op11">
-              <label class="form-check-label" for="inlineCheckbox2">메밀</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op12">
-              <label class="form-check-label" for="inlineCheckbox2">게</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op13">
-              <label class="form-check-label" for="inlineCheckbox2">새우</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op14">
-              <label class="form-check-label" for="inlineCheckbox2">대두</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op15">
-              <label class="form-check-label" for="inlineCheckbox2">토마토</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op16">
-              <label class="form-check-label" for="inlineCheckbox2">생선</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op17">
-              <label class="form-check-label" for="inlineCheckbox2">참깨</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op18">
-              <label class="form-check-label" for="inlineCheckbox2">과일</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op19">
-              <label class="form-check-label" for="inlineCheckbox2">마늘</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" value="op20">
-              <label class="form-check-label" for="inlineCheckbox2">채소</label>
+              <input class="form-check-input" type="checkbox" v-model="data.selected" :id="`${data.name}`" :value="`${data.name}`">
+              <label class="form-check-label" for="inlineCheckbox1">{{ data.name }}</label>
             </div>
           </div>
+<!--          <div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" id="squid" value="1">-->
+<!--              <label class="form-check-label" for="inlineCheckbox1">오징어</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="eggs">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">난류</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="chicken">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">닭</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="wheat">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">밀</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="nuts">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">견과류</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="milk">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">우유</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="pork">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">돼지고기</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="beef">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">소고기</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="clams">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">조개류</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="sulphite">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">아황산류</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="buckwheat">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">메밀</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="crab">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">게</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="shrimp">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">새우</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="soybean">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">대두</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="tomato">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">토마토</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="fish">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">생선</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="sesame">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">참깨</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="fruit">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">과일</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="garlic">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">마늘</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="vegetable">-->
+<!--              <label class="form-check-label" for="inlineCheckbox2">채소</label>-->
+<!--            </div>-->
+<!--          </div>-->
         </div>
       </div>
       <div class="form-inline row">
         <div class="text-lg-end">
-          <button class="btn btn-primary me-3" type="button" @click="submit">가입하기</button>
+          <button class="btn btn-primary me-3" type="button" @click="[selected(), submit()]">가입하기</button>
           <button class="btn btn-outline-dark" @click="moveToLoginPage">취소</button>
         </div>
       </div>
@@ -163,10 +170,30 @@ export default {
     const codeValidation = ref(false) // 인증코드 확인 (true == 일치함)
     const nicknameValidation = ref(true) // 닉네임 정규식 검사
 
+    const isCodeValidate = ref(false) // 코드 인증칸 활성화 여부
+
+    const checkData = ref([
+      {id: 1, name: 'squid', selected: 'false'},
+      {id: 2, name: 'eggs', selected: 'false'},
+      {id: 3, name: 'chicken', selected: 'false'},
+      {id: 4, name: 'wheat', selected: 'false'},
+      {id: 5, name: 'nuts', selected: 'false'},
+    ])
+
+
     const sendVerifyMail = () => {
       if (username.value.length > 0 && emailValidation.value) {
-        alert('입력한 이메일로 인증메일이 발송되었습니다.')
-        sendMail.value = true
+        axiosPost('/api/v1/users/mail', {
+          username: username.value
+        }, () => {
+          alert('해당 이메일로 인증메일을 발송했습니다.')
+          sendMail.value = true
+          isCodeValidate.value = true
+        }, (err) => {
+          alert('인증메일 발송에 실패했습니다.')
+          sendMail.value = false
+          console.error(err)
+        })
       } else {
         alert('이메일을 주소를 정확히 입력해주세요.')
       }
@@ -214,9 +241,18 @@ export default {
     }
 
     const checkCode = () => {
-      alert('입력한 인증번호 : ' + code.value)
-      alert('인증에 성공했습니다.')
-      codeValidation.value = true;
+      axiosPost('/api/v1/users/validate', {
+        username : username.value,
+        code : code.value
+      }, () => {
+        alert('인증에 성공했습니다.')
+        codeValidation.value = true
+        isCodeValidate.value = false
+      }, (err) => {
+        alert('인증에 실패했습니다.')
+        console.error(err)
+        codeValidation.value = false;
+      })
     }
 
     const resendVerifyMail = () => {
@@ -266,6 +302,7 @@ export default {
       nickCheck,
       nickresVal,
       passCheck,
+      isCodeValidate,
 
 
       username,
@@ -276,6 +313,8 @@ export default {
       resVal,
       submit,
       moveToLoginPage,
+      checkData,
+      selected
     }
   },
 }

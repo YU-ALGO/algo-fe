@@ -421,47 +421,76 @@ export default {
       receiver_name.value = ''
     }
 
-    const getRecvMsgList = async(page = currentPage.value, notRead) => {  // 수신함 목록 받아오기
+    const getRecvMsgList = (page = currentPage.value, notRead) => {  // 수신함 목록 받아오기
       if (notRead) {
         msgMode.value = 2
       } else {
         msgMode.value = 1
       }
       currentPage.value = page
-      try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: true,
-        })
-        numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-        if (res.data.length !== 0) {
-          recvMsgList.value = res.data
-          let step;
-          if (recvMsgList.value.length === 0) {
-            for (step = 0; step < recvMsgList.value.length; step++) {
-              recvMsgArr.value.push(recvMsgList.value[step].id)
+      axiosGet(`/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`
+          , (res) => {
+            if (res.data.length !== 0) {
+              recvMsgList.value = res.data
+              // let step
+              if (recvMsgList.value.length === 0) {
+                recvMsgArr.value = []
+                // for (step = 0; step < recvMsgList.value.length; step++) {
+                //   recvMsgArr.value.push(recvMsgList.value[step].id)
+                // }
+              } else {
+                recvMsgList.value.forEach((msg) => {
+                  recvMsgArr.value.push(msg.id)
+                })
+                // for (step = 0; step < recvMsgList.value.length; step++) {
+                //   recvMsgArr.value.push(recvMsgList.value[step].id)
+                // }
+              }
+              console.log(recvMsgArr.value)
+            } else {
+              recvMsgList.value = null
             }
-          } else {
-            recvMsgArr.value = []
-            for (step = 0; step < recvMsgList.value.length; step++) {
-              recvMsgArr.value.push(recvMsgList.value[step].id)
-            }
-          }
-          console.log(recvMsgArr.value)
-        } else {
-          recvMsgList.value = null
-        }
-      } catch (error) {
-        console.log(error)
-      }
+          }, (err) => {
+            console.log(err)
+          })
+
+      // try {
+      //   const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       'Access-Control-Allow-Origin': '*',
+      //     },
+      //     withCredentials: true,
+      //   })
+      //   numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+      //   if (res.data.length !== 0) {
+      //     recvMsgList.value = res.data
+      //     let step;
+      //     if (recvMsgList.value.length === 0) {
+      //       for (step = 0; step < recvMsgList.value.length; step++) {
+      //         recvMsgArr.value.push(recvMsgList.value[step].id)
+      //       }
+      //     } else {
+      //       recvMsgArr.value = []
+      //       for (step = 0; step < recvMsgList.value.length; step++) {
+      //         recvMsgArr.value.push(recvMsgList.value[step].id)
+      //       }
+      //     }
+      //     console.log(recvMsgArr.value)
+      //   } else {
+      //     recvMsgList.value = null
+      //   }
+      // } catch (error) {
+      //   console.log(error)
+      // }
     }
 
     const getSendMsgList = async(page = currentPage.value) => {  // 발신함 목록 받아오기
       msgMode.value = 3
       currentPage.value = page
+      axiosGet(`/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+
+      })
       try {
         const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
           headers: {
@@ -485,7 +514,7 @@ export default {
       msgMode.value = 4
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',

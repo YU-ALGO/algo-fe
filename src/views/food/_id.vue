@@ -1,12 +1,13 @@
 <template>
-  <div>
-
-  </div>
+  <FoodView/>
 </template>
 
 <script>
+import FoodView from '@compo/FoodView'
 export default {
-
+  components: {
+    FoodView,
+  }
 }
 </script>
 

@@ -1,13 +1,15 @@
 import Join from '@compo/Join.vue'
 import Login from '@compo/Login.vue'
 import PostWrite from '@compo/PostWrite.vue'
-import NotFound from '@compo/NotFound.vue'
+import FoodView from '@compo/FoodView.vue'
 import TermOfService from '@compo/TermOfService.vue'
+import ChangePassword from '@compo/ChangePassword.vue'
+import NotFound from '@compo/NotFound.vue'
 
 import MainView from '@views/index.vue'
 import Board from '@views/boards/_id.vue'
 import PostView from '@/views/boards/views/_id.vue'
-import FoodView from '@views/food/index.vue'
+import FoodList from '@views/food/index.vue'
 import Profile from '@views/profile/_nickname.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
@@ -53,19 +55,32 @@ const loginCheck = () => (to, from, next) => {
 
 const routes = [
   {
-    path: '/term',
-    name: 'Term',
-    component: TermOfService,
-  },
-  {
     path: '/',
     name: 'Main',
     component: MainView,
   },
   {
-    path: '/food',
-    name: 'Food',
-    component: FoodView,
+    path: '/join',
+    name: 'Join',
+    component: Join,
+    beforeEnter: loginCheck()
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    beforeEnter: loginCheck()
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import(/* webpackChunkName: "about" */ '@/views/admin/index'),
+    beforeEnter: isAdmin()
+  },
+  {
+    path: '/boards/:id',
+    name: 'Board',
+    component: Board,
   },
   {
     path: '/boards/:id/write',
@@ -75,16 +90,20 @@ const routes = [
     props: true,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    beforeEnter: loginCheck()
+    path: '/boards/views/:id',
+    name: 'Post',
+    component: PostView,
+    beforeEnter: isLogin()
   },
   {
-    path: '/join',
-    name: 'Join',
-    component: Join,
-    beforeEnter: loginCheck()
+    path: '/foods',
+    name: 'FoodList',
+    component: FoodList,
+  },
+  {
+    path: '/foods/:id',
+    name: 'Food',
+    component: FoodView,
   },
   {
     path: '/profile/:nickname',
@@ -93,31 +112,29 @@ const routes = [
     beforeEnter: isLogin()
   },
   {
-    path: '/boards/:id',
-    name: 'Board',
-    component: Board,
+    path: '/term',
+    name: 'Term',
+    component: TermOfService,
   },
   {
-    path: '/admin',
-    name: 'Admin',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/admin/index'),
-    beforeEnter: isAdmin()
-  },
-  {
-    path: '/boards/views/:id',
-    name: 'Post',
-    component: PostView,
-    beforeEnter: isLogin()
+    path: '/:pathMatch(.*)*',
+    redirect: "/404"
   },
   {
     path: '/404',
     name: 'notFound',
     component: NotFound,
   },
+  // {  // page for test
+  //   path: '/test',
+  //   name: 'TestPage',
+  //   component: FoodView,
+  // },
   {
-    path: '/:pathMatch(.*)*',
-    redirect: "/404"
-  },
+    path: '/changepw',
+    name: 'ChangePassword',
+    component: ChangePassword,
+  }
 ]
 
 const router = createRouter({

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PostView />
+    <PostView/>
   </div>
 </template>
 

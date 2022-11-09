@@ -1,5 +1,6 @@
 <template>
-  <Profile />
+  profile/index.vue
+  <Profile/>
 </template>
 
 <script>

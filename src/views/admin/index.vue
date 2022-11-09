@@ -7,12 +7,13 @@
             <a class="nav-link" href="#Board_Manage">게시판 관리</a>
             <a class="nav-link" href="#User_Manage">전체 회원 관리</a>
             <a class="nav-link" href="#Youtube_URL">Youtube URL 관리</a>
+            <a class="nav-link" href="#Food_Manage">식품 관리</a>
           </nav>
         </nav>
       </div>
     </div>
     <!-- 게시판 관리 -->
-    <div class="col-8" >
+    <div class="col-8">
       <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Board_Manage">
         <h2 class="mt-2">Admin Page(게시판 관리)</h2>
         <hr/>
@@ -148,7 +149,7 @@
       </div>
 
       <!-- Youtube URL 관리 -->
-      <div class="row card mt-4 shadow p-3 mb-5 bg-body">
+      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Youtube_URL">
         <h2 class="mt-2">Admin Page(Youtube URL 관리)</h2>
         <hr/>
         <div>
@@ -187,6 +188,107 @@
             </tbody>
           </table>
           <button type="button" class="btn btn-danger" style="float:right">삭제</button>
+        </div>
+      </div>
+      <!-- 식품 관리 -->
+      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Food_Manage">
+        <h2 class="mt-2">Admin Page(식품 관리)</h2>
+        <hr/>
+        <div>
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">식품보고번호</th>
+              <th scope="col">식품 종류</th>
+              <th scope="col">영양 성분</th>
+              <th scope="col">원재료명</th>
+              <th scope="col">알레르기 성분</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            <tr>
+              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>마상균 굉장하다</td>
+              <td>박세훈</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="col-4 ms-auto">
+            <nav aria-label="...">
+              <ul class="pagination">
+                <li class="page-item disabled">
+                  <a class="page-link">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-primary" style="float:right">추가</button>
+            <button type="button" class="btn btn-danger" style="margin-right: 5px;float:right">삭제</button>
+          </div>
         </div>
       </div>
     </div>
