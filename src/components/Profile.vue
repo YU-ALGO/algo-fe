@@ -166,9 +166,7 @@
 
             <tr v-else>
               <th scope="col" class="first">
-                <label style="display: inline;">
-                  <input type="checkbox" value="Y">
-                </label>
+                <input type="checkbox" value="all" v-model="allSelected" />
               </th>
               <th v-if="msgMode === 3" scope="col">받는사람</th>
               <th v-else scope="col">보낸사람</th>
@@ -179,9 +177,9 @@
 
             </thead>
             <tbody v-if="msgMode === 3">
-            <tr v-for="msg in sendMsgList" :key="msg.id">
+            <tr v-for="(msg, index) in sendMsgList" :key="msg.id">
               <th scope="row">
-                <input type="checkbox" name="checkbox_name" value="checkbox_value">
+                <input type="checkbox" :id="msg" :value="msg" v-model="selectedList" :key="index.id">
               </th>
               <td>{{ msg.receiver }}</td>
               <td><a class="text-dark" @click="getMsgData(msg.id)" href="#Detail_Message_Modal" style="text-decoration:none" data-bs-toggle="modal">{{ msg.title }}</a></td>
@@ -190,8 +188,9 @@
               <td v-else>읽지 않음</td>
             </tr>
             </tbody>
+
             <tbody v-else-if="msgMode === 4">
-            <tr v-for="user in blockUserList" :key="user.id">
+            <tr v-for="(user, index) in blockUserList" :key="user.id">
               <th scope="row">
                 <input type="checkbox" name="checkbox_name" value="checkbox_value">
               </th>
@@ -200,10 +199,12 @@
               <td><button class="btn btn-success" @click="setUnblockUser(user.id)">차단해제</button></td>
             </tr>
             </tbody>
+
             <tbody v-else>
-            <tr v-for="msg in recvMsgList" :key="msg.id">
+            {{selectedList}}
+            <tr v-for="(msg, index) in recvMsgList" :key="msg.id">
               <th scope="row">
-                <input type="checkbox" name="checkbox_name" value="checkbox_value">
+                <input type="checkbox" :id="msg.id" :value="msg.id" v-model="selectedList" :key="index.id">
               </th>
               <td>{{ msg.sender }}</td>
               <td>
@@ -245,7 +246,7 @@
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Write_Message_Modal">
             쪽지 작성
           </button>
-          <button v-if="msgMode !== 4" class="btn btn-danger">삭제</button>
+          <button v-if="msgMode !== 4" @click="selectMsgDelete" class="btn btn-danger">삭제</button>
           <button type="button" @click="pageRefresh" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
         </div>
       </div>
@@ -339,7 +340,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
 import axios from 'axios'
@@ -363,6 +364,8 @@ export default {
 
     const selectedSearch = ref('TITLE')
     const searchText = ref('')
+
+    const selectedList = ref([])
 
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
@@ -406,8 +409,9 @@ export default {
       })
     }
 
-    const recvMsgList = ref('')
-    const sendMsgList = ref('')
+    const recvMsgList = ref([])
+    const recvMsgArr = ref([])
+    const sendMsgList = ref([])
     const blockUserList = ref('')
 
     const resetSearch = () => {
@@ -435,6 +439,18 @@ export default {
         numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           recvMsgList.value = res.data
+          let step;
+          if (recvMsgList.value.length === 0) {
+            for (step = 0; step < recvMsgList.value.length; step++) {
+              recvMsgArr.value.push(recvMsgList.value[step].id)
+            }
+          } else {
+            recvMsgArr.value = []
+            for (step = 0; step < recvMsgList.value.length; step++) {
+              recvMsgArr.value.push(recvMsgList.value[step].id)
+            }
+          }
+          console.log(recvMsgArr.value)
         } else {
           recvMsgList.value = null
         }
@@ -574,6 +590,33 @@ export default {
       else getBlockUserList(1)
     }
 
+    const allSelected = computed({
+      get() {
+        return recvMsgList.value.length === selectedList.value.length
+      },
+      set(e) {
+        selectedList.value = e ? recvMsgList.value : [];
+      }
+    })
+
+    const selectMsgDelete = () => {
+      if(confirm("선택한 쪽지를 모두 삭제하시겠습니까?")) {
+        axios.delete(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes`, {
+          data: {
+            messageIdArray: selectedList.value
+          }, headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+          withCredentials: true,
+        }, () => {
+          alert('삭제되었습니다!')
+        }, (err) => {
+          console.error(err)
+        })
+      }
+    }
+
     return {
       modalShow,
 
@@ -612,6 +655,9 @@ export default {
       setUnblockUser,
       deleteMsg,
       refreshMsg,
+      selectedList,
+      allSelected,
+      selectMsgDelete,
     }
   }
 }
