@@ -46,99 +46,17 @@
       <div class="mb-3">
         <label>알레르기 정보</label>
         <div class="card p-3 mb-3 bg-body">
-          <div v-for="data in checkData" :key="data.id">
+          <div v-for="data in allergyCheckData" :key="data.id">
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="checkbox" v-model="data.selected" :id="`${data.name}`" :value="`${data.name}`">
-              <label class="form-check-label" for="inlineCheckbox1">{{ data.name }}</label>
+              <label class="form-check-label" for="inlineCheckbox1">{{ data.foodName }}</label>
             </div>
           </div>
-<!--          <div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" id="squid" value="1">-->
-<!--              <label class="form-check-label" for="inlineCheckbox1">오징어</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="eggs">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">난류</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="chicken">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">닭</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="wheat">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">밀</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="nuts">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">견과류</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="milk">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">우유</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="pork">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">돼지고기</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="beef">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">소고기</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="clams">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">조개류</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="sulphite">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">아황산류</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="buckwheat">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">메밀</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="crab">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">게</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="shrimp">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">새우</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="soybean">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">대두</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="tomato">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">토마토</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="fish">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">생선</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="sesame">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">참깨</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="fruit">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">과일</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="garlic">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">마늘</label>-->
-<!--            </div>-->
-<!--            <div class="form-check form-check-inline">-->
-<!--              <input class="form-check-input" type="checkbox" v-model="checkedList" value="vegetable">-->
-<!--              <label class="form-check-label" for="inlineCheckbox2">채소</label>-->
-<!--            </div>-->
-<!--          </div>-->
         </div>
       </div>
       <div class="form-inline row">
         <div class="text-lg-end">
-          <button class="btn btn-primary me-3" type="button" @click="[selected(), submit()]">가입하기</button>
+          <button class="btn btn-primary me-3" type="button" @click="submit">가입하기</button>
           <button class="btn btn-outline-dark" @click="moveToLoginPage">취소</button>
         </div>
       </div>
@@ -172,14 +90,37 @@ export default {
 
     const isCodeValidate = ref(false) // 코드 인증칸 활성화 여부
 
-    const checkData = ref([
-      {id: 1, name: 'squid', selected: 'false'},
-      {id: 2, name: 'eggs', selected: 'false'},
-      {id: 3, name: 'chicken', selected: 'false'},
-      {id: 4, name: 'wheat', selected: 'false'},
-      {id: 5, name: 'nuts', selected: 'false'},
+    const allergyCheckData = ref([
+      {id: 1, name: 'squid', foodName:'오징어', selected: false},
+      {id: 2, name: 'eggs',  foodName:'난류',selected: false},
+      {id: 3, name: 'chicken', foodName:'닭', selected: false},
+      {id: 4, name: 'wheat',  foodName:'밀',selected: false},
+      {id: 5, name: 'nuts', foodName:'견과류', selected: false},
+      {id: 6, name: 'milk', foodName:'우유', selected: false},
+      {id: 7, name: 'pork', foodName:'돼지고기', selected: false},
+      {id: 8, name: 'beef', foodName:'소고기', selected: false},
+      {id: 9, name: 'clams', foodName:'조개류', selected: false},
+      {id: 10, name: 'sulphite', foodName:'아황산류', selected: false},
+      {id: 11, name: 'buckwheat', foodName:'메밀', selected: false},
+      {id: 12, name: 'crab', foodName:'게', selected: false},
+      {id: 13, name: 'shrimp', foodName:'새우', selected: false},
+      {id: 14, name: 'soybean', foodName:'대두', selected: false},
+      {id: 15, name: 'tomato', foodName:'토마토', selected: false},
+      {id: 16, name: 'fish', foodName:'생선', selected: false},
+      {id: 17, name: 'sesame', foodName:'참깨', selected: false},
+      {id: 18, name: 'fruit', foodName:'과일', selected: false},
+      {id: 19, name: 'garlic', foodName:'마늘', selected: false},
+      {id: 20, name: 'vegetable', foodName:'채소', selected: false},
     ])
 
+    const allergyData = new Map()
+
+    const checkSelected = () => {
+      for (let i=0; i<allergyCheckData.value.length; i++) {
+        allergyData.set(allergyCheckData.value[i].name, allergyCheckData.value[i].selected)
+      }
+      console.log(Object.fromEntries(allergyData))
+    }
 
     const sendVerifyMail = () => {
       if (username.value.length > 0 && emailValidation.value) {
@@ -211,6 +152,10 @@ export default {
     watch(passwordCheck, () => {
       if (password.value === passwordCheck.value) passCheck.value = true
       else passCheck.value = false
+    })
+
+    watch(allergyCheckData.value, () => {
+      checkSelected()
     })
 
     const checkEmail = () => {  // 이메일(아이디) 정규식 검사
@@ -268,7 +213,8 @@ export default {
         axiosPost('/api/v1/signup', {
           username: username.value,
           password: password.value,
-          nickname: nickname.value
+          nickname: nickname.value,
+          allergyInfoDto: Object.fromEntries(allergyData)
         }, () => {
           alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.')
           router.push('/login')
@@ -313,8 +259,9 @@ export default {
       resVal,
       submit,
       moveToLoginPage,
-      checkData,
-      selected
+      allergyCheckData,
+      checkSelected,
+      allergyData,
     }
   },
 }

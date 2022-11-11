@@ -111,9 +111,9 @@ export default {
       if (editable.value) {
         getPostData()
       }
-      watchEffect(() => {
-        console.log(editor.value.getHTML())
-      })
+      // watchEffect(() => {
+      //   console.log(editor.value.getHTML())
+      // })
     })
 
     // watch(content, () => {

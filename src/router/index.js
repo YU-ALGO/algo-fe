@@ -99,11 +99,13 @@ const routes = [
     path: '/foods',
     name: 'FoodList',
     component: FoodList,
+    beforeEnter: isLogin(),
   },
   {
     path: '/foods/:id',
     name: 'Food',
     component: FoodView,
+    beforeEnter: isLogin(),
   },
   {
     path: '/profile/:nickname',
@@ -134,6 +136,7 @@ const routes = [
     path: '/changepw',
     name: 'ChangePassword',
     component: ChangePassword,
+    beforeEnter: isLogin(),
   }
 ]
 

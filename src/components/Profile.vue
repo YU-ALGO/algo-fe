@@ -86,9 +86,12 @@
                 <div class="col-sm-3">
                   <h6 class="mb-0">한 줄 소개</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
-                  없음
+                <div v-if="!editProfile" class="col-sm-9 text-secondary">
+                  {{ oldIntroduce }}
                 </div>
+                  <div v-else class="col-sm-9 text-secondary">
+                    <input v-model="introduce" type="text" class="form-control">
+                  </div>
               </div>
 
               <hr>
@@ -355,6 +358,11 @@ export default {
     const editProfile = ref(false)  // 프로필 수정 상태인지 확인
     const isNickAvail = ref(false)
     const modalShow = ref(false)
+
+    // 한줄 소개
+    const oldIntroduce = ref('')
+    const introduce = ref('')
+
     // Pagination
     const currentPage = ref(1)  // 현재 페이지
     const numberOfPages = ref(1)
@@ -514,7 +522,7 @@ export default {
       msgMode.value = 4
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -656,6 +664,8 @@ export default {
       editProfileChange,
       nicknameCheck,
       isNickAvail,
+      introduce,
+      oldIntroduce,
 
       title,
       receiver_name,

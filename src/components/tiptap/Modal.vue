@@ -13,7 +13,7 @@
           <button @click="closeModal" class="btn btn-outline-secondary">
             닫기
           </button>
-          <button class="btn btn-success" @click="uploadImage" :disabled="!validImage">
+          <button class="btn btn-success" @click="requestAuth" :disabled="!validImage">
             추가
           </button>
         </div>
@@ -52,39 +52,40 @@ export default {
 
     const fileChange = () => {
       formData.append('image', file.value.files[0])
-      // console.log(file.value.files)
+      console.log(file.value.files)
       fileName.value = file.value.files[0].name
     }
 
-    const uploadImage = () => { // 서버에 이미지 업로드
-      axios.post('http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts/images', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Access-Control-Allow-Origin': '*',
-        },
-        withCredentials: true,
-      }).then((res) => {
-        insertImage(res.data)
-      }).catch((error) => {
-        console.error(error)
+    const requestAuth = () => { // 이미지 업로드 권한 취득
+      axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
+        file_name: fileName.value,
+        image_request_type: "POST",
+      }, (response) => {
+        uploadImage(response.data)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const uploadImage = (awsURL) => { // 백엔드 서버에 URL 요청
+      axiosPost(awsURL, formData, (response) => {
+        console.log(response)
+      }, (err) => {
+        console.error(err)
       })
     }
 
     const insertImage = (imageUrl) => { // 이미지 글쓰기 본문에 삽입
-      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts/images/${imageUrl}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-        withCredentials: true,
-      }).then((response) => {
-            console.log(response)
-            imageSrc.value = response.data
-            context.emit('onConfirm', {
-              src: imageSrc.value
-            })
-            closeModal()
-          }).catch((err) => {
+      axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
+        file_name: imageUrl,
+        image_request_type: "GET",
+      }, (response) => {
+        imageSrc.value = response.data
+        context.emit('onConfirm', {
+          src: imageSrc.value
+        })
+        closeModal()
+      }, (err) => {
         console.error(err)
       })
     }
@@ -98,6 +99,7 @@ export default {
       closeModal,
       fileChange,
       uploadImage,
+      requestAuth,
     }
   },
 }
