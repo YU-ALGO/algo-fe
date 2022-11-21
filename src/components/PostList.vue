@@ -45,10 +45,12 @@
               <tr v-for="post in postList" :key="post.id">
                 <th style="width: 100px" scope="row">{{ post.id }}</th>
                 <td style="width: 800px">
-                  <a class="text-body text-decoration-none fw-bold" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
-                  <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{post.comment_count}}]</label>
+                  <a class="text-link text-body" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
+                  <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{ post.comment_count }}] </label>
                 </td>
-                <td style="width: 100px">{{ post.author }}</td>
+                <td style="width: 100px">
+                  <a class="text-link text-body" :href="`/profile/${post.author}`">{{ post.author }}</a>
+                </td>
                 <td style="width: 300px">{{ post.created_at }}</td>
                 <td style="width: 100px">{{ post.view_count }}</td>
                 <td style="width: 100px">{{ post.like_count }}</td>
@@ -59,24 +61,14 @@
         </div>
         <div class="form-inline row mt-2">
           <div class="text-lg-end mt-2">
-            <router-link :to="{name: 'PostWrite'}" class="btn btn-primary">글쓰기</router-link>
+            <router-link :to="{ name: 'PostWrite' }" class="btn btn-primary">글쓰기</router-link>
           </div>
         </div>
         <div class="d-flex justify-content-center">
+
           <!-- Pagination -->
-          <nav aria-label="Page navigation">
-            <ul class="pagination">
-              <li v-if="currentPage !== 1" class="page-item">
-                <a style="cursor: pointer" class="page-link" @click="getPostList(currentPage - 1)">이전</a>
-              </li>
-              <li v-for="page in numberOfPages" :key="page" class="page-item" :class="currentPage === page ? 'active' : ''">
-                <a style="cursor: pointer" class="page-link" @click="getPostList(page)">{{ page }}</a>
-              </li>
-              <li v-if="currentPage !== numberOfPages" class="page-item">
-                <a style="cursor: pointer" class="page-link" @click="getPostList(currentPage + 1)">다음</a>
-              </li>
-            </ul>
-          </nav>
+          <Pagination :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
+
         </div>
       </div>
     </div>
@@ -86,10 +78,13 @@
 <script>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-// import useAxios from '@/modules/axios'
-import axios from 'axios'
+import { axios } from '@bundled-es-modules/axios'
+import Pagination from '@compo/Pagination.vue'
 
 export default {
+  components: {
+    Pagination,
+  },
   props: {
     boardName: {
       type: String,
@@ -100,10 +95,6 @@ export default {
     // const { axiosGet } = useAxios()
     const route = useRoute()
     const boardId = route.params.id
-
-    // Pagination
-    const currentPage = ref(1)  // 현재 페이지
-    const numberOfPages = ref(1)
     const postList = ref('')
 
     // Search
@@ -111,23 +102,14 @@ export default {
     const searchText = ref('')  // 검색
     const selectedSort = ref('createdAt,DESC') // 정렬
 
+    const currentPage = ref(1)
+    const pageDisplayCount = ref(5)
+    const totalPageCount = ref()
+
     const getPostList = async (page = currentPage.value) => {
-      currentPage.value = page
-      // axiosGet(`/api/v1/boards/${boardId}/posts?page=${page}&size=5`
-      // , (res) => {
-      //   numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-      //   if (res.data.length !== 0) {
-      //     postList.value = res.data
-      //   } else {
-      //     postList.value = null
-      //   }
-      // }, (err) => {
-      //   console.error(err)
-      // })
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=5&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
-        // const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts?page=1&size=5`)
-        numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=10&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
+        totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           postList.value = res.data
           // console.log(postList)
@@ -139,12 +121,18 @@ export default {
       }
     }
 
+    const setPage = (page) => {
+      currentPage.value = page
+      getPostList(page)
+    }
+
     const searchPost = () => {
+      currentPage.value = 1
       getPostList(1)
     }
 
     onMounted(() => {
-      getPostList()
+      getPostList(1)
     })
 
     watch(selectedSort, () => {
@@ -157,15 +145,22 @@ export default {
       postList,
       boardId,
       currentPage,
-      numberOfPages,
+      pageDisplayCount,
+      totalPageCount,
       getPostList,
       searchPost,
       searchText,
+      setPage,
     }
   }
 }
 </script>
-
 <style scoped>
+.text-link {
+  text-decoration: none;
+}
 
+.text-link:hover {
+  text-decoration: underline;
+}
 </style>

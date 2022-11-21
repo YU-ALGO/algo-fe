@@ -25,8 +25,8 @@
               <i v-else class="ri-thumb-up-fill"></i>
             </button>
             <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
-            <router-link class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { editable: true } }">수정</router-link>
-            <button class="btn btn-danger me-2" @click="deletePost">삭제</button>
+            <router-link v-if="checkPermission" class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { editable: true } }">수정</router-link>
+            <button v-if="checkPermission" class="btn btn-danger me-2" @click="deletePost">삭제</button>
             <button class="btn btn-primary" @click="moveToPostListPage">목록</button>
           </div>
         </div>
@@ -44,7 +44,9 @@
             <div class="row justify-content-end mb-4">
               <div class="col">
                 <div v-if="!comment.is_deleted">
-                  <span class="fw-bold me-3">{{ comment.author }}</span>
+                  <span class="fw-bold me-3">
+                    <a class="text-link text-body" :href="`/profile/${comment.author}`">{{ comment.author }}</a>
+                  </span>
                   <code>{{ comment.created_at === comment.modified_at ? comment.created_at : comment.modified_at + ' (수정됨)' }}</code>
                   <div>{{ comment.content }}</div>
                 </div>
@@ -105,14 +107,16 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
+import NotFound from '@compo/NotFound'
 import Loading from '@compo/Loading'
 
 export default {
   components: {
+    NotFound,
     Loading,
   },
   setup() {
@@ -252,6 +256,8 @@ export default {
       }
     }
 
+    const checkPermission = computed(() => postData.value.author === store.getters['nickname'])
+
     onMounted(() => {
       // get post data
       axiosGet(`/api/v1/boards/1/posts/${postId}`
@@ -289,11 +295,18 @@ export default {
       addSubComment,
       modifyComment,
       deleteComment,
+      checkPermission,
     }
   }
 }
 </script>
 
 <style scoped>
+.text-link {
+  text-decoration: none;
+}
 
+.text-link:hover {
+  text-decoration: underline;
+}
 </style>

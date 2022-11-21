@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <h2>boards/index.vue</h2>
-  </div>
+  <FoodView/>
 </template>
 
 <script>
+import FoodView from '@compo/FoodView'
 export default {
-
+  components: {
+    FoodView,
+  }
 }
 </script>
 

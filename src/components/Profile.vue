@@ -8,10 +8,10 @@
               <div class="d-flex flex-column align-items-center text-center">
                 <img src="https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2" alt="Admin" class="rounded-circle" width="150">
                 <div class="mt-3">
-                  <h4>{{ oldNickname }}</h4>
-                  <!--                  <p class="text-secondary mb-1">직업</p>-->
+                  <h4>{{ userData.nickname }}</h4>
+                  <!-- <p class="text-secondary mb-1">직업</p> -->
                   <p class="text-muted font-size-sm">일반회원</p>
-                  <!--                  <button class="btn btn-primary me-2">팔로우</button>-->
+                  <!-- <button class="btn btn-primary me-2">팔로우</button> -->
                   <button type="button" @click="getRecvMsgList(1, false)" class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
                     쪽지함
                     <span v-show="parseInt(unReadCount) > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -32,11 +32,11 @@
 
               <div class="row">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">아이디</h6>
+                  <h6 class="mb-0 fw-bold">아이디</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-9">
                   <div>
-                    {{ username }}
+                    {{ userData.username }}
                   </div>
                 </div>
               </div>
@@ -44,19 +44,19 @@
 
               <div class="row">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">닉네임</h6>
+                  <h6 class="mb-0 fw-bold">닉네임</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-9">
                   <div v-if="!editProfile">
-                    {{ oldNickname }}
+                    {{ userData.nickname }}
                   </div>
                   <div v-else>
                     <div class="row">
                       <div class="col">
-                        <input v-model="nickname" type="text" class="form-control">
+                        <input v-model="newNickname" type="text" class="form-control">
                       </div>
                       <div class="col">
-                        <button class="btn btn-primary" @click="nicknameCheck">중복확인</button>
+                        <button class="btn btn-primary" @click="nicknameCheck">중복 확인</button>
                       </div>
                     </div>
                   </div>
@@ -66,35 +66,40 @@
 
               <div class="row">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">가입일</h6>
+                  <h6 class="mb-0 fw-bold">가입일</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
-                  ???
-                </div>
-              </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <h6 class="mb-0">알레르기 정보</h6>
-                </div>
-                <div class="col-sm-9 text-secondary">
-                  없음
+                <div class="col-sm-9">
+                  {{ userData.reg_date }}
                 </div>
               </div>
               <hr>
               <div class="row">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">한 줄 소개</h6>
+                  <h6 class="mb-0 fw-bold">알레르기 정보</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
-                  없음
+                <div class="col-sm-9 d-inline-flex">
+                  <div v-for="(val, key) in userData.userAllergyInfo" :key="key">
+                    <div v-if="val"> {{ key }} &nbsp; </div>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <h6 class="mb-0 fw-bold">한 줄 소개</h6>
+                </div>
+                <div v-if="!editProfile" class="col-sm-9">
+                  {{ userData.introduce }}
+                </div>
+                <div v-else class="col-sm-9">
+                  <input v-model="newIntroduce" type="text" class="form-control">
                 </div>
               </div>
 
               <hr>
               <div class="row justify-content-around">
-                <div class="col-lg-6 col-sm-12 text-lg-start text-center">
-                  <button class="btn btn-info " @click="editProfileChange">
+                <div class="col-lg-6 col-sm-12 " :class="editProfile ? 'text-start' : 'text-center'">
+                  <button class="btn btn-info" @click="editProfileChange">
                     <div v-if="!editProfile">
                       프로필 수정
                     </div>
@@ -105,13 +110,31 @@
                 </div>
 
                 <div class="col-lg-6 col-sm-12 text-lg-end text-center" v-if="editProfile">
-                  <button class="btn btn-primary m-2" @click="editProfileChange">
+                  <button class="btn btn-primary me-2" @click="updateProfile">
                     저장
                   </button>
-                  <button class="btn btn-primary " @click="editProfileChange">
+                  <button class="btn btn-primary " @click="updatePassword">
                     비밀번호 수정
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="card-title fw-bold mb-2">내가 쓴 글</div>
+              <div v-for="post in userPosts" :key="post.postId" class="d-flex">
+                <a class="text-link text-body" :href="`/boards/views/${post.postId}`"> {{ post.title }} </a>
+                <code class="ms-auto"> {{ post.created_at }} </code>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="card-title fw-bold mb-2">내가 쓴 댓글</div>
+              <div v-for="comment in userComments" :key="comment.postId" class="d-flex">
+                <a class="text-link text-body" :href="`/boards/views/${comment.postId}`"> {{ comment.content }} </a>
+                <code class="ms-auto"> {{ comment.created_at }} </code>
               </div>
             </div>
           </div>
@@ -201,7 +224,6 @@
             </tbody>
 
             <tbody v-else>
-            {{selectedList}}
             <tr v-for="(msg, index) in recvMsgList" :key="msg.id">
               <th scope="row">
                 <input type="checkbox" :id="msg.id" :value="msg.id" v-model="selectedList" :key="index.id">
@@ -342,19 +364,37 @@
 <script>
 import { ref, onMounted, computed } from 'vue'
 import useAxios from '@/modules/axios'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import router from '@/router'
 import axios from 'axios'
 
 export default {
   setup() {
-    const { axiosPost, axiosGet, axiosDelete } = useAxios()
+    const { axiosGet, axiosPost, axiosPatch, axiosDelete } = useAxios()
+    const route = useRoute()
     const store = useStore()
-    const oldNickname = ref(store.getters['nickname'])
-    const nickname = ref('')
-    const username = ref(store.getters['username'])
+
+    const userData = ref({
+      introduce: '',
+      userAllergyInfo: Object,
+      nickname: '',
+      username: '',
+      profileImg: '',
+      isAuthor: Boolean,
+      reg_date: '',
+    })
+
+    const userPosts = ref([])
+    const userComments = ref([])
+    const newNickname = ref('')
     const editProfile = ref(false)  // 프로필 수정 상태인지 확인
     const isNickAvail = ref(false)
     const modalShow = ref(false)
+
+    // 한줄 소개
+    const newIntroduce = ref('')
+
     // Pagination
     const currentPage = ref(1)  // 현재 페이지
     const numberOfPages = ref(1)
@@ -369,14 +409,16 @@ export default {
 
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
+      newNickname.value = userData.value.nickname
+      newIntroduce.value = userData.value.introduce
     }
 
     const nicknameCheck = () => {
-      if(nickname.value === store.getters['nickname']) {
+      if(newNickname.value === userData.value.nickname) {
         alert('현재 닉네임과 동일합니다.')
       }
       else {
-        axiosGet(`/api/v1/users/${nickname.value}/exists`, (res) => {
+        axiosGet(`/api/v1/users/${newNickname.value}/exists`, (res) => {
           if (res.data) {
             alert('이미 사용중인 닉네임입니다.')
           } else {
@@ -386,6 +428,31 @@ export default {
           console.error(err)
         })
       }
+    }
+
+    // 프로필 수정
+    const updateProfile = () => {
+      const promiseList = []
+
+      if(newNickname.value !== userData.value.nickname) {
+        promiseList.push(axiosPatch('/api/v1/users/nickname', { nickname: newNickname.value }))
+      }
+      if(newIntroduce.value !== userData.value.introduce) {
+        promiseList.push(axiosPatch('/api/v1/users/introduce', { introduce: newIntroduce.value }))
+      }
+
+      Promise.all(promiseList)
+        .then(() => {
+          alert('변경되었습니다.')
+          store.commit('nickname', newNickname.value)
+          router.push(`/profile/${newNickname.value}`).then(() => { router.go() })
+        }).catch(() => {
+          alert('닉네임 중복 또는 한 줄 소개를 확인해주세요.')
+        })
+    }
+
+    const updatePassword = () => {
+      router.push('/changepw')
     }
 
     // 쪽지 작성
@@ -421,49 +488,78 @@ export default {
       receiver_name.value = ''
     }
 
-    const getRecvMsgList = async(page = currentPage.value, notRead) => {  // 수신함 목록 받아오기
+    const getRecvMsgList = (page = currentPage.value, notRead) => {  // 수신함 목록 받아오기
       if (notRead) {
         msgMode.value = 2
       } else {
         msgMode.value = 1
       }
       currentPage.value = page
-      try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: true,
-        })
-        numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-        if (res.data.length !== 0) {
-          recvMsgList.value = res.data
-          let step;
-          if (recvMsgList.value.length === 0) {
-            for (step = 0; step < recvMsgList.value.length; step++) {
-              recvMsgArr.value.push(recvMsgList.value[step].id)
+      axiosGet(`/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`
+          , (res) => {
+            if (res.data.length !== 0) {
+              recvMsgList.value = res.data
+              // let step
+              if (recvMsgList.value.length === 0) {
+                recvMsgArr.value = []
+                // for (step = 0; step < recvMsgList.value.length; step++) {
+                //   recvMsgArr.value.push(recvMsgList.value[step].id)
+                // }
+              } else {
+                recvMsgList.value.forEach((msg) => {
+                  recvMsgArr.value.push(msg.id)
+                })
+                // for (step = 0; step < recvMsgList.value.length; step++) {
+                //   recvMsgArr.value.push(recvMsgList.value[step].id)
+                // }
+              }
+              console.log(recvMsgArr.value)
+            } else {
+              recvMsgList.value = null
             }
-          } else {
-            recvMsgArr.value = []
-            for (step = 0; step < recvMsgList.value.length; step++) {
-              recvMsgArr.value.push(recvMsgList.value[step].id)
-            }
-          }
-          console.log(recvMsgArr.value)
-        } else {
-          recvMsgList.value = null
-        }
-      } catch (error) {
-        console.log(error)
-      }
+          }, (err) => {
+            console.log(err)
+          })
+
+      // try {
+      //   const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       'Access-Control-Allow-Origin': '*',
+      //     },
+      //     withCredentials: true,
+      //   })
+      //   numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+      //   if (res.data.length !== 0) {
+      //     recvMsgList.value = res.data
+      //     let step;
+      //     if (recvMsgList.value.length === 0) {
+      //       for (step = 0; step < recvMsgList.value.length; step++) {
+      //         recvMsgArr.value.push(recvMsgList.value[step].id)
+      //       }
+      //     } else {
+      //       recvMsgArr.value = []
+      //       for (step = 0; step < recvMsgList.value.length; step++) {
+      //         recvMsgArr.value.push(recvMsgList.value[step].id)
+      //       }
+      //     }
+      //     console.log(recvMsgArr.value)
+      //   } else {
+      //     recvMsgList.value = null
+      //   }
+      // } catch (error) {
+      //   console.log(error)
+      // }
     }
 
-    const getSendMsgList = async(page = currentPage.value) => {  // 발신함 목록 받아오기
+    const getSendMsgList = async (page = currentPage.value) => {  // 발신함 목록 받아오기
       msgMode.value = 3
       currentPage.value = page
+      // axiosGet(`/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+      //
+      // })
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -485,7 +581,7 @@ export default {
       msgMode.value = 4
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -549,12 +645,39 @@ export default {
 
     onMounted(() => {
       modalShow.value = true
+
       axiosGet(`/api/v1/messages/non_read_counts`, (res) => {
         unReadCount.value = res.data
       }, (err) => {
         console.error(err)
       })
-      nickname.value = oldNickname.value
+
+      // 사용자 정보
+      axiosGet(`/api/v1/profiles/${route.params.nickname}`
+          , (res) => {
+            userData.value = res.data
+            newNickname.value = userData.value.nickname
+            newIntroduce.value = userData.value.introduce
+          }, (err) => {
+            console.log('사용자 정보 에러ㅠㅠ')
+            console.error(err)
+          })
+
+      // 사용자 작성 글 정보
+      axiosGet(`/api/v1/profiles/${route.params.nickname}/posts`
+          , (res) => {
+            userPosts.value = res.data
+          }, (err) => {
+            console.log(err)
+          })
+
+      // 사용자 작성 댓글 정보
+      axiosGet(`/api/v1/profiles/${route.params.nickname}/comments`
+          , (res) => {
+            userComments.value = res.data
+          }, (err) => {
+            console.log(err)
+          })
     })
 
     const pageRefresh = () => { // 모달창을 빠져 나갔을 때 Profile 페이지 새로고침
@@ -601,10 +724,10 @@ export default {
 
     const selectMsgDelete = () => {
       if(confirm("선택한 쪽지를 모두 삭제하시겠습니까?")) {
-        axios.delete(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes`, {
+        axios.delete(`http://be.algo.r-e.kr:8088/api/v1/messages/inboxes`, {
           data: {
             messageIdArray: selectedList.value
-          }, headers: {
+          },headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
           },
@@ -619,15 +742,17 @@ export default {
 
     return {
       modalShow,
-
-      oldNickname,
-      nickname,
-      username,
+      userData,
+      userPosts,
+      userComments,
+      newNickname,
+      newIntroduce,
       editProfile,
       editProfileChange,
       nicknameCheck,
+      updateProfile,
+      updatePassword,
       isNickAvail,
-
       title,
       receiver_name,
       content,
@@ -706,6 +831,14 @@ body{
 }
 .mb-3, .my-3 {
   margin-bottom: 1rem!important;
+}
+
+.text-link {
+  text-decoration: none;
+ }
+
+.text-link:hover {
+  text-decoration: underline;
 }
 
 .bg-gray-300 {

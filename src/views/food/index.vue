@@ -1,13 +1,13 @@
 <template>
-  <Food/>
+  <FoodList/>
 </template>
 
 <script>
-import Food from '@compo/Food.vue'
+import FoodList from '@compo/FoodList.vue'
 
 export default {
   components: {
-    Food,
+    FoodList,
   },
 }
 </script>

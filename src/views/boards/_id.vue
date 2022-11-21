@@ -47,17 +47,17 @@ export default {
       })
     })
 
-    const moveToWritePage = () => {
-      router.push({
-        name: 'PostWrite'
-      })
-    }
+    // const moveToWritePage = () => {
+    //   router.push({
+    //     name: 'PostWrite'
+    //   })
+    // }
 
     return {
       boardId,
       boardName,
-      moveToWritePage,
       loading,
+      // moveToWritePage,
     }
   }
 }

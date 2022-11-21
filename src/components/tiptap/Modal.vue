@@ -13,7 +13,7 @@
           <button @click="closeModal" class="btn btn-outline-secondary">
             닫기
           </button>
-          <button class="btn btn-success" @click="uploadImage" :disabled="!validImage">
+          <button class="btn btn-success" @click="requestAuth" :disabled="!validImage">
             추가
           </button>
         </div>
@@ -25,16 +25,16 @@
 <script>
 import { ref, computed } from 'vue'
 import useAxios from '@/modules/axios'
-import axios from 'axios' // 임시로 사용
+import { axios } from '@bundled-es-modules/axios'
 
 export default {
   setup(props, context) {
-    const { axiosPost } = useAxios()
+    const { axiosPost, axiosPut } = useAxios()
     const imageSrc = ref('')
     const show = ref(false)
     const file = ref(null)
     const fileName = ref('')
-    const formData = new FormData()
+    // const formData = new FormData()
 
     const validImage = computed(() => {
       return fileName.value.match(/\.(jpe?g|gif|png)$/) !== null
@@ -51,40 +51,51 @@ export default {
     }
 
     const fileChange = () => {
-      formData.append('image', file.value.files[0])
-      // console.log(file.value.files)
+      // formData.append('image', file.value.files[0])
+      console.log(file.value.files)
       fileName.value = file.value.files[0].name
     }
 
-    const uploadImage = () => { // 서버에 이미지 업로드
-      axios.post('http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts/images', formData, {
+    const filePath = ref('')
+
+    const requestAuth = () => { // 이미지 업로드 권한 취득
+      axiosPost('http://be.algo.r-e.kr:8088/api/v1/posts/images', {
+        file_name: fileName.value,
+        image_request_type: "POST",
+      }, (response) => {
+        filePath.value = response.data.substring(response.data.indexOf('post_image')+11,response.data.indexOf('?'))
+        uploadImage(response.data)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const uploadImage = (awsURL) => { // 백엔드 서버에 URL 요청
+      axios.put(awsURL, file.value.files[0], {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Access-Control-Allow-Origin': '*',
         },
         withCredentials: true,
       }).then((res) => {
-        insertImage(res.data)
-      }).catch((error) => {
-        console.error(error)
+        insertImage(filePath.value)
+        // console.log(res)
+      }).catch((err) => {
+        console.error(err)
       })
     }
 
     const insertImage = (imageUrl) => { // 이미지 글쓰기 본문에 삽입
-      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/1/posts/images/${imageUrl}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-        withCredentials: true,
-      }).then((response) => {
-            console.log(response)
-            imageSrc.value = response.data
-            context.emit('onConfirm', {
-              src: imageSrc.value
-            })
-            closeModal()
-          }).catch((err) => {
+      axiosPost('http://be.algo.r-e.kr:8088/api/v1/posts/images', {
+        file_name: imageUrl,
+        image_request_type: "GET",
+      }, (response) => {
+        imageSrc.value = response.data
+        context.emit('onConfirm', {
+          src: imageSrc.value
+        })
+        closeModal()
+      }, (err) => {
         console.error(err)
       })
     }
@@ -98,6 +109,7 @@ export default {
       closeModal,
       fileChange,
       uploadImage,
+      requestAuth,
     }
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex m-5 p-5 justify-content-center">
+  <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="spinner-border m-5 text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>

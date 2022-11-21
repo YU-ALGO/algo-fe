@@ -29,10 +29,10 @@ export default {
   },
 
   setup() {
-    const { axiosGet } = useAxios()
-    const route = useRoute()
-    const router = useRouter()
-    const nickname = route.params.nickname
+    // const { axiosGet } = useAxios()
+    // const route = useRoute()
+    // const router = useRouter()
+    // const nickname = route.params.nickname
     const loading = ref(1)
 
     onMounted(() => {
