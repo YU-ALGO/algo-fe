@@ -50,10 +50,11 @@
             <div class="row justify-content-end mb-4">
               <div class="col">
                 <div v-if="!comment.is_deleted">
-                  <span class="fw-bold me-3">
+                  <span class="fw-bold me-1">
                     <a class="text-link text-body" :href="`/profile/${comment.author}`">{{ comment.author }}</a>
                   </span>
-                  <code>{{ comment.created_at === comment.modified_at ? comment.created_at : comment.modified_at + ' (수정됨)' }}</code>
+                  <i class="bi bi-dot me-1"></i>
+                  <code class="align-text-bottom">{{ comment.created_at === comment.modified_at ? comment.created_at : comment.modified_at + ' (수정됨)' }}</code>
                   <div>{{ comment.content }}</div>
                 </div>
                 <div v-else>
