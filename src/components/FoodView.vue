@@ -3,39 +3,47 @@
     <div class="mt-4">
       <div class="card shadow">
         <div class="card-body">
-          <h5 class="card-title" style="display:inline">맛있는 핏자</h5>
-          <a class="btn btn-outline-dark mt-auto" style=" float: right;">&#x2764;</a>
-          <button type="button" class="btn btn-primary" style=" float: right;margin-right: 5px;">목록</button>
+          <h5 class="card-title" style="display:inline">{{ foodData.food_name }}</h5>
+          <button class="btn mt-auto" :class="foodData.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite" style=" float: right;">
+            <i v-if="!foodData.is_like" class="bi-star"></i>
+            <i v-else class="bi-star-fill"></i>
+          </button>
+          <button type="button" class="btn btn-primary" style=" float: right;margin-right: 5px;" @click="moveToFoodListPage">목록</button>
           <hr/>
           <div class="card border-light mb-3">
             <div class="row g-0">
               <div class="col-md-4">
-                <img src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                     class="img-fluid rounded-start" alt="...">
+                <img :src="foodData.food_image_url" class="img-fluid rounded-start" alt="...">
               </div>
               <div class="col-md-8">
                 <div class="card-body" style="padding-top: 0px;padding-bottom: 0px;">
                   <table class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col" style="width: 150px"></th>
+                      <th scope="col" style="width: 500px"></th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                       <th scope="row">식품보고번호</th>
-                      <td>마상균 굉장하다</td>
+                      <td>{{ foodData.code }}</td>
                     </tr>
                     <tr>
                       <th scope="row">식품 종류</th>
-                      <td>마상균 굉장하다</td>
+                      <td>{{ foodData.product_kind }}</td>
                     </tr>
                     <tr>
                       <th scope="row">영양 성분</th>
-                      <td>마상균 굉장하다</td>
+                      <td>{{ foodData.nutrition }}</td>
                     </tr>
                     <tr>
                       <th scope="row">원재료명</th>
-                      <td>마상균 굉장하다마상균 굉장하다마상균 굉장하다마상균 굉장하다마상균 굉장하다마상균 굉장하다</td>
+                      <td>{{ foodData.raw_materials }}</td>
                     </tr>
                     <tr>
                       <th scope="row">알레르기 성분</th>
-                      <td>박세훈</td>
+                      <td>{{ foodData.allergy }}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -144,7 +152,71 @@
 </template>
 
 <script>
-export default {}
+import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import useAxios from '@/modules/axios'
+
+export default {
+  setup() {
+    const { axiosGet, axiosPost, axiosDelete } = useAxios()
+    const route = useRoute()
+    const router = useRouter()
+    const foodId = route.params.id
+    const foodData = ref({
+      raw_materials: '',
+      allergy: '',
+      food_image_url: '',
+      code: '',
+      food_name: '',
+      is_like: '',
+      like_count: '',
+      nutrition: '',
+      product_kind: '',
+    })
+
+    const favorite = () => {
+      if (foodData.value.is_like) {
+        axiosDelete(`/api/v1/foods/${foodId}/likes`
+            , () => {
+              location.reload()
+            }, () => {
+              alert('오류가 발생했습니다.')
+            })
+      } else {
+        axiosPost(`/api/v1/foods/${foodId}/likes`
+            , {}
+            , () => {
+              alert('즐겨찾기에 추가되었습니다.')
+              location.reload()
+            }, () => {
+              alert("오류가 발생했습니다.")
+            })
+      }
+    }
+
+    const moveToFoodListPage = () => {
+      router.go(-1)
+    }
+
+    onMounted(() => {
+      // get post data
+      axiosGet(`/api/v1/foods/${foodId}`
+          , (res) => {
+        console.log(res)
+            foodData.value = res.data
+          }, (err) => {
+            console.error(err)
+          })
+    })
+
+    return {
+      foodId,
+      foodData,
+      moveToFoodListPage,
+      favorite,
+    }
+  }
+}
 </script>
 
 <style scoped>

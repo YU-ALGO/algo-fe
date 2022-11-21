@@ -6,7 +6,8 @@
         <label for="username" :style="!emailValidation ? 'color: red' : ''">이메일 주소</label>
         <div class="row">
           <div class="col-9">
-            <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck" @keyup.enter="sendVerifyMail" maxlength="50" :disabled="sendMail">
+            <input type="text" class="form-control" id="username" v-model="username" @blur="idCheck"
+                   @keyup.enter="sendVerifyMail" maxlength="50" :disabled="sendMail">
             <p v-show="!emailValidation" style="color: red"> 이메일 주소를 다시 확인해주세요. </p>
             <p v-show="!resVal" style="color: red"> 이미 사용중인 이메일입니다. </p>
           </div>
@@ -16,7 +17,8 @@
         </div>
         <div class="row mt-2">
           <div class="col-8">
-            <input type="tel" v-model="code" class="form-control" placeholder="인증번호 입력하세요" maxlength="6" :disabled="!isCodeValidate">
+            <input type="tel" v-model="code" class="form-control" placeholder="인증번호 입력하세요" maxlength="6"
+                   :disabled="!isCodeValidate">
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" @click="checkCode" :disabled="!isCodeValidate">인증 확인</button>
@@ -30,26 +32,30 @@
       </div>
       <div class="mb-3">
         <label for="nickname" :style="!nicknameValidation || !nickresVal ? 'color:red' : ''">닉네임</label>
-        <input type="text" class="form-control" id="nickname" v-model="nickname" @blur="nickCheck" @keyup.enter="submit" maxlength="40" required>
+        <input type="text" class="form-control" id="nickname" v-model="nickname" @blur="nickCheck" @keyup.enter="submit"
+               maxlength="40" required>
         <p v-show="!nicknameValidation" style="color: red"> 한글과 영문 대 소문자를 사용하세요. (특수기호, 공백 사용 불가) </p>
         <p v-show="!nickresVal" style="color: red"> 이미 사용중인 닉네임입니다. </p>
       </div>
       <div class="mb-3">
         <label for="password">비밀번호 (6자 이상)</label>
-        <input type="password" class="form-control" id="password" v-model="password" @keyup.enter="submit" minlength="6" maxlength="20" required>
+        <input type="password" class="form-control" id="password" v-model="password" @keyup.enter="submit" minlength="6"
+               maxlength="20" required>
       </div>
       <div class="mb-3">
         <label for="password" :style="!passCheck ? 'color : red' : ''">비밀번호 확인</label>
-        <input type="password" class="form-control" id="passwordCheck" v-model="passwordCheck" @keyup.enter="submit" minlength="6" maxlength="20" required>
+        <input type="password" class="form-control" id="passwordCheck" v-model="passwordCheck" @keyup.enter="submit"
+               minlength="6" maxlength="20" required>
         <p v-show="!passCheck" style="color: red"> 비밀번호가 일치하지 않습니다 .</p>
       </div>
       <div class="mb-3">
         <label>알레르기 정보</label>
         <div class="card p-3 mb-3 bg-body">
-          <div v-for="data in allergyCheckData" :key="data.id">
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" v-model="data.selected" :id="`${data.name}`" :value="`${data.name}`">
-              <label class="form-check-label" for="inlineCheckbox1">{{ data.foodName }}</label>
+          <div>
+            <div class="form-check form-check-inline" v-for="data in allergyCheckData" :key="data.id">
+              <input class="form-check-input" type="checkbox" v-model="data.selected" :id="`${data.name}`"
+                     :value="`${data.name}`">
+              <span class="form-check-label" for="inlineCheckbox1">{{ data.foodName }}</span>
             </div>
           </div>
         </div>
@@ -65,13 +71,13 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue'
+import {ref, watch} from 'vue'
 import useAxios from '@/modules/axios.js'
 import router from '@/router'
 
 export default {
   setup() {
-    const { axiosGet, axiosPost } = useAxios()
+    const {axiosGet, axiosPost} = useAxios()
 
     const username = ref('')
     const password = ref('')
@@ -91,35 +97,35 @@ export default {
     const isCodeValidate = ref(false) // 코드 인증칸 활성화 여부
 
     const allergyCheckData = ref([
-      {id: 1, name: 'squid', foodName:'오징어', selected: false},
-      {id: 2, name: 'eggs',  foodName:'난류',selected: false},
-      {id: 3, name: 'chicken', foodName:'닭', selected: false},
-      {id: 4, name: 'wheat',  foodName:'밀',selected: false},
-      {id: 5, name: 'nuts', foodName:'견과류', selected: false},
-      {id: 6, name: 'milk', foodName:'우유', selected: false},
-      {id: 7, name: 'pork', foodName:'돼지고기', selected: false},
-      {id: 8, name: 'beef', foodName:'소고기', selected: false},
-      {id: 9, name: 'clams', foodName:'조개류', selected: false},
-      {id: 10, name: 'sulphite', foodName:'아황산류', selected: false},
-      {id: 11, name: 'buckwheat', foodName:'메밀', selected: false},
-      {id: 12, name: 'crab', foodName:'게', selected: false},
-      {id: 13, name: 'shrimp', foodName:'새우', selected: false},
-      {id: 14, name: 'soybean', foodName:'대두', selected: false},
-      {id: 15, name: 'tomato', foodName:'토마토', selected: false},
-      {id: 16, name: 'fish', foodName:'생선', selected: false},
-      {id: 17, name: 'sesame', foodName:'참깨', selected: false},
-      {id: 18, name: 'fruit', foodName:'과일', selected: false},
-      {id: 19, name: 'garlic', foodName:'마늘', selected: false},
-      {id: 20, name: 'vegetable', foodName:'채소', selected: false},
+      {id: 1, name: 'squid', foodName: '오징어', selected: false},
+      {id: 2, name: 'eggs', foodName: '난류', selected: false},
+      {id: 3, name: 'chicken', foodName: '닭', selected: false},
+      {id: 4, name: 'wheat', foodName: '밀', selected: false},
+      {id: 5, name: 'nuts', foodName: '견과류', selected: false},
+      {id: 6, name: 'milk', foodName: '우유', selected: false},
+      {id: 7, name: 'pork', foodName: '돼지고기', selected: false},
+      {id: 8, name: 'beef', foodName: '소고기', selected: false},
+      {id: 9, name: 'clams', foodName: '조개류', selected: false},
+      {id: 10, name: 'sulphite', foodName: '아황산류', selected: false},
+      {id: 11, name: 'buckwheat', foodName: '메밀', selected: false},
+      {id: 12, name: 'crab', foodName: '게', selected: false},
+      {id: 13, name: 'shrimp', foodName: '새우', selected: false},
+      {id: 14, name: 'soybean', foodName: '대두', selected: false},
+      {id: 15, name: 'tomato', foodName: '토마토', selected: false},
+      {id: 16, name: 'fish', foodName: '생선', selected: false},
+      {id: 17, name: 'sesame', foodName: '참깨', selected: false},
+      {id: 18, name: 'fruit', foodName: '과일', selected: false},
+      {id: 19, name: 'garlic', foodName: '마늘', selected: false},
+      {id: 20, name: 'vegetable', foodName: '채소', selected: false},
     ])
 
     const allergyData = new Map()
 
     const checkSelected = () => {
-      for (let i=0; i<allergyCheckData.value.length; i++) {
+      for (let i = 0; i < allergyCheckData.value.length; i++) {
         allergyData.set(allergyCheckData.value[i].name, allergyCheckData.value[i].selected)
       }
-      console.log(Object.fromEntries(allergyData))
+      // console.log(Object.fromEntries(allergyData))
     }
 
     const sendVerifyMail = () => {
@@ -164,7 +170,7 @@ export default {
     }
 
     const idCheck = () => { // 이메일(아이디) 중복 검사
-      if(username.value && emailValidation.value) {
+      if (username.value && emailValidation.value) {
         axiosGet(`/api/v1/users/${username.value}/exists`, (res) => {
           resVal.value = !res.data
         }, (err) => console.error(err))
@@ -178,7 +184,7 @@ export default {
     }
 
     const nickCheck = () => { // 닉네임 중복 검사
-      if(nickname.value && nicknameValidation.value) {
+      if (nickname.value && nicknameValidation.value) {
         axiosGet(`/api/v1/users/exists?nickname=${nickname.value}`, (res) => {
           nickresVal.value = !res.data
         }, (err) => console.error(err))
@@ -187,8 +193,8 @@ export default {
 
     const checkCode = () => {
       axiosPost('/api/v1/users/validate', {
-        username : username.value,
-        code : code.value
+        username: username.value,
+        code: code.value
       }, () => {
         alert('인증에 성공했습니다.')
         codeValidation.value = true
@@ -209,7 +215,7 @@ export default {
     const submit = () => {
       if (username.value === '' || password.value === '' || passwordCheck.value === '' || nickname.value === '') {
         alert('회원가입 양식을 모두 작성해주세요.')
-      } else if(emailValidation.value && nicknameValidation.value && passCheck.value && resVal.value && nickresVal.value && codeValidation.value && sendMail.value) {
+      } else if (emailValidation.value && nicknameValidation.value && passCheck.value && resVal.value && nickresVal.value && codeValidation.value && sendMail.value) {
         axiosPost('/api/v1/signup', {
           username: username.value,
           password: password.value,
@@ -224,8 +230,7 @@ export default {
         })
       } else if (!codeValidation.value || !sendMail.value) {
         alert('이메일 인증이 필요합니다.')
-      }
-      else {
+      } else {
         alert('회원가입 양식을 다시 확인해주세요.')
       }
     }

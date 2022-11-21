@@ -1,6 +1,8 @@
 <template>
   <div class="container">
     <div class="row">
+
+      <!--최근 본 식품-->
       <div class="col-2 mt-4">
         <div class="accordion position-sticky" style="top: 2rem;">
           <div class="accordion-item">
@@ -21,227 +23,37 @@
         </div>
       </div>
 
+      <!--식품정보-->
       <div class="col-8 card mt-4 shadow p-3 mb-5 bg-body">
         <div class="card-body">
           <h4 class="card-title mb-4">식품 정보</h4>
           <div class="input-group mb-3">
-            <input type="search" class="form-control" placeholder="식품명을 입력하세요.">
-            <button type="button" class="btn btn-primary">
+            <input type="search" class="form-control" placeholder="식품명을 입력하세요." v-model="searchText" @keyup.enter="searchFood">
+            <button type="button" class="btn btn-primary" @click="searchFood">
               <i class="ri-search-line"></i>
             </button>
           </div>
-          <div class="card mt-4 p-3 mb-3 bg-body">
-            <h5 class="card-title mb-3">알레르기</h5>
-            <div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op1">
-                <label class="form-check-label" for="inlineCheckbox1">오징어</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op2">
-                <label class="form-check-label" for="inlineCheckbox2">난류</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op3">
-                <label class="form-check-label" for="inlineCheckbox2">닭</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op4">
-                <label class="form-check-label" for="inlineCheckbox2">밀</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op5">
-                <label class="form-check-label" for="inlineCheckbox2">견과류</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op6">
-                <label class="form-check-label" for="inlineCheckbox2">우유</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op7">
-                <label class="form-check-label" for="inlineCheckbox2">돼지고기</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op8">
-                <label class="form-check-label" for="inlineCheckbox2">소고기</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op9">
-                <label class="form-check-label" for="inlineCheckbox2">조개류</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op10">
-                <label class="form-check-label" for="inlineCheckbox2">아황산류</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op11">
-                <label class="form-check-label" for="inlineCheckbox2">메밀</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op12">
-                <label class="form-check-label" for="inlineCheckbox2">게</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op13">
-                <label class="form-check-label" for="inlineCheckbox2">새우</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op14">
-                <label class="form-check-label" for="inlineCheckbox2">대두</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op15">
-                <label class="form-check-label" for="inlineCheckbox2">토마토</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op16">
-                <label class="form-check-label" for="inlineCheckbox2">생선</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op17">
-                <label class="form-check-label" for="inlineCheckbox2">참깨</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op18">
-                <label class="form-check-label" for="inlineCheckbox2">과일</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op19">
-                <label class="form-check-label" for="inlineCheckbox2">마늘</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" value="op20">
-                <label class="form-check-label" for="inlineCheckbox2">채소</label>
+          <div class="mb-3">
+            <div class="card p-3 mb-3 bg-body">
+              <h5>알레르기 정보</h5>
+              <div>
+                <div class="form-check form-check-inline" v-for="data in allergyCheckData" :key="data.id">
+                  <input class="form-check-input" type="checkbox" v-model="data.selected" :id="`${data.name}`" :value="`${data.name}`">
+                  <span class="form-check-label">{{ data.foodName }}</span>
+                </div>
               </div>
             </div>
           </div>
           <section class="py-2">
             <div class="container px-4 px-lg-1">
               <div class="row gx-4 gx-lg-2 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
+
+                <div class="col mb-5" v-for="food in foodList" :key="food.id">
+                  <div class="card-shadow card h-100">
+                    <img class="card-img-top" :src=food.food_image_url alt="..." width="300px" height="150">
                     <div class="card-body p-4">
                       <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left:5px;padding-right: 6px;padding-left: 6px;padding-top: 4px;">&#x2764;</a>
+                        <a class="food-name stretched-link" :href="`/foods/${food.id}`">{{ food.food_name }}</a>
                       </div>
                     </div>
                   </div>
@@ -250,19 +62,15 @@
             </div>
           </section>
           <div class="d-flex justify-content-center mt-4">
-            <!-- Pagination -->
-            <nav aria-label="Page navigation">
-              <ul class="pagination">
-                <li class="page-item active"><a class="page-link">1</a></li>
-                <li class="page-item"><a class="page-link">2</a></li>
-                <li class="page-item"><a class="page-link">3</a></li>
-                <li class="page-item"><a class="page-link">다음</a></li>
-              </ul>
-            </nav>
+
+            <!--Pagination-->
+            <Pagination :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
+
           </div>
         </div>
       </div>
 
+      <!--추천식품-->
       <div class="col-2 mt-4">
         <div class="accordion position-sticky" style="top: 2rem;">
           <div class="accordion-item">
@@ -279,6 +87,7 @@
                   <li class="list-group-item">수박</li>
                   <li class="list-group-item">참외</li>
                   <li class="list-group-item">메론</li>
+                  <button class="btn btn-primary" @click="requestData">데이터 요청하기</button>
                 </ul>
               </div>
             </div>
@@ -290,9 +99,143 @@
 </template>
 
 <script>
-export default {}
+import { onMounted, ref, watch, computed } from 'vue'
+import useAxios from '@/modules/axios'
+import axios from 'axios'
+import Pagination from '@compo/Pagination.vue'
+const { axiosGet, axiosPost, axiosDelete, axiosPatch } = useAxios()
+
+export default {
+  components: {
+    Pagination,
+  },
+  setup() {
+    const requestData = () => { // 임시
+      axiosGet('/api/v1/foods/recommendation', (res) =>{
+        console.log(res)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const foodList = ref('')  // getFoodList()로 가져온 식품 데이터
+
+    const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
+      {id: 1, name: 'squid', foodName: '오징어', selected: false},
+      {id: 2, name: 'eggs', foodName: '난류', selected: false},
+      {id: 3, name: 'chicken', foodName: '닭', selected: false},
+      {id: 4, name: 'wheat', foodName: '밀', selected: false},
+      {id: 5, name: 'nuts', foodName: '견과류', selected: false},
+      {id: 6, name: 'milk', foodName: '우유', selected: false},
+      {id: 7, name: 'pork', foodName: '돼지고기', selected: false},
+      {id: 8, name: 'beef', foodName: '소고기', selected: false},
+      {id: 9, name: 'clams', foodName: '조개류', selected: false},
+      {id: 10, name: 'sulphite', foodName: '아황산류', selected: false},
+      {id: 11, name: 'buckwheat', foodName: '메밀', selected: false},
+      {id: 12, name: 'crab', foodName: '게', selected: false},
+      {id: 13, name: 'shrimp', foodName: '새우', selected: false},
+      {id: 14, name: 'soybean', foodName: '대두', selected: false},
+      {id: 15, name: 'tomato', foodName: '토마토', selected: false},
+      {id: 16, name: 'fish', foodName: '생선', selected: false},
+      {id: 17, name: 'sesame', foodName: '참깨', selected: false},
+      {id: 18, name: 'fruit', foodName: '과일', selected: false},
+      {id: 19, name: 'garlic', foodName: '마늘', selected: false},
+      {id: 20, name: 'vegetable', foodName: '채소', selected: false},
+    ])
+
+    watch(allergyCheckData.value, () => {
+      setParams()
+    })
+
+    const getUserAllergy = () => {
+      const foodName = ref('')
+      axiosGet('/api/v1/users/allergies',(res) => {
+        const allergyData = new Map(Object.entries(res.data))
+        for (let i = 0; i < allergyData.size; i++) {
+          allergyCheckData.value[i].selected = allergyData.get(allergyCheckData.value[i].name)
+        }
+        // console.log(allergyData)
+        setParams()
+        getFoodList(1)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    let params = new URLSearchParams()
+    const setParams = () => {
+      params = new URLSearchParams()
+      for (let i = 0; i < allergyCheckData.value.length; i++) {
+        params.append(allergyCheckData.value[i].name, allergyCheckData.value[i].selected)
+      }
+    }
+
+    const searchText = ref('')  // 검색
+    const currentPage = ref(1)
+    const pageDisplayCount = ref(10)
+    const totalPageCount = ref()
+
+    const getFoodList = (page = currentPage.value) => {
+      setParams()
+      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=createdAt,DESC&keyword=${searchText.value}`, {
+        params,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: true
+      }).then((res) => {
+        totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+        if (res.data.length !== 0) {
+          foodList.value = res.data
+        } else {
+          foodList.value = null
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+
+    const setPage = (page) => {
+      currentPage.value = page
+      getFoodList(page)
+    }
+
+    const searchFood = () => {
+      currentPage.value = 1
+      getFoodList(1)
+    }
+
+    onMounted(() => {
+      getUserAllergy()
+    })
+
+    return {
+      allergyCheckData,
+      getFoodList,
+      searchFood,
+      foodList,
+      searchText,
+      currentPage,
+      pageDisplayCount,
+      totalPageCount,
+      setPage,
+      requestData,  // 임시
+    }
+  }
+}
 </script>
 
 <style scoped>
-
+.food-name {
+  text-decoration: none;
+  color:black;
+}
+.food-name:hover {
+  text-decoration: underline;
+  color: blue;
+}
+.card-shadow:hover {
+  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.5);
+}
 </style>

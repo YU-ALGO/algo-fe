@@ -8,10 +8,11 @@ const { cookies } = useCookies()
 
 export default createStore({
     namespaced: true,
-    state: {
+    state: {    // 공통으로 사용할 변수
         isLogin: false,
         isAdmin: false,
         nickname: null,
+        youTubeURL: [],
     },
     mutations: {
         isLogin(state, data) {
@@ -26,6 +27,9 @@ export default createStore({
         username(state, data) {
             state.username = data
         },
+        youTubeURL(state, data) {
+            state.youTubeURL = data
+        }
     },
     getters: {
         isLogin(state) {
@@ -39,6 +43,9 @@ export default createStore({
         },
         username(state) {
             return state.username
+        },
+        youTubeURL(state) {
+            return state.youTubeURL
         }
     },
     actions: {
@@ -70,6 +77,9 @@ export default createStore({
         },
         async socialLogin({ commit }) {
             commit('isLogin', true)
+        },
+        async setYoutubeURL({ commit }, urlList) {
+            commit('youTubeURL', urlList)
         }
     },
     plugins: [

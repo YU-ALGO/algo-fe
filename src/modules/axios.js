@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { axios } from '@bundled-es-modules/axios'
 
 export default () => {
   const BASE_URL = 'http://be2.algo.r-e.kr:8088'
@@ -9,9 +9,8 @@ export default () => {
     },
     withCredentials: true,
   }
-
   const createURL = (url) => {
-    return url.startsWith('http') ? url : BASE_URL + url
+    return url.toString().startsWith('http') ? url : BASE_URL + url
   }
 
   const axiosGet = async (url, onSuccess = null, onFailed = null) => {

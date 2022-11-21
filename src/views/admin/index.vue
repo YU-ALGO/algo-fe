@@ -12,183 +12,154 @@
         </nav>
       </div>
     </div>
-    <!-- 게시판 관리 -->
     <div class="col-8">
-      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Board_Manage">
-        <h2 class="mt-2">Admin Page(게시판 관리)</h2>
-        <hr/>
-        <div>
-          <h2>게시판 생성</h2>
-          <div class="row g-3 align-items-center">
-            <div class="col-auto">
-              <label class="col-form-label">게시판 이름</label>
-            </div>
-            <div class="col-auto">
-              <input v-model="createBoardName" class="form-control" @keyup.enter="createBoards">
-            </div>
-            <div class="col-auto">
-              <button class="btn btn-primary" @click="createBoards">만들기</button>
-              <br/>
-            </div>
-          </div>
-        </div>
-        <br/>
-        <div>
-          <h2>게시판 이름 변경</h2>
-          <div class="row g-3 align-items-center">
-            <div class="col-auto">
-              <label class="col-form-label">변경할 게시판</label>
-            </div>
-            <div class="col-auto">
-              <select v-model="selectedModify" class="form-select">
-                <option value="0">게시판목록</option>
-                <option v-for="board2 in boardModifyNameList" :key="board2.id" :value="board2.id">{{
-                    board2.name
-                  }}
-                </option>
-              </select>
-            </div>
-            <div class="col-auto">
-              <input class="form-control" v-model="modifyBoardName" @keyup.enter="modifyBoards">
-            </div>
-            <div class="col-auto">
-              <button class="btn btn-primary" @click="modifyBoards">변경하기</button>
-              <br/>
-            </div>
-          </div>
-        </div>
-        <br/>
-        <div>
-          <h2>게시판 삭제</h2>
-          <div class="row g-3 align-items-center">
-            <div class="col-auto">
-              <select v-model="selected" class="form-select">
-                <option value="0">게시판목록</option>
-                <option v-for="board in boardDeleteNameList" :key="board.id" :value="board.id">{{ board.name }}</option>
-              </select>
-            </div>
-            <div class="col-auto">
-              <button class="btn btn-danger" @click="deleteBoards">삭제하기</button>
-              <br/>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- 전체 회원 관리 -->
-      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="User_Manage">
-        <h2 class="mt-2">Admin Page(전체 회원 관리)</h2>
-        <hr/>
-        <div>
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">닉네임</th>
-              <th scope="col">이메일</th>
-              <th scope="col">회원등급</th>
-              <th scope="col">가입일</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-              <td>마상균 굉장하다</td>
-            </tr>
-            </tbody>
-          </table>
+      <!-- 게시판 관리 -->
+      <div class="row" id="Board_Manage">
+        <div class="row card mt-4 shadow p-3 mb-5 bg-body">
+          <h2 class="mt-2">Admin Page(게시판 관리)</h2>
           <hr/>
-          <div class="row">
-            <div class="col-4 ms-auto">
-              <nav aria-label="...">
-                <ul class="pagination">
-                  <li class="page-item disabled">
-                    <a class="page-link">Previous</a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">2</a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                  </li>
-                </ul>
-              </nav>
+          <div>
+            <h2>게시판 생성</h2>
+            <div class="row g-3 align-items-center">
+              <div class="col-auto">
+                <label class="col-form-label">게시판 이름</label>
+              </div>
+              <div class="col-auto">
+                <input v-model="createBoardName" class="form-control" @keyup.enter="createBoards">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary" @click="createBoards">만들기</button>
+                <br/>
+              </div>
             </div>
-            <div class="col-4">
-              <button type="button" class="btn btn-danger" style="float:right">삭제</button>
+          </div>
+          <br/>
+          <div>
+            <h2>게시판 이름 변경</h2>
+            <div class="row g-3 align-items-center">
+              <div class="col-auto">
+                <label class="col-form-label">변경할 게시판</label>
+              </div>
+              <div class="col-auto">
+                <select v-model="selectedModify" class="form-select">
+                  <option value="0">게시판목록</option>
+                  <option v-for="board2 in boardModifyNameList" :key="board2.id" :value="board2.id">{{
+                      board2.name
+                    }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <input class="form-control" v-model="modifyBoardName" @keyup.enter="modifyBoards">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary" @click="modifyBoards">변경하기</button>
+                <br/>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div>
+            <h2>게시판 삭제</h2>
+            <div class="row g-3 align-items-center">
+              <div class="col-auto">
+                <select v-model="selected" class="form-select">
+                  <option value="0">게시판목록</option>
+                  <option v-for="board in boardDeleteNameList" :key="board.id" :value="board.id">{{
+                      board.name
+                    }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-danger" @click="deleteBoards">삭제하기</button>
+                <br/>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Youtube URL 관리 -->
-      <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Youtube_URL">
-        <h2 class="mt-2">Admin Page(Youtube URL 관리)</h2>
-        <hr/>
-        <div>
-          <div class="row g-3 align-items-center">
-            <div class="col-10">
-              <input class="form-control" id="message_title" name="message_title" type="text" maxlength="100" required>
-            </div>
-            <div class="col-auto">
-              <button type="button" class="btn btn-primary">추가</button>
+      <!-- 전체 회원 관리 -->
+      <div class="row" id="User_Manage">
+        <div class="row card mt-4 shadow p-3 mb-5 bg-body">
+          <h2 class="mt-2">Admin Page(전체 회원 관리)</h2>
+          <hr/>
+          <div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">닉네임</th>
+                <th scope="col">이메일</th>
+                <th scope="col">회원등급</th>
+                <th scope="col">가입일</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+              </tr>
+              <tr>
+                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+              </tr>
+              <tr>
+                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+              </tr>
+              <tr>
+                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+                <td>마상균 굉장하다</td>
+              </tr>
+              </tbody>
+            </table>
+            <hr/>
+            <div class="row">
+              <div class="col-4 ms-auto">
+                <nav aria-label="...">
+                  <ul class="pagination">
+                    <li class="page-item disabled">
+                      <a class="page-link">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active" aria-current="page">
+                      <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="col-4">
+                <button type="button" class="btn btn-danger" style="float:right">삭제</button>
+              </div>
             </div>
           </div>
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-            </tr>
-            <tr>
-              <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-              <td>마상균 굉장하다</td>
-            </tr>
-            </tbody>
-          </table>
-          <button type="button" class="btn btn-danger" style="float:right">삭제</button>
         </div>
+      </div>
+      <!-- Youtube URL 관리 -->
+      <div class="row" id="Youtube_URL">
+        <ManageYouTubeURL/>
+      </div>
+
+      <!-- 식품 관리 -->
+      <div class="row" id="Food_Manage">
+        <ManageFoods/>
       </div>
       <!-- 식품 관리 -->
       <div class="row card mt-4 shadow p-3 mb-5 bg-body" id="Food_Manage">
@@ -299,8 +270,14 @@
 import {ref, onMounted} from 'vue'
 import {useRouter} from 'vue-router'
 import useAxios from '@/modules/axios'
+import ManageFoods from '@/components/admin/ManageFoods.vue'
+import ManageYouTubeURL from '@compo/admin/ManageYouTubeURL'
 
 export default {
+  components: {
+    ManageYouTubeURL,
+    ManageFoods,
+  },
   setup() {
     const createBoardName = ref('')
     const modifyBoardName = ref('')

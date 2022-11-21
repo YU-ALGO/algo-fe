@@ -11,6 +11,7 @@ import Board from '@views/boards/_id.vue'
 import PostView from '@/views/boards/views/_id.vue'
 import FoodList from '@views/food/index.vue'
 import Profile from '@views/profile/_nickname.vue'
+import FoodWrite from '@compo/FoodWrite.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import useAxios from '@/modules/axios'
@@ -30,7 +31,6 @@ const isAdmin = () => (to, from, next) => {
       router.go(-1)
     }
   } else {
-    alert('로그인이 필요한 서비스입니다.')
     router.push('/login')
   }
 }
@@ -39,7 +39,6 @@ const isLogin = () => (to, from, next) => {
   if (store.state.isLogin) {  // 로그인 된 상태
     return next()
   } else {
-    alert('로그인이 필요한 서비스입니다.')
     router.push('/login')
   }
 }
@@ -137,11 +136,18 @@ const routes = [
     name: 'ChangePassword',
     component: ChangePassword,
     beforeEnter: isLogin(),
+  },
+  {
+    path: '/admin/foodwrite',
+    name: 'FoodWrite',
+    component: FoodWrite,
+    beforeEnter: isAdmin(),
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL), routes
+  history: createWebHistory(),
+  routes
 })
 
 export default router
