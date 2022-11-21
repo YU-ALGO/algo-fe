@@ -213,7 +213,7 @@
             </tbody>
 
             <tbody v-else-if="msgMode === 4">
-            <tr v-for="(user, index) in blockUserList" :key="user.id">
+            <tr v-for="user in blockUserList" :key="user.id">
               <th scope="row">
                 <input type="checkbox" name="checkbox_name" value="checkbox_value">
               </th>
@@ -559,7 +559,7 @@ export default {
       //
       // })
       try {
-        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -581,7 +581,7 @@ export default {
       msgMode.value = 4
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -724,7 +724,7 @@ export default {
 
     const selectMsgDelete = () => {
       if(confirm("선택한 쪽지를 모두 삭제하시겠습니까?")) {
-        axios.delete(`http://be.algo.r-e.kr:8088/api/v1/messages/inboxes`, {
+        axios.delete(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes`, {
           data: {
             messageIdArray: selectedList.value
           },headers: {

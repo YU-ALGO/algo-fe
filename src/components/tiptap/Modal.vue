@@ -59,7 +59,7 @@ export default {
     const filePath = ref('')
 
     const requestAuth = () => { // 이미지 업로드 권한 취득
-      axiosPost('http://be.algo.r-e.kr:8088/api/v1/posts/images', {
+      axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
         file_name: fileName.value,
         image_request_type: "POST",
       }, (response) => {
@@ -86,7 +86,7 @@ export default {
     }
 
     const insertImage = (imageUrl) => { // 이미지 글쓰기 본문에 삽입
-      axiosPost('http://be.algo.r-e.kr:8088/api/v1/posts/images', {
+      axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
         file_name: imageUrl,
         image_request_type: "GET",
       }, (response) => {

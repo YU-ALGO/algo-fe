@@ -179,7 +179,7 @@ export default {
 
     const getFoodList = (page = currentPage.value) => {
       setParams()
-      axios.get(`http://be.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=createdAt,DESC&keyword=${searchText.value}`, {
+      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=createdAt,DESC&keyword=${searchText.value}`, {
         params,
         headers: {
           'Content-Type': 'application/json',
