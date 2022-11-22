@@ -45,7 +45,9 @@
               <tr v-for="post in postList" :key="post.id">
                 <th style="width: 100px" scope="row">{{ post.id }}</th>
                 <td style="width: 800px">
-                  <a class="text-link text-body" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
+                  <router-link class="text-link" :to="{ name: 'PostView', params: { pid: post.id } }">{{ post.title }}</router-link>
+<!--                  <router-link :to="{ name: 'PostView', query: { editable: true } }">{{ post.title }}</router-link>-->
+<!--                  <router-link :to="{ name: 'PostView', params: { postId: post.id, boardId: boardId } }">{{ post.title }}</router-link>-->
                   <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{ post.comment_count }}] </label>
                 </td>
                 <td style="width: 100px">
@@ -94,7 +96,7 @@ export default {
   setup() {
     // const { axiosGet } = useAxios()
     const route = useRoute()
-    const boardId = route.params.id
+    const boardId = route.params.bid
     const postList = ref('')
 
     // Search
@@ -158,6 +160,7 @@ export default {
 <style scoped>
 .text-link {
   text-decoration: none;
+  color: black;
 }
 
 .text-link:hover {

@@ -50,7 +50,8 @@ export default {
   setup() {
     const { axiosPost, axiosGet, axiosPatch } = useAxios()
     const route = useRoute()
-    const postId = route.params.id
+    const postId = route.query.pid
+    const boardId = route.params.bid
     const editable = ref(route.query.editable)
     const title = ref('')
     const content = ref('')
@@ -68,22 +69,20 @@ export default {
 
     const onSave = () => {
       if (editable.value) {
-        axiosPatch(`/api/v1/boards/1/posts/${postId}`, {
+        axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
           title: title.value,
           content: editor.value.getHTML()
         }, () => {
-          alert('게시글 수정이 완료되었습니다!')
           router.go(-1)
         }, (err) => {
           console.error(err)
         })
       } else {
-        axiosPost(`/api/v1/boards/${postId}/posts`, {
+        axiosPost(`/api/v1/boards/${boardId}/posts`, {
           title: title.value,
           content: editor.value.getHTML()
         }, () => {
-          alert('게시글 업로드가 완료되었습니다!')
-          router.push(`/boards/${postId}`)
+          router.push({ name: 'Board', params: { bid: boardId }})
         }, (err) => {
           console.error(err)
         })
@@ -92,12 +91,12 @@ export default {
 
     const moveToPostListPage = () => {
       if (confirm('글 작성을 취소하시겠습니까? \n변경사항은 저장되지 않습니다.')) {
-        router.go(-1)
+        router.push({ name: 'Board', params: { bid: boardId }})
       }
     }
 
     const getPostData = () => {
-      axiosGet(`/api/v1/boards/1/posts/${postId}`
+      axiosGet(`/api/v1/boards/${boardId}/posts/${postId}`
           , (res) => {
             title.value = res.data.title
             content.value = res.data.content
@@ -111,14 +110,7 @@ export default {
       if (editable.value) {
         getPostData()
       }
-      // watchEffect(() => {
-      //   console.log(editor.value.getHTML())
-      // })
     })
-
-    // watch(content, () => {
-    //   console.log(content.value)
-    // })
 
     return {
       title,

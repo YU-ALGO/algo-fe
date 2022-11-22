@@ -1,15 +1,15 @@
 <template>
-  <!-- load fail -->
-  <div v-if="loading === -1">
-    <NotFound/>
-  </div>
-  <!-- loading -->
-  <div v-else-if="loading === 0">
-    <Loading/>
-  </div>
-  <!-- load success -->
-  <div v-else>
-    <Profile/>
+    <!-- load fail -->
+    <div v-if="loading === -1">
+      <NotFound/>
+    </div>
+    <!-- loading -->
+    <div v-else-if="loading === 0">
+      <Loading/>
+    </div>
+    <!-- load success -->
+    <div v-else>
+      <Profile/>
   </div>
 </template>
 

@@ -3,7 +3,7 @@ import useAxios from '@/modules/axios'
 import createPersistedState from 'vuex-persistedstate'
 import { useCookies } from 'vue3-cookies'
 
-const { axiosPost } = useAxios()
+const { axiosPost, axiosGet } = useAxios()
 const { cookies } = useCookies()
 
 export default createStore({
@@ -80,6 +80,15 @@ export default createStore({
         },
         async setYoutubeURL({ commit }, urlList) {
             commit('youTubeURL', urlList)
+        },
+        async setUserData({ commit }) {
+            await axiosGet('/api/v1/social', (res) => {
+                commit('username', res.data.username)
+                commit('nickname', res.data.nickname)
+                window.location.href = '/'
+            }, (err) => {
+                alert('오류 : 사용자 정보를 가져올 수 없습니다.')
+            })
         }
     },
     plugins: [

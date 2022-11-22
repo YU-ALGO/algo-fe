@@ -49,6 +49,8 @@
                   </table>
                 </div>
               </div>
+              <router-link v-if="isAdmin" class="btn btn-primary mt-2" :to="{ name: 'FoodWrite', query: { id: foodData.id, editable: true } }">수정</router-link>
+              <button class="btn btn-danger mt-2">삭제</button>
             </div>
           </div>
         </div>
@@ -62,82 +64,17 @@
           <section class="py-2">
             <div class="container px-4 px-lg-1">
               <div class="row gx-4 gx-lg-2 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                <div class="col mb-2">
+                <div v-for="recFood in recFoodList" :key="recFood.id" class="col mb-2">
                   <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
+                    <img class="card-img-top" :src=recFood.food_image_url width="250" height="200" alt="...">
                     <div class="card-body p-4">
                       <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는 핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left: 5px;">&#x2764;</a>
+                        <h5 class="fw-bolder" style="display:inline">{{ recFood.food_name }}</h5>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는 핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left: 5px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는 핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left: 5px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는 핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left: 5px;">&#x2764;</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col mb-2">
-                  <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://cdn.dominos.co.kr/admin/upload/goods/20200508_780B32i8.jpg"
-                         width="250px" height="200px" alt="...">
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h5 class="fw-bolder" style="display:inline">맛있는 핏자</h5>
-                        <!-- Product actions-->
-                        <a class="btn btn-outline-dark mt-auto" style="margin-left: 5px;">&#x2764;</a>
+                      <div class="text-center mt-2">
+                        <button class="btn btn-outline-warning">
+                          <i class="bi bi-star"></i> | {{ recFood.like_count }}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -153,8 +90,9 @@
 
 <script>
 import { useRoute, useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import useAxios from '@/modules/axios'
+import store from '@/store/index'
 
 export default {
   setup() {
@@ -162,6 +100,7 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const foodId = route.params.id
+    const isAdmin = ref(false)
     const foodData = ref({
       raw_materials: '',
       allergy: '',
@@ -173,6 +112,21 @@ export default {
       nutrition: '',
       product_kind: '',
     })
+
+    const checkPermission = () => {
+      isAdmin.value = false
+      if (store.state.isLogin) {
+        if (store.state.isAdmin) {
+          axiosGet('/api/v1/admin', () => {
+            isAdmin.value = true
+          }, () => {
+            isAdmin.value = false
+          })
+        }
+      }
+    }
+
+    const recFoodList = ref('')
 
     const favorite = () => {
       if (foodData.value.is_like) {
@@ -202,11 +156,17 @@ export default {
       // get post data
       axiosGet(`/api/v1/foods/${foodId}`
           , (res) => {
-        console.log(res)
+        // console.log(res)
             foodData.value = res.data
           }, (err) => {
             console.error(err)
           })
+      axiosGet('/api/v1/foods/recommendation', (res) =>{
+        recFoodList.value = res.data
+      }, (err) => {
+        console.error(err)
+      })
+      checkPermission()
     })
 
     return {
@@ -214,6 +174,9 @@ export default {
       foodData,
       moveToFoodListPage,
       favorite,
+      recFoodList,
+      checkPermission,
+      isAdmin,
     }
   }
 }

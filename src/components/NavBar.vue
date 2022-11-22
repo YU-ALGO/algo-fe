@@ -62,7 +62,10 @@ export default {
     const boardsList = ref(null)
     const { cookies } = useCookies()
 
-    onMounted(() => {  // get boards list
+    const isLogin = store.getters['isLogin']
+    const isSocialLogin = ref(cookies.get('isLogin'))
+
+    onMounted(() => {  // get board list
       axiosGet('/api/v1/boards'
       , (res) => {
         boardsList.value = res.data
@@ -75,6 +78,12 @@ export default {
       //   }, () => {
       //   alert('토큰오류')
       // })
+      if (isSocialLogin.value) {
+        store.dispatch('socialLogin')
+        if(store.getters['nickname'] === null || store.getters['username'] === null) {
+          store.dispatch('setUserData')
+        }
+      }
     })
 
     // const isLogin = () => {
@@ -85,17 +94,9 @@ export default {
     //   }
     // }
 
-    const isLogin = store.getters['isLogin']
-    const isSocialLogin = ref(cookies.get('isLogin'))
-
-    if(isSocialLogin.value) {
-      store.dispatch('socialLogin')
-    }
-
     const logout = async () => {
       await store.dispatch('logout').catch((err) => console.error(err))
     }
-
 
     return {
       isLogin,

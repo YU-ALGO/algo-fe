@@ -7,8 +7,8 @@ import ChangePassword from '@compo/ChangePassword.vue'
 import NotFound from '@compo/NotFound.vue'
 
 import MainView from '@views/index.vue'
-import Board from '@views/boards/_id.vue'
-import PostView from '@/views/boards/views/_id.vue'
+import Board from '@views/boards/_bid.vue'
+import PostView from '@views/boards/views/_pid.vue'
 import FoodList from '@views/food/index.vue'
 import Profile from '@views/profile/_nickname.vue'
 import FoodWrite from '@compo/FoodWrite.vue'
@@ -77,20 +77,20 @@ const routes = [
     beforeEnter: isAdmin()
   },
   {
-    path: '/boards/:id',
+    path: '/boards/:bid',
     name: 'Board',
     component: Board,
   },
   {
-    path: '/boards/:id/write',
+    path: '/boards/:bid/write',
     name: 'PostWrite',
     component: PostWrite,
     beforeEnter: isLogin(),
     props: true,
   },
   {
-    path: '/boards/views/:id',
-    name: 'Post',
+    path: '/boards/:bid/posts/:pid',
+    name: 'PostView',
     component: PostView,
     beforeEnter: isLogin()
   },
@@ -102,7 +102,7 @@ const routes = [
   },
   {
     path: '/foods/:id',
-    name: 'Food',
+    name: 'FoodView',
     component: FoodView,
     beforeEnter: isLogin(),
   },
@@ -138,10 +138,11 @@ const routes = [
     beforeEnter: isLogin(),
   },
   {
-    path: '/admin/foodwrite',
+    path: '/food/write',
     name: 'FoodWrite',
     component: FoodWrite,
     beforeEnter: isAdmin(),
+    props: true,
   }
 ]
 

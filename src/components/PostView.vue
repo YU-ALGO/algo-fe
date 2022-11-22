@@ -25,7 +25,7 @@
               <i v-else class="ri-thumb-up-fill"></i>
             </button>
             <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
-            <router-link v-if="checkPermission" class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { editable: true } }">수정</router-link>
+            <router-link v-if="checkPermission" class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { pid: postId, editable: true } }">수정</router-link>
             <button v-if="checkPermission" class="btn btn-danger me-2" @click="deletePost">삭제</button>
             <button class="btn btn-primary" @click="moveToPostListPage">목록</button>
           </div>
@@ -124,7 +124,8 @@ export default {
     const store = useStore()
     const route = useRoute()
     const router = useRouter()
-    const postId = route.params.id
+    const boardId = route.params.bid
+    const postId = route.params.pid
     const loading = ref(0)
     const nickname = ref(store.getters['nickname'])
 
@@ -158,20 +159,20 @@ export default {
 
     const deletePost = () => {
       if(confirm('정말 게시글을 삭제하시겠습니까?')) {
-        axiosDelete(`/api/v1/boards/1/posts/${postId}`
-        , () => {
-          alert("게시글이 삭제되었습니다.")
-          router.go(-1)
-        }, () => {
-          alert('게시글을 삭제할 수 없습니다.')
-        })
+        axiosDelete(`/api/v1/boards/${boardId}/posts/${postId}`
+            , () => {
+              alert("게시글이 삭제되었습니다.")
+              router.go(-1)
+            }, () => {
+              alert('게시글을 삭제할 수 없습니다.')
+            })
       }
     }
 
     const thumbsUp = () => {  // 게시글 추천
       if (postData.value.is_like) {
         if(confirm('추천을 취소하시겠습니까??')) {
-          axiosDelete(`/api/v1/boards/1/posts/${postId}/likes`
+          axiosDelete(`/api/v1/boards/${boardId}/posts/${postId}/likes`
               , () => {
                 location.reload()
               }, () => {
@@ -180,7 +181,7 @@ export default {
         }
       } else {
         if(confirm('이 게시글을 추천하시겠습니까?')) {
-          axiosPost(`/api/v1/boards/1/posts/${postId}/likes`
+          axiosPost(`/api/v1/boards/${boardId}/posts/${postId}/likes`
               , {}
               , () => {
                 location.reload()
@@ -198,7 +199,7 @@ export default {
 
     const getCommentList = (page = currCommPage.value) => {
       currCommPage.value = page
-      axiosGet(`/api/v1/boards/1/posts/${postId}/comments?page=${page}&size=5`
+      axiosGet(`/api/v1/boards/${boardId}/posts/${postId}/comments?page=${page}&size=5`
           , (res) => {
             numOfCommPage.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
             if (res.data.length !== 0) {
@@ -213,7 +214,7 @@ export default {
     }
 
     const addComment = () => {
-      axiosPost(`/api/v1/boards/1/posts/${postId}/comments`, {
+      axiosPost(`/api/v1/boards/${boardId}/posts/${postId}/comments`, {
         content: comment.value,
         parent: null
       }, () => {
@@ -224,7 +225,7 @@ export default {
     }
 
     const addSubComment = (parentCommId) => {
-      axiosPost(`/api/v1/boards/1/posts/${postId}/comments`, {
+      axiosPost(`/api/v1/boards/${boardId}/posts/${postId}/comments`, {
         content: subComment.value,
         parent: parentCommId
       }, () => {
@@ -235,7 +236,7 @@ export default {
     }
 
     const modifyComment = (commentId) => {
-      axiosPatch(`/api/v1/boards/1/posts/${postId}/comments/${commentId}`, {
+      axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}/comments/${commentId}`, {
         content: newComment.value
       }, () => {
         router.go()
@@ -246,7 +247,7 @@ export default {
 
     const deleteComment = (commentId) => {
       if (confirm('댓글을 삭제하시겠습니까?')) {
-        axiosDelete(`/api/v1/boards/1/posts/${postId}/comments/${commentId}`
+        axiosDelete(`/api/v1/boards/${boardId}/posts/${postId}/comments/${commentId}`
             , () => {
               router.go()
             }, (err) => {
@@ -260,7 +261,7 @@ export default {
 
     onMounted(() => {
       // get post data
-      axiosGet(`/api/v1/boards/1/posts/${postId}`
+      axiosGet(`/api/v1/boards/${boardId}/posts/${postId}`
           , (res) => {
             postData.value = res.data
             loading.value = 1

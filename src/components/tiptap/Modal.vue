@@ -7,7 +7,8 @@
           <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input class="form-control" type="file" accept=".jpg, .jpeg, .gif, .png" @change="fileChange" ref="file"/>
+          <input class="form-control" type="file" accept=".JPG, .jpg, .jpeg, ,JPEG, .gif, .png" @change="fileChange"
+                 ref="file"/>
         </div>
         <div class="modal-footer">
           <button @click="closeModal" class="btn btn-outline-secondary">
@@ -23,21 +24,22 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import {ref, computed} from 'vue'
 import useAxios from '@/modules/axios'
-import { axios } from '@bundled-es-modules/axios'
+import {axios} from '@bundled-es-modules/axios'
 
 export default {
   setup(props, context) {
-    const { axiosPost, axiosPut } = useAxios()
+    const {axiosPost, axiosPut} = useAxios()
     const imageSrc = ref('')
     const show = ref(false)
     const file = ref(null)
     const fileName = ref('')
+    var imgUrl;
     // const formData = new FormData()
 
     const validImage = computed(() => {
-      return fileName.value.match(/\.(jpe?g|gif|png)$/) !== null
+      return fileName.value.match(/\.(jpg|JPG|jpeg|JPEG|gif|png)$/) !== null
     })
 
     const showModal = () => {
@@ -53,17 +55,62 @@ export default {
     const fileChange = () => {
       // formData.append('image', file.value.files[0])
       console.log(file.value.files)
+      const blobURL = URL.createObjectURL(file.value.files[0]);
+      const img = new Image();
+      img.src = blobURL;
+      img.onload = function () {
+        imageSizeChange(img)
+        file.value.files[0] = new File([dataURItoBlob(imgUrl)], file.value.files[0].name)
+      }
       fileName.value = file.value.files[0].name
+    }
+
+    const imageSizeChange = (image) => {
+      let canvas = document.createElement("canvas"),
+          max_size = 1280,
+          // 최대 기준을 1280으로 잡음.
+          width = image.width,
+          height = image.height;
+      if (width > height) {
+        // 가로가 길 경우
+        if (width > max_size) {
+          height *= max_size / width;
+          width = max_size;
+        }
+      } else {
+        // 세로가 길 경우
+        if (height > max_size) {
+          width *= max_size / height;
+          height = max_size;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+      imgUrl = canvas.toDataURL("image/jpeg", 0.5);
+    }
+
+    function dataURItoBlob(dataURI) {
+      var byteString = atob(dataURI.split(',')[1]);
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      var ab = new ArrayBuffer(byteString.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], {type: mimeString});
     }
 
     const filePath = ref('')
 
     const requestAuth = () => { // 이미지 업로드 권한 취득
+
+
       axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
         file_name: fileName.value,
         image_request_type: "POST",
       }, (response) => {
-        filePath.value = response.data.substring(response.data.indexOf('post_image')+11,response.data.indexOf('?'))
+        filePath.value = response.data.substring(response.data.indexOf('post_image') + 11, response.data.indexOf('?'))
         uploadImage(response.data)
       }, (err) => {
         console.error(err)
@@ -89,8 +136,8 @@ export default {
       axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
         file_name: imageUrl,
         image_request_type: "GET",
-      }, (response) => {
-        imageSrc.value = response.data
+      }, (res) => {
+        imageSrc.value = res.data.substring(0, res.data.indexOf('?'))
         context.emit('onConfirm', {
           src: imageSrc.value
         })

@@ -15,7 +15,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import useAxios from '@/modules/axios'
 import PostList from '@compo/PostList.vue'
 import NotFound from '@compo/NotFound'
@@ -31,8 +31,7 @@ export default {
   setup() {
     const { axiosGet } = useAxios()
     const route = useRoute()
-    const router = useRouter()
-    const boardId = route.params.id
+    const boardId = route.params.bid
     const boardName = ref('')
     const loading = ref(0)
 
@@ -47,17 +46,11 @@ export default {
       })
     })
 
-    // const moveToWritePage = () => {
-    //   router.push({
-    //     name: 'PostWrite'
-    //   })
-    // }
 
     return {
       boardId,
       boardName,
       loading,
-      // moveToWritePage,
     }
   }
 }

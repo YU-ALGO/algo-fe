@@ -5,7 +5,8 @@
     <div class="col-10 mt-4">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">새로운 식품 추가</h4>
+          <h4 v-if="!editable" class="card-title">새로운 식품 등록</h4>
+          <h4 v-else class="card-title">식품 수정</h4>
           <div class="row">
             <div class="col-4">
               <div class="card">
@@ -72,7 +73,7 @@
 
               <div>
                 <button type="button" class="btn btn-primary" @click="onSave" style=" float: right;margin-left: 5px;">저장</button>
-                <button type="button" class="btn btn-primary" @click="moveToAdminPage" style=" float: right;">목록</button>
+                <button type="button" class="btn btn-primary" @click="moveToFoodList" style=" float: right;">목록</button>
               </div>
             </div>
           </div>
@@ -83,14 +84,18 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import router from "@/router";
 import useAxios from '@/modules/axios'
+import { useRoute } from 'vue-router'
 
 export default {
   setup() {
-    const { axiosPost } = useAxios()
+    const { axiosPost, axiosGet, axiosPatch } = useAxios()
     const allergyData = new Map()
+    const route = useRoute()
+    const editable = ref(route.query.editable)
+    const foodId = route.query.id
 
     const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
       {id: 1, name: 'squid', foodName: '오징어', selected: false},
@@ -115,12 +120,24 @@ export default {
       {id: 20, name: 'vegetable', foodName: '채소', selected: false},
     ])
 
-    const foodName = ref('테스트 식품')
-    const foodCode = ref('1234567')
-    const foodKind = ref('닭고기')
-    const foodNutirition = ref('초콜릿, 라면')
-    const foodRawMeterials = ref('오렌지, 바나나, 치즈, 아이스크림')
-    const foodImage = ref('https://www.anewsa.com/news_images/2018/01/22/mark/20180122162218.jpg')
+    const foodData = ref({
+      raw_materials: '',
+      allergy: '',
+      food_image_url: '',
+      code: '',
+      food_name: '',
+      is_like: '',
+      like_count: '',
+      nutrition: '',
+      product_kind: '',
+    })
+
+    const foodName = ref('')
+    const foodCode = ref('')
+    const foodKind = ref('')
+    const foodNutirition = ref('')
+    const foodRawMeterials = ref('')
+    const foodImage = ref('')
 
     watch(allergyCheckData.value, () => {
       checkSelected()
@@ -132,26 +149,78 @@ export default {
       }
     }
 
-    const onSave = () => {
-      axiosPost('/api/v1/foods', {
-        code: foodCode.value,
-        nutrition : foodNutirition.value,
-        allergy : Object.fromEntries(allergyData),
-        food_name : foodName.value,
-        raw_materials : foodRawMeterials.value,
-        product_kind : foodKind.value,
-        food_image_url : foodImage.value,
-      }, () => {
-        alert('식품 추가가 완료되었습니다!')
-        router.push(`/admin`)
+    const getFoodData = () => {
+      axiosGet(`/api/v1/foods/${foodId}`, (res) => {
+        foodName.value = res.data.food_name
+        foodCode.value = res.data.code
+        foodKind.value = res.data.product_kind
+        foodNutirition.value = res.data.nutrition
+        foodRawMeterials.value = res.data.raw_materials
+      }, (err) => {
+        console.error(err)
+      })
+      axiosGet(`/api/v1/foods/${foodId}/allergies`, (res) => {
+        const allergyData = new Map(Object.entries(res.data))
+        for (let i = 0; i < allergyData.size; i++) {
+          allergyCheckData.value[i].selected = allergyData.get(allergyCheckData.value[i].name)
+        }
+        setParams()
       }, (err) => {
         console.error(err)
       })
     }
 
-    const moveToAdminPage = () => {
-      router.push(`/admin`)
+    let params = new URLSearchParams()
+    const setParams = () => {
+      params = new URLSearchParams()
+      for (let i = 0; i < allergyCheckData.value.length; i++) {
+        params.append(allergyCheckData.value[i].name, allergyCheckData.value[i].selected)
+      }
     }
+
+    const onSave = () => {
+      if (editable.value) {
+        axiosPatch(`/api/v1/foods/${foodId}`, {
+          code: foodCode.value,
+          nutrition : foodNutirition.value,
+          allergy : Object.fromEntries(allergyData),
+          food_name : foodName.value,
+          raw_materials : foodRawMeterials.value,
+          product_kind : foodKind.value,
+          food_image_url : foodImage.value,
+        }, () => {
+          alert('식품 수정이 완료되었습니다!')
+          router.push(`/foods`)
+        }, (err) => {
+          console.error(err)
+        })
+      } else {
+        axiosPost('/api/v1/foods', {
+          code: foodCode.value,
+          nutrition : foodNutirition.value,
+          allergy : Object.fromEntries(allergyData),
+          food_name : foodName.value,
+          raw_materials : foodRawMeterials.value,
+          product_kind : foodKind.value,
+          food_image_url : foodImage.value,
+        }, () => {
+          alert('식품 추가가 완료되었습니다!')
+          router.push(`/foods`)
+        }, (err) => {
+          console.error(err)
+        })
+      }
+    }
+
+    const moveToFoodList = () => {
+      router.push(`/foods`)
+    }
+
+    onMounted(() => {
+      if (editable.value) {
+        getFoodData()
+      }
+    })
 
     return {
       allergyCheckData,
@@ -161,7 +230,9 @@ export default {
       foodNutirition,
       foodRawMeterials,
       onSave,
-      moveToAdminPage,
+      moveToFoodList,
+      editable,
+      foodData,
     }
   }
 }

@@ -14,8 +14,10 @@
             <div id="leftMenu" class="accordion-collapse collapse show">
               <div class="accordion-body">
                 <ul class="list-group list-group-flush text-center">
-                  <li class="list-group-item">민트 초코</li>
-                  <li class="list-group-item">하와이안 피자</li>
+                  <li v-for="viewFood in viewFoodList" :key="viewFood.id" class="list-group-item">
+                    <img :src=viewFood.food_image_url height="100" width="100" alt=""/><br/>
+                    <router-link :to="{ name: 'FoodView', params: { id: viewFood.id } }" class="food-name stretched-link">{{ viewFood.food_name }}</router-link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -26,13 +28,14 @@
       <!--식품정보-->
       <div class="col-8 card mt-4 shadow p-3 mb-5 bg-body">
         <div class="card-body">
-          <h4 class="card-title mb-4">식품 정보</h4>
+          <h4 class="col-10 card-title mb-4">식품 정보</h4>
           <div class="input-group mb-3">
             <input type="search" class="form-control" placeholder="식품명을 입력하세요." v-model="searchText" @keyup.enter="searchFood">
             <button type="button" class="btn btn-primary" @click="searchFood">
               <i class="ri-search-line"></i>
             </button>
           </div>
+          <router-link class="btn btn-primary" :to="{ name: 'FoodWrite'}">식품 추가</router-link>
           <div class="mb-3">
             <div class="card p-3 mb-3 bg-body">
               <h5>알레르기 정보</h5>
@@ -54,6 +57,11 @@
                     <div class="card-body p-4">
                       <div class="text-center">
                         <a class="food-name stretched-link" :href="`/foods/${food.id}`">{{ food.food_name }}</a>
+                      </div>
+                      <div class="text-center mt-2">
+                        <button class="btn btn-outline-warning">
+                          <i class="bi bi-star"></i> | {{ food.like_count }}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -82,12 +90,10 @@
             <div id="rightMenu" class="accordion-collapse collapse show">
               <div class="accordion-body">
                 <ul class="list-group list-group-flush text-center">
-                  <li class="list-group-item">딸기</li>
-                  <li class="list-group-item">당근</li>
-                  <li class="list-group-item">수박</li>
-                  <li class="list-group-item">참외</li>
-                  <li class="list-group-item">메론</li>
-                  <button class="btn btn-primary" @click="requestData">데이터 요청하기</button>
+                  <li v-for="recFood in recFoodList" :key="recFood.id" class="list-group-item">
+                      <img :src=recFood.food_image_url height="100" width="100" alt=""/><br/>
+                      <router-link :to="{ name: 'FoodView', params: { id: recFood.id } }" class="food-name stretched-link">{{ recFood.food_name }}</router-link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -98,7 +104,7 @@
   </div>
 </template>
 
-<script>
+e<script>
 import { onMounted, ref, watch, computed } from 'vue'
 import useAxios from '@/modules/axios'
 import axios from 'axios'
@@ -110,15 +116,9 @@ export default {
     Pagination,
   },
   setup() {
-    const requestData = () => { // 임시
-      axiosGet('/api/v1/foods/recommendation', (res) =>{
-        console.log(res)
-      }, (err) => {
-        console.error(err)
-      })
-    }
-
     const foodList = ref('')  // getFoodList()로 가져온 식품 데이터
+    const recFoodList = ref('')
+    const viewFoodList = ref('')
 
     const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
       {id: 1, name: 'squid', foodName: '오징어', selected: false},
@@ -154,7 +154,6 @@ export default {
         for (let i = 0; i < allergyData.size; i++) {
           allergyCheckData.value[i].selected = allergyData.get(allergyCheckData.value[i].name)
         }
-        // console.log(allergyData)
         setParams()
         getFoodList(1)
       }, (err) => {
@@ -192,7 +191,23 @@ export default {
           foodList.value = null
         }
       }).catch((err) => {
-        console.log(err)
+        console.error(err)
+      })
+    }
+
+    const getRecommendFood = () => {
+      axiosGet('/api/v1/foods/recommendation', (res) =>{
+        recFoodList.value = res.data
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const getRecentFood = () => {
+      axiosGet('/api/v1/foods/viewLists', (res) => {
+        viewFoodList.value = res.data
+      }, (err) => {
+        console.error(err)
       })
     }
 
@@ -208,6 +223,8 @@ export default {
 
     onMounted(() => {
       getUserAllergy()
+      getRecommendFood()
+      getRecentFood()
     })
 
     return {
@@ -220,7 +237,9 @@ export default {
       pageDisplayCount,
       totalPageCount,
       setPage,
-      requestData,  // 임시
+      getRecommendFood,
+      recFoodList,
+      viewFoodList,
     }
   }
 }

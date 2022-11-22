@@ -9,9 +9,7 @@
                 <img src="https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2" alt="Admin" class="rounded-circle" width="150">
                 <div class="mt-3">
                   <h4>{{ userData.nickname }}</h4>
-                  <!-- <p class="text-secondary mb-1">직업</p> -->
                   <p class="text-muted font-size-sm">일반회원</p>
-                  <!-- <button class="btn btn-primary me-2">팔로우</button> -->
                   <button type="button" @click="getRecvMsgList(1, false)" class="btn btn-primary position-relative" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
                     쪽지함
                     <span v-show="parseInt(unReadCount) > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -41,7 +39,6 @@
                 </div>
               </div>
               <hr>
-
               <div class="row">
                 <div class="col-sm-3">
                   <h6 class="mb-0 fw-bold">닉네임</h6>
@@ -63,7 +60,6 @@
                 </div>
               </div>
               <hr>
-
               <div class="row">
                 <div class="col-sm-3">
                   <h6 class="mb-0 fw-bold">가입일</h6>
@@ -156,10 +152,10 @@
         <div class="modal-body">
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <button class="nav-link active" data-bs-toggle="tab" @click="[resetSearch(), getRecvMsgList(1, false)]">전체 쪽지</button>
-              <button class="nav-link" data-bs-toggle="tab" @click="[resetSearch(), getRecvMsgList(1, true)]">안읽음</button>
-              <button class="nav-link" data-bs-toggle="tab" @click="[resetSearch(), getSendMsgList(1)]">보낸 쪽지함</button>
-              <button class="nav-link" data-bs-toggle="tab" @click="[resetSearch(), getBlockUserList(1)]">차단 목록</button>
+              <button class="nav-link active" data-bs-toggle="tab" @click="[resetValue(), getRecvMsgList(1, false)]">전체 쪽지</button>
+              <button class="nav-link" data-bs-toggle="tab" @click="[resetValue(), getRecvMsgList(1, true)]">안읽음</button>
+              <button class="nav-link" data-bs-toggle="tab" @click="[resetValue(), getSendMsgList(1)]">보낸 쪽지함</button>
+              <button class="nav-link" data-bs-toggle="tab" @click="[resetValue(), getBlockUserList(1)]">차단 목록</button>
             </div>
 
             <div v-if="msgMode !== 4" class="row mt-3 mb-3">
@@ -178,6 +174,8 @@
                   </button>
                 </div>
               </div>
+              <!-- 임시 -->
+<!--              <div class="text-uppercase text-bold">선택된 ID : {{ selected }}</div>-->
             </div>
 
           </nav>
@@ -192,7 +190,7 @@
 
             <tr v-else>
               <th scope="col" class="first">
-                <input type="checkbox" value="all" v-model="allSelected" />
+                <input type="checkbox" value="all" v-model="selectAll" @click="allSelected"/>
               </th>
               <th v-if="msgMode === 3" scope="col">받는사람</th>
               <th v-else scope="col">보낸사람</th>
@@ -202,10 +200,11 @@
             </tr>
 
             </thead>
+            <!-- 보낸 쪽지함 -->
             <tbody v-if="msgMode === 3">
             <tr v-for="(msg, index) in sendMsgList" :key="msg.id">
               <th scope="row">
-                <input type="checkbox" :id="msg" :value="msg" v-model="selectedList" :key="index.id">
+                <input type="checkbox" :id="msg" :value="msg.id" v-model="selected" :key="index.id">
               </th>
               <td>{{ msg.receiver }}</td>
               <td><a class="text-dark" @click="getMsgData(msg.id)" href="#Detail_Message_Modal" style="text-decoration:none" data-bs-toggle="modal">{{ msg.title }}</a></td>
@@ -215,21 +214,21 @@
             </tr>
             </tbody>
 
+            <!-- 차단 -->
             <tbody v-else-if="msgMode === 4">
-            <tr v-for="user in blockUserList" :key="user.id">
-              <th scope="row">
-                <input type="checkbox" name="checkbox_name" value="checkbox_value">
-              </th>
+            <tr v-for="(user, index) in blockUserList" :key="user.id">
+              <td>{{ index + 1 }}</td>
               <td>{{ user.block_id }}</td>
               <td>{{ user.created_at }}</td>
               <td><button class="btn btn-success" @click="setUnblockUser(user.id)">차단해제</button></td>
             </tr>
             </tbody>
 
+            <!-- 전체 쪽지, 안읽음 -->
             <tbody v-else>
             <tr v-for="(msg, index) in recvMsgList" :key="msg.id">
               <th scope="row">
-                <input type="checkbox" :id="msg.id" :value="msg.id" v-model="selectedList" :key="index.id">
+                <input type="checkbox" :id="msg" :value="msg.id" v-model="selected" :key="index.id">
               </th>
               <td>{{ msg.sender }}</td>
               <td>
@@ -242,29 +241,33 @@
 
           <div class="d-flex justify-content-center">
             <!-- Pagination -->
-            <nav aria-label="Page navigation">
-              <ul class="pagination">
-                <li v-if="currentPage !== 1" class="page-item">
-                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, false)">이전</a>
-                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, true)">이전</a>
-                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage - 1)">이전</a>
-                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage - 1)">이전</a>
-                </li>
-                <li v-for="page in numberOfPages" :key="page" class="page-item" :class="currentPage === page ? 'active' : ''">
-                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, false)">{{ page }}</a>
-                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, true)">{{ page }}</a>
-                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(page)">{{ page }}</a>
-                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(page)">{{ page }}</a>
-                </li>
-                <li v-if="currentPage !== numberOfPages" class="page-item">
-                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, false)">다음</a>
-                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, true)">다음</a>
-                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage + 1)">다음</a>
-                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage + 1)">다음</a>
-                </li>
-              </ul>
-            </nav>
+            <Pagination v-if="msgMode === 1" :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
+            <Pagination v-else-if="msgMode === 2" :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
+            <Pagination v-else-if="msgMode ===3" :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
+            <Pagination v-else :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
           </div>
+<!--            <nav aria-label="Page navigation">-->
+<!--              <ul class="pagination">-->
+<!--                <li v-if="currentPage !== 1" class="page-item">-->
+<!--                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, false)">이전</a>-->
+<!--                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, true)">이전</a>-->
+<!--                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage - 1)">이전</a>-->
+<!--                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage - 1)">이전</a>-->
+<!--                </li>-->
+<!--                <li v-for="page in numberOfPages" :key="page" class="page-item" :class="currentPage === page ? 'active' : ''">-->
+<!--                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, false)">{{ page }}</a>-->
+<!--                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, true)">{{ page }}</a>-->
+<!--                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(page)">{{ page }}</a>-->
+<!--                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(page)">{{ page }}</a>-->
+<!--                </li>-->
+<!--                <li v-if="currentPage !== numberOfPages" class="page-item">-->
+<!--                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, false)">다음</a>-->
+<!--                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, true)">다음</a>-->
+<!--                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage + 1)">다음</a>-->
+<!--                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage + 1)">다음</a>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </nav>-->
 
         </div>
         <div class="modal-footer">
@@ -305,7 +308,7 @@
         </div>
         <div class="modal-footer">
           <button id="write_button" @click="sendMessage" class="btn btn-primary">전송</button>
-          <button type="button" @click="[resetSearch(), refreshMsg(msgMode)]" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
+          <button type="button" @click="[resetValue(), refreshMsg(msgMode)]" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#Receive_Message_Modal">
             닫기
           </button>
         </div>
@@ -334,6 +337,10 @@
               <td>{{ msgData.title }}</td>
             </tr>
             <tr>
+              <th scope="row">받는사람</th>
+              <td>{{ msgData.receiver_name }}</td>
+            </tr>
+            <tr>
               <th scope="row">보낸사람</th>
               <td>{{ msgData.sender_name }}</td>
             </tr>
@@ -349,7 +356,7 @@
           <button type="button" @click="replyOption(msgData.sender_name)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Write_Message_Modal">
             답장
           </button>
-          <button class="btn btn-danger" @click="setBlockUser(msgData.sender_name)">
+          <button v-if="msgMode !== 3" class="btn btn-danger" @click="setBlockUser(msgData.sender_name)">
             차단
           </button>
           <button class="btn btn-danger" @click="deleteMsg(msgData.id)">
@@ -365,14 +372,18 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import useAxios from '@/modules/axios'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import router from '@/router'
 import axios from 'axios'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
+  components: {
+    Pagination,
+  },
   setup() {
     const { axiosGet, axiosPost, axiosPatch, axiosDelete } = useAxios()
     const route = useRoute()
@@ -399,16 +410,15 @@ export default {
     const newIntroduce = ref('')
 
     // Pagination
-    const currentPage = ref(1)  // 현재 페이지
-    const numberOfPages = ref(1)
+    const currentPage = ref(1)
+    const pageDisplayCount = ref(5)
+    const totalPageCount = ref()
 
     const isReply = ref(false)  // 답장 상태인지 확인
     const msgMode = ref(1)  // 1: 전체 쪽지, 2: 안읽음, 3: 보낸 쪽지함, 4: 차단
 
     const selectedSearch = ref('TITLE')
     const searchText = ref('')
-
-    const selectedList = ref([])
 
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
@@ -479,16 +489,17 @@ export default {
       })
     }
 
-    const recvMsgList = ref([])
-    const recvMsgArr = ref([])
-    const sendMsgList = ref([])
+    const recvMsgList = ref(null)
+    const sendMsgList = ref(null)
     const blockUserList = ref('')
 
-    const resetSearch = () => {
+    const resetValue = () => {
       selectedSearch.value = 'TITLE'
       searchText.value = ''
       isReply.value = false
       receiver_name.value = ''
+      selected.value = []
+      selectAll.value = false
     }
 
     const getRecvMsgList = (page = currentPage.value, notRead) => {  // 수신함 목록 받아오기
@@ -500,67 +511,20 @@ export default {
       currentPage.value = page
       axiosGet(`/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`
           , (res) => {
+            totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
             if (res.data.length !== 0) {
               recvMsgList.value = res.data
-              // let step
-              if (recvMsgList.value.length === 0) {
-                recvMsgArr.value = []
-                // for (step = 0; step < recvMsgList.value.length; step++) {
-                //   recvMsgArr.value.push(recvMsgList.value[step].id)
-                // }
-              } else {
-                recvMsgList.value.forEach((msg) => {
-                  recvMsgArr.value.push(msg.id)
-                })
-                // for (step = 0; step < recvMsgList.value.length; step++) {
-                //   recvMsgArr.value.push(recvMsgList.value[step].id)
-                // }
-              }
-              console.log(recvMsgArr.value)
             } else {
               recvMsgList.value = null
             }
           }, (err) => {
             console.log(err)
           })
-
-      // try {
-      //   const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes?page=${page}&size=5&sort=createdAt,DESC&not_read=${notRead}&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       'Access-Control-Allow-Origin': '*',
-      //     },
-      //     withCredentials: true,
-      //   })
-      //   numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
-      //   if (res.data.length !== 0) {
-      //     recvMsgList.value = res.data
-      //     let step;
-      //     if (recvMsgList.value.length === 0) {
-      //       for (step = 0; step < recvMsgList.value.length; step++) {
-      //         recvMsgArr.value.push(recvMsgList.value[step].id)
-      //       }
-      //     } else {
-      //       recvMsgArr.value = []
-      //       for (step = 0; step < recvMsgList.value.length; step++) {
-      //         recvMsgArr.value.push(recvMsgList.value[step].id)
-      //       }
-      //     }
-      //     console.log(recvMsgArr.value)
-      //   } else {
-      //     recvMsgList.value = null
-      //   }
-      // } catch (error) {
-      //   console.log(error)
-      // }
     }
 
     const getSendMsgList = async (page = currentPage.value) => {  // 발신함 목록 받아오기
       msgMode.value = 3
       currentPage.value = page
-      // axiosGet(`/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
-      //
-      // })
       try {
         const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
           headers: {
@@ -569,7 +533,7 @@ export default {
           },
           withCredentials: true,
         })
-        numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+        totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           sendMsgList.value = res.data
         } else {
@@ -591,7 +555,7 @@ export default {
           },
           withCredentials: true,
         })
-        numberOfPages.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+        totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           blockUserList.value = res.data
         } else {
@@ -716,30 +680,88 @@ export default {
       else getBlockUserList(1)
     }
 
-    const allSelected = computed({
-      get() {
-        return recvMsgList.value.length === selectedList.value.length
-      },
-      set(e) {
-        selectedList.value = e ? recvMsgList.value : [];
+
+    // 쪽지 전체 선택
+    const selectAll = ref(false)
+    const selected = ref([])
+
+    watch(selected, () => {
+      if (msgMode.value === 3) {
+        if (sendMsgList.value !== null) {
+          selectAll.value = selected.value.length === sendMsgList.value.length
+        }
+      } else {
+        if (recvMsgList.value !== null) {
+          selectAll.value = selected.value.length === recvMsgList.value.length
+        }
       }
     })
 
+    const allSelected = () => {
+      selected.value = []
+      if (!selectAll.value) {
+        if (msgMode.value === 3) {  // 보낸 쪽지함
+          for (let i in sendMsgList.value) {
+            selected.value.push(sendMsgList.value[i].id)
+          }
+        } else { // 전체 쪽지, 안읽음
+          for (let i in recvMsgList.value) {
+            selected.value.push(recvMsgList.value[i].id)
+          }
+        }
+      }
+    }
+
+    const setPage = (page) => {
+      currentPage.value = page
+      if (msgMode.value === 1) {
+        getRecvMsgList(page, false)
+      } else if (msgMode.value === 2) {
+        getRecvMsgList(page, true)
+      } else if (msgMode.value === 3) {
+        getSendMsgList(page)
+      } else {
+        getBlockUserList(page)
+      }
+    }
+
     const selectMsgDelete = () => {
-      if(confirm("선택한 쪽지를 모두 삭제하시겠습니까?")) {
-        axios.delete(`http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes`, {
-          data: {
-            messageIdArray: selectedList.value
-          },headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          },
-          withCredentials: true,
-        }, () => {
-          alert('삭제되었습니다!')
-        }, (err) => {
-          console.error(err)
-        })
+      if (msgMode.value === 3) {
+        if(confirm('선택한 메시지를 모두 삭제하시겠습니까?')) {
+          axios.delete('http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes', {
+            data: {
+              messageIdArray: selected.value
+            },
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true,
+          }).then(() => {
+            alert('메시지 삭제에 성공하였습니다.')
+            window.location.reload()
+          }).catch(() => {
+            alert('메시지 삭제에 실패하였습니다.')
+          })
+        }
+      } else {
+        if(confirm('선택한 메시지를 모두 삭제하시겠습니까?')) {
+          axios.delete('http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes', {
+            data: {
+              messageIdArray: selected.value
+            },
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true,
+          }).then(() => {
+            alert('메시지 삭제에 성공하였습니다.')
+            window.location.reload()
+          }).catch(() => {
+            alert('메시지 삭제에 실패하였습니다.')
+          })
+        }
       }
     }
 
@@ -768,22 +790,27 @@ export default {
       getMsgData,
       unReadCount,
       pageRefresh,
-      currentPage,
-      numberOfPages,
       isReply,
       replyOption,
       msgMode,
       selectedSearch,
       searchText,
       searchMessage,
-      resetSearch,
+      resetValue,
       getBlockUserList,
       setBlockUser,
       blockUserList,
       setUnblockUser,
       deleteMsg,
       refreshMsg,
-      selectedList,
+
+      currentPage,
+      pageDisplayCount,
+      totalPageCount,
+      setPage,
+
+      selectAll,
+      selected,
       allSelected,
       selectMsgDelete,
     }
