@@ -23,18 +23,18 @@
 </template>
 
 <script>
-import {ref, computed} from 'vue'
+import { ref, computed } from 'vue'
 import useAxios from '@/modules/axios'
-import {axios} from '@bundled-es-modules/axios'
+import { axios } from '@bundled-es-modules/axios'
 
 export default {
   setup(props, context) {
-    const {axiosPost, axiosPut} = useAxios()
+    const { axiosPost, axiosPut } = useAxios()
     const imageSrc = ref('')
     const show = ref(false)
     const file = ref(null)
     const fileName = ref('')
-    let imgUrl;
+    let imgUrl
     // const formData = new FormData()
 
     const validImage = computed(() => {
@@ -103,11 +103,11 @@ export default {
     const filePath = ref('')
 
     const requestAuth = () => { // 이미지 업로드 권한 취득
-      axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
+      axiosPost('http://be.algo.r-e.kr:8088/api/v1/posts/images', {
         file_name: fileName.value,
         image_request_type: "POST",
       }, (response) => {
-        filePath.value = response.data.substring(response.data.indexOf('post_image') + 11, response.data.indexOf('?'))
+        filePath.value = response.data.substring(response.data.indexOf('post_image') + 11, response.data.indexOf('?'))  // 이미지이름.확장자
         uploadImage(response.data)
       }, (err) => {
         console.error(err)
@@ -115,6 +115,7 @@ export default {
     }
 
     const uploadImage = (awsURL) => { // 백엔드 서버에 URL 요청
+      console.log(awsURL) // aws에 올릴 수 있는 URL
       axios.put(awsURL, file.value.files[0], {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -130,8 +131,8 @@ export default {
     }
 
     const insertImage = (imageUrl) => { // 이미지 글쓰기 본문에 삽입
-      axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
-        file_name: imageUrl,
+      axiosPost('http://be.algo.r-e.kr:8088/api/v1/posts/images', {
+        file_name: imageUrl,  // 이미지이름.확장자
         image_request_type: "GET",
       }, (res) => {
         imageSrc.value = res.data.substring(0, res.data.indexOf('?'))

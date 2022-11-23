@@ -1,7 +1,7 @@
 import { axios } from '@bundled-es-modules/axios'
 
 export default () => {
-  const BASE_URL = 'http://be2.algo.r-e.kr:8088'
+  const BASE_URL = 'http://be.algo.r-e.kr:8088'
   const CONFIG = {
     headers: {
       'Content-Type': 'application/json',

@@ -28,6 +28,9 @@
 
 <script>
 import { ref, watch } from 'vue'
+import useAxios from '@/modules/axios'
+import router from '@/router'
+
 export default {
   props: {
     username: {
@@ -35,7 +38,8 @@ export default {
       required: true
     }
   },
-  setup() {
+  setup(props, {emit}) {
+    const { axiosPatch } = useAxios()
     const password = ref('')
     const passwordCheck = ref('')
     const equalPassword = ref(false)
@@ -77,7 +81,22 @@ export default {
       if (password.value === '' || passwordCheck.value === '') {
         alert('비밀번호를 모두 작성해주세요.')
       } else if (equalPassword.value && passwordValidation.value) {
-        // Todo
+        if (password.value === passwordCheck.value) {
+          axiosPatch('/api/v1/users/password', {
+            username: props.username,
+            password: '',
+            new_password: password.value,
+            is_reset: true,
+          }, () => {
+            alert('비밀번호 변경이 완료되었습니다. 로그인화면으로 이동합니다.')
+            router.push({name: 'Login'})
+          })
+        } else {
+          alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.')
+          equalPassword.value = false
+          enablePasswordCheckMsg.value = true
+          pwCheckErrorMessage.value = '비밀번호가 일치하지 않습니다.'
+        }
       } else {
         alert('비밀번호를 다시 확인해주세요.')
       }

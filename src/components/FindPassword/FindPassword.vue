@@ -161,7 +161,8 @@ export default {
         if (leftTime.value > 0) {
           axiosPost('/api/v1/users/validate', {
             username: username.value,
-            code: authCode.value
+            code: authCode.value,
+            is_signup: false,
           }, () => {
             enableCodeErrorMessage.value = false
             codeErrorMessage.value = ''

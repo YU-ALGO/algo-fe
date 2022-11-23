@@ -1,87 +1,117 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6">
-        <div class="card mt-4 shadow p-3 mb-5 bg-body">
-          <div class="card-body">
-            <h3 class="card-title mb-4">비밀번호 변경</h3>
-          </div>
-          <div class="mb-3">
-            <label for="password">현재 비밀번호 (6자 이상)</label>
-            <input type="password" class="form-control" id="password" v-model="password" @keyup.enter="submit" placeholder="현재 비밀번호" minlength="6" maxlength="20"
-                   required>
-          </div>
-          <div class="mb-3">
-            <label for="password">새 비밀번호 (6자 이상)</label>
-            <input type="password" class="form-control" id="new_password" v-model="new_password" @keyup.enter="submit" placeholder="새 비밀번호" minlength="6" maxlength="20"
-                   required>
-          </div>
-          <div class="mb-3">
-            <label for="password" :style="!passCheck ? 'color : red' : ''">새 비밀번호 확인</label>
-            <input type="password" class="form-control" id="new_password_check" v-model="new_password_check" @keyup.enter="submit"  placeholder="새 비밀번호 확인" minlength="6" maxlength="20"
-                   required>
-            <p v-show="!passCheck" style="color: red"> 비밀번호가 일치하지 않습니다 .</p>
-          </div>
-          <div class="mb-3">
-            <button type="button" class="btn btn-danger" style=" float: right;" @click="moveToPrevPage">취소</button>
-            <button type="button" class="btn btn-primary" style=" float: right;margin-right: 5px;">저장</button>
-          </div>
+    <div class="card mt-4 mx-auto shadow" style="max-width: 680px;">
+      <div class="card-body">
+        <div class="progress" style="max-width: 100px; height: 10px">
+          <div class="progress-bar" style="width: 100% "></div>
         </div>
+        <h4 class="card-title mt-3">ALGo 로그인에 사용할<br/>새로운 비밀번호를 입력해주세요</h4>
+        <h5 class="text-black-50 mt-5">현재 비밀번호</h5>
+        <input type="password" class="form-control" placeholder="비밀번호 입력" v-model="password" @keyup.enter="checkPassword" required>
+        <h5 class="text-black-50 mt-4">새로운 비밀번호</h5>
+        <div class="mb-2">
+          <input type="password" class="form-control" placeholder="비밀번호 입력 (8자 이상)" v-model="newPassword" @keyup.enter="checkPassword"
+                 minlength="8" required>
+          <p v-show="enablePasswordMsg" style="color: red"> {{ pwErrorMessage }} </p>
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control" placeholder="비밀번호 재입력" v-model="passwordCheck" @keyup.enter="checkPassword"
+                 minlength="8" required>
+          <p v-show="enablePasswordCheckMsg" style="color: red"> {{ pwCheckErrorMessage }} </p>
+        </div>
+        <button class="btn btn-primary form-control mt-4" @click="checkPassword">다음</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {ref, watch} from 'vue'
-import useAxios from '@/modules/axios.js'
+import { ref, watch } from 'vue'
+import useAxios from '@/modules/axios'
 import router from '@/router'
+import store from '@/store'
 
 export default {
   setup() {
-    const passCheck = ref(true)  // 비밀번호 확인 (false == 비밀번호 확인이랑 일치하지 않음)
+    const { axiosPatch } = useAxios()
     const password = ref('')
-    const new_password = ref('')
-    const new_password_check = ref('')
-    watch(new_password_check, () => {
-      if (new_password.value === new_password_check.value) passCheck.value = true
-      else passCheck.value = false
+    const newPassword = ref('')
+    const passwordCheck = ref('')
+    const equalPassword = ref(false)
+    const enablePasswordMsg = ref(false)
+    const enablePasswordCheckMsg = ref(false)
+    const pwErrorMessage = ref('')
+    const pwCheckErrorMessage = ref('')
+    const passwordValidation = ref(false)
+    const username = ref(store.getters['username'])
+
+    watch(newPassword, () => {
+      checkPass()
     })
 
-    //비밀번호 변경 submit 수정 필요
-    const submit = () => {
-      if (password.value === '' || new_password.value === '' || new_password_check.value === '') {
-        alert('비밀번호 변경 양식을 모두 작성해주세요.')
-      } else if (passCheck.value) {
-        axiosPost('/api/v1/signup', {
-          password: password.value,
-          new_password: new_password.value,
-          new_password_check: new_password_check.value
-        }, () => {
-          alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.')
-          router.push('/login')
-        }, (err) => {
-          console.error(err)
-          alert('회원가입에 실패하였습니다.')
-        })
+    watch(passwordCheck, () => {
+      if (passwordCheck.value !== '') {
+        equalPassword.value = newPassword.value === passwordCheck.value
+        if (!equalPassword.value) {
+          enablePasswordCheckMsg.value = true
+          pwCheckErrorMessage.value = '비밀번호가 일치하지 않습니다.'
+        } else {
+          enablePasswordCheckMsg.value = false
+        }
       }
-      else {
-        alert('비밀번호 변경 양식을 다시 확인해주세요.')
+    })
+
+    const checkPass = () => {
+      const validateNickname = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\d~!@#$%^&*()+|=]{8,}$/
+      passwordValidation.value = !(!validateNickname.test(newPassword.value) || !newPassword.value)
+      if(!passwordValidation.value) {
+        enablePasswordMsg.value = true
+        pwErrorMessage.value = '비밀번호는 숫자, 영어, 특수문자를 포함하여 8자 이상 입력해주세요.'
+      } else {
+        enablePasswordMsg.value = false
+        pwErrorMessage.value = ''
       }
     }
 
-    const moveToPrevPage = () => {
-      router.go(-1)
+    const checkPassword = () => {
+      if (password.value ==='' || newPassword.value === '' || passwordCheck.value === '') {
+        alert('비밀번호를 모두 작성해주세요.')
+      } else if (equalPassword.value && passwordValidation.value) {
+        if (newPassword.value === passwordCheck.value) {
+          axiosPatch('/api/v1/users/password', {
+            username: username.value,
+            password: password.value,
+            new_password: newPassword.value,
+            is_reset: false,
+          }, (res) => {
+            alert('비밀번호 변경이 완료되었습니다.')
+            router.push({name: 'Profile'})
+          }, (err) => {
+            console.error(err)
+          })
+        } else {
+          alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.')
+          equalPassword.value = false
+          enablePasswordCheckMsg.value = true
+          pwCheckErrorMessage.value = '비밀번호가 일치하지 않습니다.'
+        }
+      } else {
+        alert('비밀번호를 다시 확인해주세요.')
+      }
     }
+
     return {
-      passCheck,
       password,
-      new_password,
-      new_password_check,
-      moveToPrevPage
+      newPassword,
+      passwordCheck,
+      checkPassword,
+      equalPassword,
+      enablePasswordMsg,
+      enablePasswordCheckMsg,
+      pwCheckErrorMessage,
+      pwErrorMessage,
     }
-  },
+  }
 }
 </script>
 

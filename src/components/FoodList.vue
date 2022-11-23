@@ -55,12 +55,13 @@
                   <div class="card-shadow card h-100">
                     <img class="card-img-top" :src="food.food_image_url" alt="..." width="300px" height="150">
                     <div class="card-body p-4">
-                      <div class="text-center">
-                        <a class="food-name stretched-link" :href="`/foods/${food.id}`">{{ food.food_name }}</a>
+                      <div class="text-center" style="transform: rotate(0);">
+                        <a class="food-name" :href="`/foods/${food.id}`">{{ food.food_name }}</a>
                       </div>
                       <div class="text-center mt-2">
-                        <button class="btn btn-outline-warning">
-                          <i class="bi bi-star"></i> | {{ food.like_count }}
+                        <button class="btn mt-auto" :class="food.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite(food.is_like, food.id)">
+                          <i v-if="!food.is_like" class="bi-star"></i>
+                          <i v-else class="bi-star-fill"></i> {{ food.like_count }}
                         </button>
                       </div>
                     </div>
@@ -178,7 +179,7 @@ export default {
 
     const getFoodList = (page = currentPage.value) => {
       setParams()
-      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=createdAt,DESC&keyword=${searchText.value}`, {
+      axios.get(`http://be.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=createdAt,DESC&keyword=${searchText.value}`, {
         params,
         headers: {
           'Content-Type': 'application/json',
@@ -186,6 +187,7 @@ export default {
         },
         withCredentials: true
       }).then((res) => {
+        console.log(res)
         totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           foodList.value = res.data
@@ -236,6 +238,26 @@ export default {
       }
     }
 
+    const favorite = (isLike, foodId) => {
+      if (isLike) {
+        axiosDelete(`/api/v1/foods/${foodId}/likes`
+            , () => {
+              location.reload()
+            }, () => {
+              alert('오류가 발생했습니다.')
+            })
+      } else {
+        axiosPost(`/api/v1/foods/${foodId}/likes`
+            , {}
+            , () => {
+              alert('즐겨찾기에 추가되었습니다.')
+              location.reload()
+            }, () => {
+              alert("오류가 발생했습니다.")
+            })
+      }
+    }
+
     onMounted(() => {
       getUserAllergy()
       getRecommendFood()
@@ -257,6 +279,7 @@ export default {
       recFoodList,
       viewFoodList,
       isAdmin,
+      favorite,
     }
   }
 }

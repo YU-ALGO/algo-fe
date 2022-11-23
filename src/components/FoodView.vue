@@ -4,9 +4,9 @@
       <div class="card shadow">
         <div class="card-body">
           <h5 class="card-title" style="display:inline">{{ foodData.food_name }}</h5>
-          <button class="btn mt-auto" :class="foodData.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite" style=" float: right;">
+          <button class="btn mt-auto" :class="foodData.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite(foodData.is_like, foodData.id)" style=" float: right;">
             <i v-if="!foodData.is_like" class="bi-star"></i>
-            <i v-else class="bi-star-fill"></i>
+            <i v-else class="bi-star-fill"></i> {{ foodData.like_count }}
           </button>
           <button type="button" class="btn btn-primary" style=" float: right;margin-right: 5px;" @click="moveToFoodListPage">목록</button>
           <hr/>
@@ -65,15 +65,16 @@
             <div class="container px-4 px-lg-1">
               <div class="row gx-4 gx-lg-2 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
                 <div v-for="recFood in recFoodList" :key="recFood.id" class="col mb-2">
-                  <div class="card h-100">
+                  <div class="card h-100 card-shadow">
                     <img class="card-img-top" :src=recFood.food_image_url width="250" height="200" alt="...">
                     <div class="card-body p-4">
                       <div class="text-center">
-                        <h5 class="fw-bolder" style="display:inline">{{ recFood.food_name }}</h5>
+                        <a class="food-name" :href="`/foods/${recFood.id}`">{{ recFood.food_name }}</a>
                       </div>
                       <div class="text-center mt-2">
-                        <button class="btn btn-outline-warning">
-                          <i class="bi bi-star"></i> | {{ recFood.like_count }}
+                        <button class="btn mt-auto" :class="recFood.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite(recFood.is_like, recFood.id)">
+                          <i v-if="!recFood.is_like" class="bi-star"></i>
+                          <i v-else class="bi-star-fill"></i> {{ recFood.like_count }}
                         </button>
                       </div>
                     </div>
@@ -128,16 +129,16 @@ export default {
 
     const recFoodList = ref('')
 
-    const favorite = () => {
-      if (foodData.value.is_like) {
-        axiosDelete(`/api/v1/foods/${foodId}/likes`
+    const favorite = (is_like, id) => {
+      if (is_like) {
+        axiosDelete(`/api/v1/foods/${id}/likes`
             , () => {
               location.reload()
             }, () => {
               alert('오류가 발생했습니다.')
             })
       } else {
-        axiosPost(`/api/v1/foods/${foodId}/likes`
+        axiosPost(`/api/v1/foods/${id}/likes`
             , {}
             , () => {
               alert('즐겨찾기에 추가되었습니다.')
@@ -174,6 +175,7 @@ export default {
             console.error(err)
           })
       axiosGet('/api/v1/foods/recommendation', (res) =>{
+        console.log(res)
         recFoodList.value = res.data
       }, (err) => {
         console.error(err)
@@ -196,5 +198,15 @@ export default {
 </script>
 
 <style scoped>
-
+.food-name {
+  text-decoration: none;
+  color:black;
+}
+.food-name:hover {
+  text-decoration: underline;
+  color: blue;
+}
+.card-shadow:hover {
+  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.5);
+}
 </style>

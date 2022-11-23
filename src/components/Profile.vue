@@ -6,7 +6,8 @@
           <div class="card mb-3">
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
-                <img src="../assets/default.png" alt="Admin" class="rounded-circle" width="150">
+                <img v-if="editProfile" :src="imageSrc" alt="" class="rounded-circle" width="150">
+                <img v-else :src="userData.profileImg" alt="" class="rounded-circle" width="150">
                 <div class="mt-3">
                   <h4>{{ userData.nickname }}</h4>
                   <p class="text-muted font-size-sm">일반회원</p>
@@ -22,7 +23,7 @@
                     <label for="inputImage" class="btn_model">
                       <b id="btnChangeProfile" class="btn btn-primary mt-2">프로필 사진 변경</b>
                     </label>
-                    <input type="file" id="inputImage" accept="image/*" @change="fileChange" hidden>
+                    <input type="file" id="inputImage" accept="image/*" @change="fileChange" hidden ref="file">
                   </div>
                 </div>
               </div>
@@ -32,7 +33,7 @@
             <div class="card-body">
               <div class="card-title fw-bold mb-2">즐겨찾기 식품</div>
               <div v-for="food in userFoods" :key="food.id" class="d-flex">
-                <img :src="food.food_image_url" class="me-3" height="100" width="100"/>
+                <img :src="food.food_image_url" class="me-3" height="100" width="100" alt=""/>
                 <router-link :to="{ name: 'FoodView', params: { id: food.id } }" class="col text-link text-center align-self-center text-body">{{ food.foodName }}</router-link>
               </div>
               <div class="d-flex justify-content-center mt-4">
@@ -405,7 +406,7 @@ import useAxios from '@/modules/axios'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import router from '@/router'
-import axios from 'axios'
+import { axios } from '@bundled-es-modules/axios'
 import Pagination from '@compo/Pagination.vue'
 
 export default {
@@ -431,12 +432,13 @@ export default {
     const userFoods = ref([])
     const userPosts = ref([])
     const userComments = ref([])
-    const newNickname = ref('')
     const editProfile = ref(false)  // 프로필 수정 상태인지 확인
     const isNickAvail = ref(false)
     const modalShow = ref(false)
 
-    // 한줄 소개
+    // 프로필 수정 항목
+    const newAllergies = ref()
+    const newNickname = ref('')
     const newIntroduce = ref('')
 
     // Pagination
@@ -449,8 +451,6 @@ export default {
 
     const selectedSearch = ref('TITLE')
     const searchText = ref('')
-
-    const selectedList = ref([])
 
     // Food pagination
     const curFoodPage = ref(1)
@@ -516,7 +516,7 @@ export default {
       getCommentList(page)
     }
 
-    const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
+    const allergyCheckData = ref([  // 현재 사용자의 알레르기 데이터
       {id: 1, name: 'squid', foodName: '오징어', selected: false},
       {id: 2, name: 'eggs', foodName: '난류', selected: false},
       {id: 3, name: 'chicken', foodName: '닭', selected: false},
@@ -539,10 +539,27 @@ export default {
       {id: 20, name: 'vegetable', foodName: '채소', selected: false},
     ])
 
+    const allergyData = new Map()
+
+    const checkSelected = () => {
+      for (let i = 0; i < allergyCheckData.value.length; i++) {
+        allergyData.set(allergyCheckData.value[i].name, allergyCheckData.value[i].selected)
+      }
+    }
+
+    watch(allergyCheckData.value, () => {
+      checkSelected()
+    })
+
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
       newNickname.value = userData.value.nickname
       newIntroduce.value = userData.value.introduce
+      imageSrc.value = userData.value.profileImg
+      const newAllergies = new Map(Object.entries(userData.value.userAllergyInfo))
+      for (let i = 0; i < newAllergies.size; i++) {
+        allergyCheckData.value[i].selected = newAllergies.get(allergyCheckData.value[i].name)
+      }
     }
 
     const nicknameCheck = () => {
@@ -572,6 +589,12 @@ export default {
       if(newIntroduce.value !== userData.value.introduce) {
         promiseList.push(axiosPatch('/api/v1/users/introduce', { introduce: newIntroduce.value }))
       }
+      // if()
+      let newAllergies = {}
+      allergyCheckData.value.forEach((data) => {
+        newAllergies[data.name] = data.selected
+      })
+      promiseList.push(axiosPatch('/api/v1/users/allergies', newAllergies))
 
       Promise.all(promiseList)
         .then(() => {
@@ -581,12 +604,107 @@ export default {
         }).catch(() => {
           alert('닉네임 중복 또는 한 줄 소개를 확인해주세요.')
         })
+      updateImage()
     }
+
+    // 프로필 이미지 업로드
+    const file = ref(null)
+    const fileName = ref('')
+    const filePath = ref('')
+    let imgUrl
 
     const fileChange = () => {
-      // axiosPost('/api/v1/profiles/images')
+      // const blobURL = URL.createObjectURL(file.value.files[0])
+      // const img = new Image()
+      // img.src = blobURL
+      // img.onload = () => {
+      //   imageSizeChange(img)
+      //   file.value.files[0] = new File([dataURItoBlob(imgUrl)], file.value.files[0].name)
+      // }
+      fileName.value = file.value.files[0].name
+      requestAuth()
     }
 
+    const imageSizeChange = (image) => {
+      let canvas = document.createElement("canvas"),
+          max_size = 1280,
+          // 최대 기준을 1280으로 잡음.
+          width = image.width,
+          height = image.height;
+      if (width > height) {
+        // 가로가 길 경우
+        if (width > max_size) {
+          height *= max_size / width;
+          width = max_size;
+        }
+      } else {
+        // 세로가 길 경우
+        if (height > max_size) {
+          width *= max_size / height;
+          height = max_size;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+      imgUrl = canvas.toDataURL("image/jpeg", 0.5);
+    }
+
+    const dataURItoBlob = (dataURI) => {
+      let byteString = atob(dataURI.split(',')[1])
+      let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+      let ab = new ArrayBuffer(byteString.length)
+      let ia = new Uint8Array(ab)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+      }
+      return new Blob([ab], {type: mimeString})
+    }
+
+    const requestAuth = () => {
+      axiosPost('/api/v1/profiles/images', {
+        file_name: fileName.value,
+        image_request_type: 'POST',
+      }, (res) => {
+        filePath.value = res.data.substring(res.data.indexOf('profile_image')+14, res.data.indexOf('?')) //이미지이름.확장자
+        uploadImage(res.data)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const uploadImage = (awsURL) => { // 백엔드 서버에 URL 요청
+      axios.put(awsURL, file.value.files[0], {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: true,
+      }).then(() => {
+        insertImage(filePath.value)
+      }).catch((err) => {
+        console.error(err)
+      })
+    }
+
+    const imageSrc = ref()
+    const insertImage = (imageUrl) => { // 프로필 이미지 업로드
+      axiosPost('/api/v1/profiles/images', {
+        file_name: imageUrl,  // 이미지이름.확장자
+        image_request_type: "GET",
+      }, (res) => {
+        imageSrc.value = res.data.substring(0, res.data.indexOf('?'))
+        console.log(imageSrc.value)
+      }, (err) => {
+        console.error(err)
+      })
+    }
+
+    const updateImage = () => {
+      axiosPatch('/api/v1/users/profile_images', {
+        profileImageUrl: imageSrc.value
+      })
+    }
 
     const updatePassword = () => {
       router.push({name : 'ChangePassword'})
@@ -650,7 +768,7 @@ export default {
       msgMode.value = 3
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -672,7 +790,7 @@ export default {
       msgMode.value = 4
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -747,8 +865,13 @@ export default {
       axiosGet(`/api/v1/profiles/${route.params.nickname}`
           , (res) => {
             userData.value = res.data
+            imageSrc.value = userData.value.profileImg
             newNickname.value = userData.value.nickname
             newIntroduce.value = userData.value.introduce
+            const newAllergies = new Map(Object.entries(res.data.userAllergyInfo))
+            for (let i = 0; i < newAllergies.size; i++) {
+              allergyCheckData.value[i].selected = newAllergies.get(allergyCheckData.value[i].name)
+            }
           }, (err) => {
             console.log('사용자 정보 에러ㅠㅠ')
             console.error(err)
@@ -845,7 +968,7 @@ export default {
     const selectMsgDelete = () => {
       if (msgMode.value === 3) {
         if(confirm('선택한 메시지를 모두 삭제하시겠습니까?')) {
-          axios.delete('http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes', {
+          axios.delete('http://be.algo.r-e.kr:8088/api/v1/messages/outboxes', {
             data: {
               messageIdArray: selected.value
             },
@@ -863,7 +986,7 @@ export default {
         }
       } else {
         if(confirm('선택한 메시지를 모두 삭제하시겠습니까?')) {
-          axios.delete('http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes', {
+          axios.delete('http://be.algo.r-e.kr:8088/api/v1/messages/inboxes', {
             data: {
               messageIdArray: selected.value
             },
@@ -903,6 +1026,8 @@ export default {
       totalCommPageCount,
       setCommPage,
       editProfileChange,
+      file,
+      filePath,
       fileChange,
       nicknameCheck,
       updateProfile,
@@ -943,6 +1068,7 @@ export default {
       selected,
       allSelected,
       selectMsgDelete,
+      imageSrc,
     }
   }
 }
