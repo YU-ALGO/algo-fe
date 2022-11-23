@@ -7,8 +7,7 @@
           <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input class="form-control" type="file" accept=".JPG, .jpg, .jpeg, ,JPEG, .gif, .png" @change="fileChange"
-                 ref="file"/>
+          <input class="form-control" type="file" accept=".JPG, .jpg, .jpeg, ,JPEG, .gif, .png" @change="fileChange" ref="file"/>
         </div>
         <div class="modal-footer">
           <button @click="closeModal" class="btn btn-outline-secondary">
@@ -35,7 +34,7 @@ export default {
     const show = ref(false)
     const file = ref(null)
     const fileName = ref('')
-    var imgUrl;
+    let imgUrl;
     // const formData = new FormData()
 
     const validImage = computed(() => {
@@ -54,7 +53,7 @@ export default {
 
     const fileChange = () => {
       // formData.append('image', file.value.files[0])
-      console.log(file.value.files)
+      // console.log(file.value.files)
       const blobURL = URL.createObjectURL(file.value.files[0]);
       const img = new Image();
       img.src = blobURL;
@@ -91,11 +90,11 @@ export default {
     }
 
     function dataURItoBlob(dataURI) {
-      var byteString = atob(dataURI.split(',')[1]);
-      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-      var ab = new ArrayBuffer(byteString.length);
-      var ia = new Uint8Array(ab);
-      for (var i = 0; i < byteString.length; i++) {
+      let byteString = atob(dataURI.split(',')[1]);
+      let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      let ab = new ArrayBuffer(byteString.length);
+      let ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
       }
       return new Blob([ab], {type: mimeString});
@@ -104,8 +103,6 @@ export default {
     const filePath = ref('')
 
     const requestAuth = () => { // 이미지 업로드 권한 취득
-
-
       axiosPost('http://be2.algo.r-e.kr:8088/api/v1/posts/images', {
         file_name: fileName.value,
         image_request_type: "POST",

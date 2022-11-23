@@ -50,7 +50,7 @@
                 </div>
               </div>
               <router-link v-if="isAdmin" class="btn btn-primary mt-2" :to="{ name: 'FoodWrite', query: { id: foodData.id, editable: true } }">수정</router-link>
-              <button class="btn btn-danger mt-2">삭제</button>
+              <button v-if="isAdmin" class="btn btn-danger mt-2" @click="foodDelete(foodData.id)">삭제</button>
             </div>
           </div>
         </div>
@@ -148,6 +148,18 @@ export default {
       }
     }
 
+    const foodDelete = (id) => {
+      if(confirm('정말 식품을 삭제하시겠습니까?')) {
+        axiosDelete(`/api/v1/foods/${id}`
+            , () => {
+              alert("식품이 삭제되었습니다.")
+              router.go(-1)
+            }, () => {
+              alert('식품을 삭제할 수 없습니다.')
+            })
+      }
+    }
+
     const moveToFoodListPage = () => {
       router.go(-1)
     }
@@ -177,6 +189,7 @@ export default {
       recFoodList,
       checkPermission,
       isAdmin,
+      foodDelete,
     }
   }
 }

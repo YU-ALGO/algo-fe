@@ -63,7 +63,7 @@
         </div>
         <div class="form-inline row mt-2">
           <div class="text-lg-end mt-2">
-            <router-link :to="{ name: 'PostWrite' }" class="btn btn-primary">글쓰기</router-link>
+            <router-link v-if="boardId !== '1'" :to="{ name: 'PostWrite' }" class="btn btn-primary">글쓰기</router-link>
           </div>
         </div>
         <div class="d-flex justify-content-center">

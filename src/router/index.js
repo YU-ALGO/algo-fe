@@ -1,17 +1,18 @@
-import Join from '@compo/Join.vue'
+import Join from '@views/join/index.vue'
 import Login from '@compo/Login.vue'
 import PostWrite from '@compo/PostWrite.vue'
 import FoodView from '@compo/FoodView.vue'
 import TermOfService from '@compo/TermOfService.vue'
 import ChangePassword from '@compo/ChangePassword.vue'
 import NotFound from '@compo/NotFound.vue'
+import FoodWrite from '@compo/FoodWrite.vue'
 
 import MainView from '@views/index.vue'
 import Board from '@views/boards/_bid.vue'
 import PostView from '@views/boards/views/_pid.vue'
 import FoodList from '@views/food/index.vue'
 import Profile from '@views/profile/_nickname.vue'
-import FoodWrite from '@compo/FoodWrite.vue'
+import FindPassword from '@views/findPassword/index.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import useAxios from '@/modules/axios'
@@ -31,7 +32,7 @@ const isAdmin = () => (to, from, next) => {
       router.go(-1)
     }
   } else {
-    router.push('/login')
+    router.push({name : 'Login'})
   }
 }
 
@@ -39,7 +40,7 @@ const isLogin = () => (to, from, next) => {
   if (store.state.isLogin) {  // 로그인 된 상태
     return next()
   } else {
-    router.push('/login')
+    router.push({name : 'Login'})
   }
 }
 
@@ -126,13 +127,8 @@ const routes = [
     name: 'notFound',
     component: NotFound,
   },
-  // {  // page for test
-  //   path: '/test',
-  //   name: 'TestPage',
-  //   component: FoodView,
-  // },
   {
-    path: '/changepw',
+    path: '/user/changepw',
     name: 'ChangePassword',
     component: ChangePassword,
     beforeEnter: isLogin(),
@@ -143,6 +139,12 @@ const routes = [
     component: FoodWrite,
     beforeEnter: isAdmin(),
     props: true,
+  },
+  {
+    path: '/user/findpw',
+    name: 'FindPassword',
+    component: FindPassword,
+    beforeEnter: loginCheck(),
   }
 ]
 

@@ -6,7 +6,7 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
-                <img src="https://mblogthumb-phinf.pstatic.net/20150427_261/ninevincent_1430122791768m7oO1_JPEG/kakao_1.jpg?type=w2" alt="Admin" class="rounded-circle" width="150">
+                <img src="../assets/default.png" alt="Admin" class="rounded-circle" width="150">
                 <div class="mt-3">
                   <h4>{{ userData.nickname }}</h4>
                   <p class="text-muted font-size-sm">일반회원</p>
@@ -18,7 +18,12 @@
                     </span>
                   </button>
                   <br/>
-                  <button class="btn btn-primary mt-2">프로필 사진 변경</button>
+                  <div v-if="editProfile">
+                    <label for="inputImage" class="btn_model">
+                      <b id="btnChangeProfile" class="btn btn-primary mt-2">프로필 사진 변경</b>
+                    </label>
+                    <input type="file" id="inputImage" accept="image/*" @change="fileChange" hidden>
+                  </div>
                 </div>
               </div>
             </div>
@@ -90,9 +95,6 @@
                 <div v-else class="col-sm-9">
                   <input v-model="newIntroduce" type="text" class="form-control">
                 </div>
-                  <!-- <div v-else class="col-sm-9 text-secondary">
-                    <input v-model="introduce" type="text" class="form-control">
-                  </div> -->
               </div>
 
               <hr>
@@ -174,8 +176,6 @@
                   </button>
                 </div>
               </div>
-              <!-- 임시 -->
-<!--              <div class="text-uppercase text-bold">선택된 ID : {{ selected }}</div>-->
             </div>
 
           </nav>
@@ -246,28 +246,6 @@
             <Pagination v-else-if="msgMode ===3" :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
             <Pagination v-else :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
           </div>
-<!--            <nav aria-label="Page navigation">-->
-<!--              <ul class="pagination">-->
-<!--                <li v-if="currentPage !== 1" class="page-item">-->
-<!--                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, false)">이전</a>-->
-<!--                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage - 1, true)">이전</a>-->
-<!--                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage - 1)">이전</a>-->
-<!--                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage - 1)">이전</a>-->
-<!--                </li>-->
-<!--                <li v-for="page in numberOfPages" :key="page" class="page-item" :class="currentPage === page ? 'active' : ''">-->
-<!--                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, false)">{{ page }}</a>-->
-<!--                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(page, true)">{{ page }}</a>-->
-<!--                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(page)">{{ page }}</a>-->
-<!--                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(page)">{{ page }}</a>-->
-<!--                </li>-->
-<!--                <li v-if="currentPage !== numberOfPages" class="page-item">-->
-<!--                  <a v-if="msgMode === 1" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, false)">다음</a>-->
-<!--                  <a v-else-if="msgMode === 2" style="cursor: pointer" class="page-link" @click="getRecvMsgList(currentPage + 1, true)">다음</a>-->
-<!--                  <a v-else-if="msgMode === 4" style="cursor: pointer" class="page-link" @click="getBlockUserList(currentPage + 1)">다음</a>-->
-<!--                  <a v-else style="cursor: pointer" class="page-link" @click="getSendMsgList(currentPage + 1)">다음</a>-->
-<!--                </li>-->
-<!--              </ul>-->
-<!--            </nav>-->
 
         </div>
         <div class="modal-footer">
@@ -369,6 +347,25 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -464,8 +461,12 @@ export default {
         })
     }
 
+    const fileChange = () => {
+      // axiosPost('/api/v1/profiles/images')
+    }
+
     const updatePassword = () => {
-      router.push('/changepw')
+      router.push({name : 'ChangePassword'})
     }
 
     // 쪽지 작성
@@ -774,6 +775,7 @@ export default {
       newIntroduce,
       editProfile,
       editProfileChange,
+      fileChange,
       nicknameCheck,
       updateProfile,
       updatePassword,

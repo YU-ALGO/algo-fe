@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watchEffect } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import useAxios from '@/modules/axios'
 import StarterKit from '@tiptap/starter-kit'
@@ -68,24 +68,28 @@ export default {
     })
 
     const onSave = () => {
-      if (editable.value) {
-        axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
-          title: title.value,
-          content: editor.value.getHTML()
-        }, () => {
-          router.go(-1)
-        }, (err) => {
-          console.error(err)
-        })
+      if (boardId !== '1') {
+        if (editable.value) {
+          axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
+            title: title.value,
+            content: editor.value.getHTML()
+          }, () => {
+            router.go(-1)
+          }, (err) => {
+            console.error(err)
+          })
+        } else {
+          axiosPost(`/api/v1/boards/${boardId}/posts`, {
+            title: title.value,
+            content: editor.value.getHTML()
+          }, () => {
+            router.push({ name: 'Board', params: { bid: boardId }})
+          }, (err) => {
+            console.error(err)
+          })
+        }
       } else {
-        axiosPost(`/api/v1/boards/${boardId}/posts`, {
-          title: title.value,
-          content: editor.value.getHTML()
-        }, () => {
-          router.push({ name: 'Board', params: { bid: boardId }})
-        }, (err) => {
-          console.error(err)
-        })
+        alert('공지사항은 관리자만 작성할 수 있습니다.')
       }
     }
 
@@ -109,6 +113,13 @@ export default {
     onMounted(() => {
       if (editable.value) {
         getPostData()
+      }
+    })
+
+    onBeforeMount(() => {
+      if (route.params.bid === '1') {
+        alert('공지사항은 관리자만 작성할 수 있습니다.')
+        router.go(-1)
       }
     })
 

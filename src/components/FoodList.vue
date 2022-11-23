@@ -35,7 +35,7 @@
               <i class="ri-search-line"></i>
             </button>
           </div>
-          <router-link class="btn btn-primary" :to="{ name: 'FoodWrite'}">식품 추가</router-link>
+          <router-link v-if="isAdmin" class="btn btn-primary" :to="{ name: 'FoodWrite'}">식품 추가</router-link>
           <div class="mb-3">
             <div class="card p-3 mb-3 bg-body">
               <h5>알레르기 정보</h5>
@@ -109,6 +109,7 @@ import { onMounted, ref, watch, computed } from 'vue'
 import useAxios from '@/modules/axios'
 import axios from 'axios'
 import Pagination from '@compo/Pagination.vue'
+import store from "@/store";
 const { axiosGet, axiosPost, axiosDelete, axiosPatch } = useAxios()
 
 export default {
@@ -119,6 +120,7 @@ export default {
     const foodList = ref('')  // getFoodList()로 가져온 식품 데이터
     const recFoodList = ref('')
     const viewFoodList = ref('')
+    const isAdmin = ref(false)
 
     const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
       {id: 1, name: 'squid', foodName: '오징어', selected: false},
@@ -221,10 +223,24 @@ export default {
       getFoodList(1)
     }
 
+    const checkPermission = () => {
+      isAdmin.value = false
+      if (store.state.isLogin) {
+        if (store.state.isAdmin) {
+          axiosGet('/api/v1/admin', () => {
+            isAdmin.value = true
+          }, () => {
+            isAdmin.value = false
+          })
+        }
+      }
+    }
+
     onMounted(() => {
       getUserAllergy()
       getRecommendFood()
       getRecentFood()
+      checkPermission()
     })
 
     return {
@@ -240,6 +256,7 @@ export default {
       getRecommendFood,
       recFoodList,
       viewFoodList,
+      isAdmin,
     }
   }
 }

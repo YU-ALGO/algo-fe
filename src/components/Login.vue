@@ -19,7 +19,7 @@
             </div>
             <div class="form-inline row">
               <div class="text-lg-end">
-                <a href="#" id="forgot" class="font-weight-bold">비밀번호를 잊으셨나요?</a>
+                <router-link :to="{ name: 'FindPassword'}" id="forgot" class="font-weight-bold">비밀번호를 잊으셨나요?</router-link>
               </div>
             </div>
             <button type="button" @click="login" class="btn btn-primary mx-auto w-100 mt-3">로그인</button>
@@ -54,11 +54,9 @@ import useAxios from '@/modules/axios.js'
 
 export default {
   setup() {
-    const username = ref('choijohn7@naver.com')
-    const password = ref('1234')
+    const username = ref('')
+    const password = ref('')
     const store = useStore() //vuex 스토어 사용
-
-    const { axiosGet } = useAxios()
 
     const login = async () => {
       store.dispatch('login', {
@@ -69,40 +67,21 @@ export default {
       })
     }
 
-    // const kakaoLogin = () => {
-    //   axios.get('http://be.downbit.r-e.kr:8088/oauth2/authorization/kakao')
-    //       .then((res) => {
-    //         console.log(res.data)
-    //       })
-    //       .catch((error) => {
-    //         console.error(error)
-    //       })
-    // }
-
     const moveToJoinPage = () => {
-      router.push('/join')
+      router.push({name: 'Join'})
     }
+
     return {
       username,
       password,
       login,
       moveToJoinPage,
-      // kakaoLogin,
     }
   },
 }
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif
-}
-
 body {
   height: 100vh;
   background: linear-gradient(to top, #c9c9ff 50%, #9090fa 90%) no-repeat
