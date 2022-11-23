@@ -15,7 +15,7 @@
               <div class="accordion-body">
                 <ul class="list-group list-group-flush text-center">
                   <li v-for="viewFood in viewFoodList" :key="viewFood.id" class="list-group-item">
-                    <img :src=viewFood.food_image_url height="100" width="100" alt=""/><br/>
+                    <img :src="viewFood.food_image_url" height="100" width="100" alt=""/><br/>
                     <router-link :to="{ name: 'FoodView', params: { id: viewFood.id } }" class="food-name stretched-link">{{ viewFood.food_name }}</router-link>
                   </li>
                 </ul>
@@ -53,7 +53,7 @@
 
                 <div class="col mb-5" v-for="food in foodList" :key="food.id">
                   <div class="card-shadow card h-100">
-                    <img class="card-img-top" :src=food.food_image_url alt="..." width="300px" height="150">
+                    <img class="card-img-top" :src="food.food_image_url" alt="..." width="300px" height="150">
                     <div class="card-body p-4">
                       <div class="text-center">
                         <a class="food-name stretched-link" :href="`/foods/${food.id}`">{{ food.food_name }}</a>

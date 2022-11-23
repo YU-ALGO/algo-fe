@@ -3,7 +3,7 @@
     <div class="main-body">
       <div class="row gutters-sm">
         <div class="col-md-4 mb-3">
-          <div class="card">
+          <div class="card mb-3">
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
                 <img src="../assets/default.png" alt="Admin" class="rounded-circle" width="150">
@@ -28,11 +28,22 @@
               </div>
             </div>
           </div>
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="card-title fw-bold mb-2">즐겨찾기 식품</div>
+              <div v-for="food in userFoods" :key="food.id" class="d-flex">
+                <img :src="food.food_image_url" class="me-3" height="100" width="100"/>
+                <router-link :to="{ name: 'FoodView', params: { id: food.id } }" class="col text-link text-center align-self-center text-body">{{ food.foodName }}</router-link>
+              </div>
+              <div class="d-flex justify-content-center mt-4">
+                <Pagination :currentPage="curFoodPage" :pageDisplayCount="5" :totalPageCount="totalFoodPageCount" @change="setFoodPage"/>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-md-8">
           <div class="card mb-3">
             <div class="card-body">
-
               <div class="row">
                 <div class="col-sm-3">
                   <h6 class="mb-0 fw-bold">아이디</h6>
@@ -131,9 +142,12 @@
           </div>
           <div class="card mb-3">
             <div class="card-body">
-              <div class="card-title fw-bold mb-2">내가 쓴 글</div>
+              <div class="card-title fw-bold mb-2">
+                <div v-if="selfName === userData.nickname">내가 쓴 글</div>
+                <div v-else>{{ userData.nickname }}님이 쓴 글</div>
+              </div>
               <div v-for="post in userPosts" :key="post.postId" class="d-flex">
-                <a class="text-link text-body" :href="`/boards/views/${post.postId}`">{{ post.title }}</a>
+                <a class="text-link text-body" :href="`/boards/${post.boardId}/posts/${post.postId}`">{{ post.title }}</a>
                 <code class="ms-auto">{{ post.created_at }}</code>
               </div>
               <div class="d-flex justify-content-center mt-4">
@@ -143,9 +157,12 @@
           </div>
           <div class="card mb-3">
             <div class="card-body">
-              <div class="card-title fw-bold mb-2">내가 쓴 댓글</div>
+              <div class="card-title fw-bold mb-2">
+                <div v-if="selfName === userData.nickname">내가 쓴 댓글</div>
+                <div v-else>{{ userData.nickname }}님이 쓴 댓글</div>
+              </div>
               <div v-for="comment in userComments" :key="comment.postId" class="d-flex">
-                <a class="text-link text-body" :href="`/boards/views/${comment.postId}`">{{ comment.content }}</a>
+                <a class="text-link text-body" :href="`/boards/${comment.boardId}/posts/${comment.postId}`">{{ comment.content }}</a>
                 <code class="ms-auto">{{ comment.created_at }}</code>
               </div>
               <div class="d-flex justify-content-center mt-4">
@@ -399,6 +416,7 @@ export default {
     const { axiosGet, axiosPost, axiosPatch, axiosDelete } = useAxios()
     const route = useRoute()
     const store = useStore()
+    const selfName = ref(store.getters['nickname'])
 
     const userData = ref({
       introduce: '',
@@ -410,6 +428,7 @@ export default {
       reg_date: '',
     })
 
+    const userFoods = ref([])
     const userPosts = ref([])
     const userComments = ref([])
     const newNickname = ref('')
@@ -432,6 +451,27 @@ export default {
     const searchText = ref('')
 
     const selectedList = ref([])
+
+    // Food pagination
+    const curFoodPage = ref(1)
+    const totalFoodPageCount = ref()
+
+    const getFoodList = (page = curFoodPage.value) => {
+      axiosGet(`/api/v1/profiles/${route.params.nickname}/foods?page=${page}&size=4`
+        , (res) => {
+          totalFoodPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+          if (res.data.length !== 0) {
+            userFoods.value = res.data
+          }
+        }, (err) => {
+          console.error(err)
+        })
+    }
+
+    const setFoodPage = (page) => {
+      curFoodPage.value = page
+      getFoodList(page)
+    }
 
     // Post pagination
     const curPostPage = ref(1)
@@ -713,6 +753,9 @@ export default {
             console.error(err)
           })
 
+      // 사용자 즐겨찾기 식품 정보
+      getFoodList(1)
+
       // 사용자 작성 글 정보
       getPostList(1)
 
@@ -840,13 +883,18 @@ export default {
 
     return {
       modalShow,
+      selfName,
       userData,
+      userFoods,
       userPosts,
       userComments,
       newNickname,
       newIntroduce,
       editProfile,
       allergyCheckData,
+      curFoodPage,
+      totalFoodPageCount,
+      setFoodPage,
       curPostPage,
       totalPostPageCount,
       setPostPage,
@@ -946,7 +994,7 @@ body{
 
 .text-link {
   text-decoration: none;
- }
+}
 
 .text-link:hover {
   text-decoration: underline;
