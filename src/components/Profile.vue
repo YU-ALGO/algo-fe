@@ -78,9 +78,17 @@
                 <div class="col-sm-3">
                   <h6 class="mb-0 fw-bold">알레르기 정보</h6>
                 </div>
-                <div class="col-sm-9 d-inline-flex">
-                  <div v-for="(val, key) in userData.userAllergyInfo" :key="key">
-                    <div v-if="val"> {{ key }} &nbsp; </div>
+                <div class="col-sm-9">
+                  <div v-if="!editProfile" class=" d-inline-flex">
+                    <div v-for="(val, key, index) in userData.userAllergyInfo" :key="key">
+                      <div v-if="val">{{ allergyCheckData[index].foodName }} &nbsp;</div>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <div class="form-check form-check-inline" v-for="data in allergyCheckData" :key="data.id">
+                      <input class="form-check-input" type="checkbox" v-model="data.selected" :id="`${data.name}`" :value="`${data.name}`">
+                      <span class="form-check-label">{{ data.foodName }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -125,8 +133,11 @@
             <div class="card-body">
               <div class="card-title fw-bold mb-2">내가 쓴 글</div>
               <div v-for="post in userPosts" :key="post.postId" class="d-flex">
-                <a class="text-link text-body" :href="`/boards/views/${post.postId}`"> {{ post.title }} </a>
-                <code class="ms-auto"> {{ post.created_at }} </code>
+                <a class="text-link text-body" :href="`/boards/views/${post.postId}`">{{ post.title }}</a>
+                <code class="ms-auto">{{ post.created_at }}</code>
+              </div>
+              <div class="d-flex justify-content-center mt-4">
+                <Pagination :currentPage="curPostPage" :pageDisplayCount="5" :totalPageCount="totalPostPageCount" @change="setPostPage"/>
               </div>
             </div>
           </div>
@@ -134,8 +145,11 @@
             <div class="card-body">
               <div class="card-title fw-bold mb-2">내가 쓴 댓글</div>
               <div v-for="comment in userComments" :key="comment.postId" class="d-flex">
-                <a class="text-link text-body" :href="`/boards/views/${comment.postId}`"> {{ comment.content }} </a>
-                <code class="ms-auto"> {{ comment.created_at }} </code>
+                <a class="text-link text-body" :href="`/boards/views/${comment.postId}`">{{ comment.content }}</a>
+                <code class="ms-auto">{{ comment.created_at }}</code>
+              </div>
+              <div class="d-flex justify-content-center mt-4">
+                <Pagination :currentPage="curCommPage" :pageDisplayCount="5" :totalPageCount="totalCommPageCount" @change="setCommPage"/>
               </div>
             </div>
           </div>
@@ -375,7 +389,7 @@ import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import router from '@/router'
 import axios from 'axios'
-import Pagination from '@/components/Pagination.vue'
+import Pagination from '@compo/Pagination.vue'
 
 export default {
   components: {
@@ -416,6 +430,74 @@ export default {
 
     const selectedSearch = ref('TITLE')
     const searchText = ref('')
+
+    const selectedList = ref([])
+
+    // Post pagination
+    const curPostPage = ref(1)
+    const totalPostPageCount = ref()
+
+    // 사용자 작성 글 get
+    const getPostList = (page = curPostPage.value) => {
+      axiosGet(`/api/v1/profiles/${route.params.nickname}/posts?page=${page}&size=5`
+        , (res) => {
+          totalPostPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+          if (res.data.length !== 0) {
+            userPosts.value = res.data
+          }
+        }, (err) => {
+          console.error(err)
+        })
+    }
+
+    const setPostPage = (page) => {
+      curPostPage.value = page
+      getPostList(page)
+    }
+
+    // Comment pagination
+    const curCommPage = ref(1)
+    const totalCommPageCount = ref()
+
+    const getCommentList = (page = curCommPage.value) => {
+      axiosGet(`/api/v1/profiles/${route.params.nickname}/comments?page=${page}&size=5`
+        , (res) => {
+          totalCommPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
+          if (res.data.length !== 0) {
+            userComments.value = res.data
+          }
+        }, (err) => {
+          console.log(err)
+        })
+    }
+
+    const setCommPage = (page) => {
+      curCommPage.value = page
+      getCommentList(page)
+    }
+
+    const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
+      {id: 1, name: 'squid', foodName: '오징어', selected: false},
+      {id: 2, name: 'eggs', foodName: '난류', selected: false},
+      {id: 3, name: 'chicken', foodName: '닭', selected: false},
+      {id: 4, name: 'wheat', foodName: '밀', selected: false},
+      {id: 5, name: 'nuts', foodName: '견과류', selected: false},
+      {id: 6, name: 'milk', foodName: '우유', selected: false},
+      {id: 7, name: 'pork', foodName: '돼지고기', selected: false},
+      {id: 8, name: 'beef', foodName: '소고기', selected: false},
+      {id: 9, name: 'clams', foodName: '조개류', selected: false},
+      {id: 10, name: 'sulphite', foodName: '아황산류', selected: false},
+      {id: 11, name: 'buckwheat', foodName: '메밀', selected: false},
+      {id: 12, name: 'crab', foodName: '게', selected: false},
+      {id: 13, name: 'shrimp', foodName: '새우', selected: false},
+      {id: 14, name: 'soybean', foodName: '대두', selected: false},
+      {id: 15, name: 'tomato', foodName: '토마토', selected: false},
+      {id: 16, name: 'fish', foodName: '생선', selected: false},
+      {id: 17, name: 'sesame', foodName: '참깨', selected: false},
+      {id: 18, name: 'fruit', foodName: '과일', selected: false},
+      {id: 19, name: 'garlic', foodName: '마늘', selected: false},
+      {id: 20, name: 'vegetable', foodName: '채소', selected: false},
+    ])
 
     const editProfileChange = () => {
       editProfile.value = !editProfile.value
@@ -632,20 +714,10 @@ export default {
           })
 
       // 사용자 작성 글 정보
-      axiosGet(`/api/v1/profiles/${route.params.nickname}/posts`
-          , (res) => {
-            userPosts.value = res.data
-          }, (err) => {
-            console.log(err)
-          })
+      getPostList(1)
 
       // 사용자 작성 댓글 정보
-      axiosGet(`/api/v1/profiles/${route.params.nickname}/comments`
-          , (res) => {
-            userComments.value = res.data
-          }, (err) => {
-            console.log(err)
-          })
+      getCommentList(1)
     })
 
     const pageRefresh = () => { // 모달창을 빠져 나갔을 때 Profile 페이지 새로고침
@@ -774,6 +846,13 @@ export default {
       newNickname,
       newIntroduce,
       editProfile,
+      allergyCheckData,
+      curPostPage,
+      totalPostPageCount,
+      setPostPage,
+      curCommPage,
+      totalCommPageCount,
+      setCommPage,
       editProfileChange,
       fileChange,
       nicknameCheck,

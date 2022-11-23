@@ -13,7 +13,10 @@
       <div class="card-body">
         <h3 class="card-title mb-4">{{ postData.title }}</h3>
         <p class="card-text">
-          작성자 : {{ postData.author }} <br/> 작성일 : {{ postData.created_at }} <br/> 조회수 : {{ postData.view_count }} <br/> 추천수 : {{ postData.like_count }}
+          작성자 : <a class="text-link text-body" :href="`/profile/${postData.author}`">{{ postData.author }} </a><br/>
+          작성일 : {{ postData.created_at }} <br/>
+          조회수 : {{ postData.view_count }} <br/>
+          추천수 : {{ postData.like_count }}
         </p>
         <hr/>
         <p v-html="postData.content" class=""></p>
@@ -36,6 +39,9 @@
         <!-- Comment form-->
         <form>
           <textarea class="form-control mb-2" v-model="comment" placeholder="댓글을 남겨보세요" @keydown="resize" @keyup="resize" style="resize:none; overflow: hidden"/>
+          <span class="fw-bold">댓글
+            <span class="text-primary">{{ commentList.length }}</span>
+          </span>
           <button class="btn btn-primary float-end" type="button" @click="addComment">등록</button>
         </form>
         <!-- Comment with nested comments-->
@@ -44,10 +50,11 @@
             <div class="row justify-content-end mb-4">
               <div class="col">
                 <div v-if="!comment.is_deleted">
-                  <span class="fw-bold me-3">
+                  <span class="fw-bold me-1">
                     <a class="text-link text-body" :href="`/profile/${comment.author}`">{{ comment.author }}</a>
                   </span>
-                  <code>{{ comment.created_at === comment.modified_at ? comment.created_at : comment.modified_at + ' (수정됨)' }}</code>
+                  <i class="bi bi-dot me-1"></i>
+                  <code class="align-text-bottom">{{ comment.created_at === comment.modified_at ? comment.created_at : comment.modified_at + ' (수정됨)' }}</code>
                   <div>{{ comment.content }}</div>
                 </div>
                 <div v-else>
