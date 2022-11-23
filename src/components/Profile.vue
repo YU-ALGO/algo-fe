@@ -587,6 +587,7 @@ export default {
       // axiosPost('/api/v1/profiles/images')
     }
 
+
     const updatePassword = () => {
       router.push({name : 'ChangePassword'})
     }
