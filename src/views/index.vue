@@ -23,7 +23,7 @@
                       <tr v-for="post in noticePosts.slice(0, 4)" :key="post.id">
                         <th scope="row">{{ post.id }}</th>
                         <td>
-                          <a class="text-link text-body" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
+                          <a class="text-link text-body" :href="`/boards/1/posts/${post.id}`">{{ post.title }}</a>
                           <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{ post.comment_count }}]</label>
                         </td>
                         <td>{{ post.author }}</td>
@@ -60,7 +60,7 @@
                       <tr v-for="post in topPosts" :key="post.id">
                         <th scope="row">{{ post.id }}</th>
                         <td>
-                          <a class="text-link text-body" :href="`/boards/views/${post.id}`">{{ post.title }}</a>
+                          <a class="text-link text-body" :href="`/boards/posts/${post.id}`">{{ post.title }}</a>
                           <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{ post.comment_count }}]</label>
                         </td>
                         <td>{{ post.author }}</td>
@@ -196,6 +196,7 @@ export default {
       // TOP 게시글 get
       axiosGet('/api/v1/boards/posts/top?size=4', (res) => {
         topPosts.value = res.data
+        console.log(topPosts)
       })
     })
 
