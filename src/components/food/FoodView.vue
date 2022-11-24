@@ -93,7 +93,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { onMounted, ref, computed } from 'vue'
 import useAxios from '@/modules/axios'
-import store from '@/store/index'
+import store from '@/store'
 
 export default {
   setup() {
@@ -175,7 +175,6 @@ export default {
             console.error(err)
           })
       axiosGet('/api/v1/foods/recommendation', (res) =>{
-        console.log(res)
         recFoodList.value = res.data
       }, (err) => {
         console.error(err)

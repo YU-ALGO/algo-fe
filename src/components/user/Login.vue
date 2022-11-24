@@ -31,13 +31,13 @@
 <!--              <button type="button" class="px-2" onclick="window.open('http://www.naver.com','네이버','popup, height=600, width=400')"><img src="../assets/kakaoLogo.png"></button>-->
             <a href="http://be.algo.r-e.kr:8088/oauth2/authorization/kakao" class="px-2">
 <!--              <a style="cursor: pointer" @click="kakaoLogin" class="px-2">-->
-              <img src="../assets/kakaoLogo.png" alt=""/>
+              <img src="../../assets/kakaoLogo.png" alt=""/>
             </a>
             <a href="http://be.algo.r-e.kr:8088/oauth2/authorization/naver" class="px-2">
-              <img src="../assets/naverLogo.png" alt=""/>
+              <img src="../../assets/naverLogo.png" alt=""/>
             </a>
             <a href="http://be.algo.r-e.kr:8088/oauth2/authorization/google" class="px-2">
-              <img src="../assets/googleLogo.png" alt=""/>
+              <img src="../../assets/googleLogo.png" alt=""/>
             </a>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default {
     }
 
     const moveToJoinPage = () => {
-      router.push({name: 'Join'})
+      router.push({name: 'join'})
     }
 
     return {

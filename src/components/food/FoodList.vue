@@ -11,9 +11,11 @@
                 최근 본 식품
               </button>
             </div>
-            <div id="leftMenu" class="accordion-collapse collapse show">
+            <div id="leftMenu" class="accordion-collapse collapse show" style="width: 110%">
               <div class="accordion-body">
-                <ul class="list-group list-group-flush text-center">
+                <ul class="list-group list-group-flush text-center"
+                  style=" max-height: 800px;
+                  overflow-y:auto;">
                   <li v-for="viewFood in viewFoodList" :key="viewFood.id" class="list-group-item">
                     <img :src="viewFood.food_image_url" height="100" width="100" alt=""/><br/>
                     <router-link :to="{ name: 'FoodView', params: { id: viewFood.id } }" class="food-name stretched-link">{{ viewFood.food_name }}</router-link>
@@ -50,12 +52,14 @@
           <section class="py-2">
             <div class="container px-4 px-lg-1">
               <div class="row gx-4 gx-lg-2 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-
                 <div class="col mb-5" v-for="food in foodList" :key="food.id">
                   <div class="card-shadow card h-100">
                     <img class="card-img-top" :src="food.food_image_url" alt="..." width="300px" height="150">
                     <div class="card-body p-4">
-                      <div class="text-center" style="transform: rotate(0);">
+                      <div class="text-center"
+                           style="transform: rotate(0); overflow: hidden;
+                           text-overflow: ellipsis;
+                           white-space: nowrap;">
                         <a class="food-name" :href="`/foods/${food.id}`">{{ food.food_name }}</a>
                       </div>
                       <div class="text-center mt-2">
@@ -109,7 +113,7 @@ e<script>
 import { onMounted, ref, watch, computed } from 'vue'
 import useAxios from '@/modules/axios'
 import axios from 'axios'
-import Pagination from '@compo/Pagination.vue'
+import Pagination from '@compo/common/Pagination.vue'
 import store from "@/store";
 const { axiosGet, axiosPost, axiosDelete, axiosPatch } = useAxios()
 
@@ -187,7 +191,6 @@ export default {
         },
         withCredentials: true
       }).then((res) => {
-        console.log(res)
         totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           foodList.value = res.data

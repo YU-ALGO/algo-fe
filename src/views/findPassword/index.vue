@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import FindPassword from '@compo/FindPassword/FindPassword.vue'
-import ChangeNewPassword from '@compo/FindPassword/ChangeNewPassword.vue'
+import FindPassword from '@compo/findPassword/FindPassword.vue'
+import ChangeNewPassword from '@compo/findPassword/ChangeNewPassword.vue'
 import { ref } from 'vue'
 
 export default {

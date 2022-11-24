@@ -38,7 +38,7 @@
 
 <script>
 import {onMounted, ref} from 'vue'
-import Pagination from '@compo/Pagination'
+import Pagination from '@compo/common/Pagination'
 import axios from "axios";
 
 export default {
@@ -77,7 +77,7 @@ export default {
           foodList.value = null
         }
       }).catch((err) => {
-        console.log(err)
+        console.error(err)
       })
     }
 

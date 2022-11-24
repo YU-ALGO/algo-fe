@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import FoodView from '@compo/FoodView'
+import FoodView from '@compo/food/FoodView'
 export default {
   components: {
     FoodView,

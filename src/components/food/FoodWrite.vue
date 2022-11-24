@@ -10,12 +10,14 @@
           <div class="row">
             <div class="col-4">
               <div class="card">
-                <img src="../assets/defaultImage.png"
-                     width="250px" height="200px" class="card-img-top" alt="...">
-                <div class="card-body text-center">
-                  <button type="button" class="btn btn-primary">사진 추가</button>
-                </div>
+                <img v-if="previewImage === ''" src="../../assets/defaultImage.png" alt="...">
+                <img v-else :src=previewImage alt=""/>
+            </div>
+              <div class="input-group mt-3">
+                <span class="input-group-text" >이미지 URL</span>
+                <input type="text" class="form-control" v-model="imageURL" @keyup.enter="changeImage">
               </div>
+              <button class="btn btn-primary mt-2" @click="changeImage">이미지 미리보기</button>
             </div>
             <div class="col-8">
               <div class="row">
@@ -96,6 +98,16 @@ export default {
     const route = useRoute()
     const editable = ref(route.query.editable)
     const foodId = route.query.id
+    const imageURL = ref('')
+    const previewImage = ref('')
+
+    const changeImage = () => {
+      previewImage.value = imageURL.value
+    }
+
+    watch(imageURL, () => {
+      if (imageURL.value === '')  previewImage.value = ''
+    })
 
     const allergyCheckData = ref([  // 현재 사용자가 선택한 알레르기 데이터
       {id: 1, name: 'squid', foodName: '오징어', selected: false},
@@ -187,12 +199,12 @@ export default {
           food_name : foodName.value,
           raw_materials : foodRawMeterials.value,
           product_kind : foodKind.value,
-          food_image_url : foodImage.value,
+          food_image_url : previewImage.value,
         }, () => {
           alert('식품 수정이 완료되었습니다!')
-          router.push(`/foods`)
+          router.push({name: 'FoodList'})
         }, (err) => {
-          console.error(err)
+          alert('작성한 내용을 다시 확인해주세요.\n식품 보고번호는 숫자만 가능합니다.')
         })
       } else {
         axiosPost('/api/v1/foods', {
@@ -202,12 +214,12 @@ export default {
           food_name : foodName.value,
           raw_materials : foodRawMeterials.value,
           product_kind : foodKind.value,
-          food_image_url : foodImage.value,
+          food_image_url : previewImage.value,
         }, () => {
           alert('식품 추가가 완료되었습니다!')
-          router.push(`/foods`)
+          router.push({name: 'FoodList'})
         }, (err) => {
-          console.error(err)
+          alert('작성한 내용을 다시 확인해주세요.\n식품 보고번호는 숫자만 가능합니다.')
         })
       }
     }
@@ -233,6 +245,9 @@ export default {
       moveToFoodList,
       editable,
       foodData,
+      imageURL,
+      changeImage,
+      previewImage,
     }
   }
 }

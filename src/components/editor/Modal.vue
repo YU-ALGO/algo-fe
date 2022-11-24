@@ -7,7 +7,7 @@
           <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <input class="form-control" type="file" accept=".JPG, .jpg, .jpeg, ,JPEG, .gif, .png" @change="fileChange" ref="file"/>
+          <input class="form-control" type="file" accept=".JPG, .jpg, .jpeg, ,JPEG, .gif, .png" @change="fileChange" ref="oldFile"/>
         </div>
         <div class="modal-footer">
           <button @click="closeModal" class="btn btn-outline-secondary">
@@ -32,7 +32,8 @@ export default {
     const { axiosPost, axiosPut } = useAxios()
     const imageSrc = ref('')
     const show = ref(false)
-    const file = ref(null)
+    const oldFile = ref(null)
+    const newFile = ref(null)
     const fileName = ref('')
     let imgUrl
     // const formData = new FormData()
@@ -48,26 +49,29 @@ export default {
     const closeModal = () => {
       imageSrc.value = ''
       show.value = false
-      file.value = null
+      oldFile.value = null
     }
 
     const fileChange = () => {
       // formData.append('image', file.value.files[0])
       // console.log(file.value.files)
-      const blobURL = URL.createObjectURL(file.value.files[0]);
+      const blobURL = URL.createObjectURL(oldFile.value.files[0]);
       const img = new Image();
       img.src = blobURL;
       img.onload = function () {
-        imageSizeChange(img)
-        file.value.files[0] = new File([dataURItoBlob(imgUrl)], file.value.files[0].name)
+        imageSizeChange(img,oldFile.value.files[0].size)
+        let list = new DataTransfer();
+        list.items.add(new File([dataURItoBlob(imgUrl)], oldFile.value.files[0].name,{
+          type: oldFile.value.files[0].type,
+        }));
+        newFile.value = list.files
       }
-      fileName.value = file.value.files[0].name
+      fileName.value = oldFile.value.files[0].name
     }
 
-    const imageSizeChange = (image) => {
+    const imageSizeChange = (image,size) => {
       let canvas = document.createElement("canvas"),
-          max_size = 1280,
-          // 최대 기준을 1280으로 잡음.
+          max_size = 600,
           width = image.width,
           height = image.height;
       if (width > height) {
@@ -86,7 +90,12 @@ export default {
       canvas.width = width;
       canvas.height = height;
       canvas.getContext("2d").drawImage(image, 0, 0, width, height);
-      imgUrl = canvas.toDataURL("image/jpeg", 0.5);
+      if(size>3*1024*1024){
+        imgUrl = canvas.toDataURL("image/jpeg", 0.5);
+      }
+      else{
+        imgUrl = canvas.toDataURL("image/jpeg", 1);
+      }
     }
 
     function dataURItoBlob(dataURI) {
@@ -115,8 +124,7 @@ export default {
     }
 
     const uploadImage = (awsURL) => { // 백엔드 서버에 URL 요청
-      console.log(awsURL) // aws에 올릴 수 있는 URL
-      axios.put(awsURL, file.value.files[0], {
+      axios.put(awsURL, newFile.value[0], {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Access-Control-Allow-Origin': '*',
@@ -124,7 +132,6 @@ export default {
         withCredentials: true,
       }).then((res) => {
         insertImage(filePath.value)
-        // console.log(res)
       }).catch((err) => {
         console.error(err)
       })
@@ -148,7 +155,7 @@ export default {
     return {
       imageSrc,
       show,
-      file,
+      oldFile,
       validImage,
       showModal,
       closeModal,

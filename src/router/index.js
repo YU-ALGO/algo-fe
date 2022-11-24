@@ -1,11 +1,12 @@
 import Join from '@views/join/index.vue'
-import Login from '@compo/Login.vue'
-import PostWrite from '@compo/PostWrite.vue'
-import FoodView from '@compo/FoodView.vue'
-import TermOfService from '@compo/TermOfService.vue'
-import ChangePassword from '@compo/ChangePassword.vue'
-import NotFound from '@compo/NotFound.vue'
-import FoodWrite from '@compo/FoodWrite.vue'
+import Login from '@compo/user/Login.vue'
+import PostWrite from '@compo/post/PostWrite.vue'
+import FoodView from '@compo/food/FoodView.vue'
+import ChangePassword from '@compo/user/ChangePassword.vue'
+import NotFound from '@compo/common/NotFound.vue'
+import FoodWrite from '@compo/food/FoodWrite.vue'
+import Message from '@compo/user/Message.vue'
+import About from '@compo/main/About.vue'
 
 import MainView from '@views/index.vue'
 import Board from '@views/boards/_bid.vue'
@@ -114,11 +115,6 @@ const routes = [
     beforeEnter: isLogin()
   },
   {
-    path: '/term',
-    name: 'Term',
-    component: TermOfService,
-  },
-  {
     path: '/:pathMatch(.*)*',
     redirect: "/404"
   },
@@ -145,6 +141,16 @@ const routes = [
     name: 'FindPassword',
     component: FindPassword,
     beforeEnter: loginCheck(),
+  },
+  {
+    path: '/user/message',
+    name: 'Message',
+    component: Message,
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
   }
 ]
 

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import FoodList from '@compo/FoodList.vue'
+import FoodList from '@compo/food/FoodList.vue'
 
 export default {
   components: {

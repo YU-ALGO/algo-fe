@@ -118,8 +118,8 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
-import NotFound from '@compo/NotFound'
-import Loading from '@compo/Loading'
+import NotFound from '@compo/common/NotFound'
+import Loading from '@compo/common/Loading'
 
 export default {
   components: {

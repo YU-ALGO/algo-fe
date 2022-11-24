@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import PostView from '@compo/PostView'
+import PostView from '@compo/post/PostView'
 
 export default {
   components: {

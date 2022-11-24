@@ -23,12 +23,19 @@
                     <tr v-for="post in noticePosts.slice(0, 4)" :key="post.id">
                       <th scope="row">{{ post.id }}</th>
                       <td>
-                        <a class="text-link text-body" :href="`/boards/1/posts/${post.id}`">{{ post.title }}</a>
-                        <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{
-                            post.comment_count
-                          }}]</label>
+                        <div style="overflow: hidden;
+                           text-overflow: ellipsis;
+                           white-space: nowrap;
+                           max-width: 200px;">
+                          <a class="text-link text-body" :href="`/boards/1/posts/${post.id}`">{{ post.title }}</a>
+                          <label v-show="post.comment_count !== 0" class="text-danger">
+                            &nbsp;[{{ post.comment_count }}]
+                          </label>
+                        </div>
                       </td>
-                      <td>{{ post.author }}</td>
+                      <td>
+                        <a class="text-link text-body" :href="`/profile/${post.author}`">{{ post.author }}</a>
+                      </td>
                       <td>{{ post.created_at.split(' ')[0] }}</td>
                       <td>{{ post.view_count }}</td>
                       <td>{{ post.like_count }}</td>
@@ -62,14 +69,21 @@
                     <tr v-for="post in topPosts" :key="post.id">
                       <th scope="row">{{ post.id }}</th>
                       <td>
-                        <a class="text-link text-body" :href="`/boards/${post.boardId}/posts/${post.id}`">{{
-                            post.title
-                          }}</a>
-                        <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{
-                            post.comment_count
-                          }}]</label>
+                        <div style="overflow: hidden;
+                           text-overflow: ellipsis;
+                           white-space: nowrap;
+                           max-width: 200px;">
+                          <a class="text-link text-body" :href="`/boards/${post.boardId}/posts/${post.id}`">
+                            {{ post.title }}
+                          </a>
+                          <label v-show="post.comment_count !== 0" class="text-danger">
+                            &nbsp;[{{ post.comment_count }}]
+                          </label>
+                        </div>
                       </td>
-                      <td>{{ post.author }}</td>
+                      <td>
+                        <a class="text-link text-body" :href="`/profile/${post.author}`">{{ post.author }}</a>
+                      </td>
                       <td>{{ post.created_at.split(' ')[0] }}</td>
                       <td>{{ post.view_count }}</td>
                       <td>{{ post.like_count }}</td>
@@ -206,7 +220,6 @@ export default {
       // TOP 게시글 get
       axiosGet('/api/v1/boards/posts/top?size=4', (res) => {
         topPosts.value = res.data
-        console.log(topPosts)
       })
     })
 

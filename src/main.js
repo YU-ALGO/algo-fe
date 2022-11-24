@@ -8,7 +8,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import store from './store'
 
-// import { useAuth } from '@/composables/auth'
+// import { useAuth } from '@/composables/user'
 
 createApp(App).use(router).use(store).mount('#app')
 // createApp(App).use(router).mount('#app')

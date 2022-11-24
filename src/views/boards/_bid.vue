@@ -17,9 +17,9 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import useAxios from '@/modules/axios'
-import PostList from '@compo/PostList.vue'
-import NotFound from '@compo/NotFound'
-import Loading from '@compo/Loading'
+import PostList from '@compo/post/PostList.vue'
+import NotFound from '@compo/common/NotFound'
+import Loading from '@compo/common/Loading'
 
 export default {
   components: {

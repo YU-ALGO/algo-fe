@@ -12,7 +12,7 @@
         <li class="nav-item"><a :href="'/foods'" class="nav-link px-2 text-muted">식품정보</a></li>
 <!--        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">공지사항</a></li>-->
 <!--        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">자유게시판</a></li>-->
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+        <li class="nav-item"><a href="/about" class="nav-link px-2 text-muted">About</a></li>
         <li class="nav-item"><a href="http://be.algo.r-e.kr:8088/swagger-ui/index.html" target="_blank" class="nav-link px-2 text-muted">Swagger</a></li>
       </ul>
     </footer>

@@ -37,7 +37,7 @@ import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
-import MenuBar from '@compo/tiptap/MenuBar.vue'
+import MenuBar from '@compo/editor/MenuBar.vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 
@@ -69,24 +69,28 @@ export default {
 
     const onSave = () => {
       if (boardId !== '1') {
-        if (editable.value) {
-          axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
-            title: title.value,
-            content: editor.value.getHTML()
-          }, () => {
-            router.go(-1)
-          }, (err) => {
-            console.error(err)
-          })
+        if (title.value === '' || editor.value.getHTML() === '<p></p>') {
+          alert('게시글 내용을 모두 작성해주세요.')
         } else {
-          axiosPost(`/api/v1/boards/${boardId}/posts`, {
-            title: title.value,
-            content: editor.value.getHTML()
-          }, () => {
-            router.push({ name: 'Board', params: { bid: boardId }})
-          }, (err) => {
-            console.error(err)
-          })
+          if (editable.value) {
+            axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
+              title: title.value,
+              content: editor.value.getHTML()
+            }, () => {
+              router.go(-1)
+            }, (err) => {
+              console.error(err)
+            })
+          } else {
+            axiosPost(`/api/v1/boards/${boardId}/posts`, {
+              title: title.value,
+              content: editor.value.getHTML()
+            }, () => {
+              router.push({ name: 'Board', params: { bid: boardId }})
+            }, (err) => {
+              console.error(err)
+            })
+          }
         }
       } else {
         alert('공지사항은 관리자만 작성할 수 있습니다.')

@@ -46,8 +46,8 @@
                 <th style="width: 100px" scope="row">{{ post.id }}</th>
                 <td style="width: 800px">
                   <router-link class="text-link" :to="{ name: 'PostView', params: { pid: post.id } }">{{ post.title }}</router-link>
-<!--                  <router-link :to="{ name: 'PostView', query: { editable: true } }">{{ post.title }}</router-link>-->
-<!--                  <router-link :to="{ name: 'PostView', params: { postId: post.id, boardId: boardId } }">{{ post.title }}</router-link>-->
+                  <!--                  <router-link :to="{ name: 'PostView', query: { editable: true } }">{{ post.title }}</router-link>-->
+                  <!--                  <router-link :to="{ name: 'PostView', params: { postId: post.id, boardId: boardId } }">{{ post.title }}</router-link>-->
                   <label v-show="post.comment_count !== 0" class="text-danger">&nbsp;[{{ post.comment_count }}] </label>
                 </td>
                 <td style="width: 100px">
@@ -81,7 +81,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { axios } from '@bundled-es-modules/axios'
-import Pagination from '@compo/Pagination.vue'
+import Pagination from '@compo/common/Pagination.vue'
 
 export default {
   components: {
@@ -119,7 +119,7 @@ export default {
           postList.value = null
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 

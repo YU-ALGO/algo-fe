@@ -8,9 +8,9 @@
 
 <script>
 import { ref } from 'vue'
-import NewUserEmail from '@compo/Join/NewUserEmail.vue'
-import NewUserPassword from '@compo/Join/NewUserPassword.vue'
-import NewUserProfile from '@compo/Join/NewUserProfile.vue'
+import NewUserEmail from '@compo/join/NewUserEmail.vue'
+import NewUserPassword from '@compo/join/NewUserPassword.vue'
+import NewUserProfile from '@compo/join/NewUserProfile.vue'
 export default {
   components: {
     NewUserEmail,

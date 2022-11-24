@@ -5,7 +5,6 @@
         <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end sticky-top">
           <nav class="nav nav-pills flex-column">
             <a class="nav-link" href="#Board_Manage">게시판 관리</a>
-            <a class="nav-link" href="#User_Manage">전체 회원 관리</a>
             <a class="nav-link" href="#Youtube_URL">Youtube URL 관리</a>
           </nav>
         </nav>
@@ -78,79 +77,7 @@
           </div>
         </div>
       </div>
-      <!-- 전체 회원 관리 -->
-      <div class="row" id="User_Manage">
-        <div class="row card mt-4 shadow p-3 mb-5 bg-body">
-          <h2 class="mt-2">Admin Page(전체 회원 관리)</h2>
-          <hr/>
-          <div>
-            <table class="table">
-              <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">닉네임</th>
-                <th scope="col">이메일</th>
-                <th scope="col">회원등급</th>
-                <th scope="col">가입일</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-              </tr>
-              <tr>
-                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-              </tr>
-              <tr>
-                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-              </tr>
-              <tr>
-                <th scope="row"><input type="checkbox" name="checkbox_name" value="checkbox_value"></th>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-                <td>마상균 굉장하다</td>
-              </tr>
-              </tbody>
-            </table>
-            <hr/>
-            <div class="row">
-              <div class="col-4 ms-auto">
-                <nav aria-label="...">
-                  <ul class="pagination">
-                    <li class="page-item disabled">
-                      <a class="page-link">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active" aria-current="page">
-                      <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-              <div class="col-4">
-                <button type="button" class="btn btn-danger" style="float:right">삭제</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <!-- Youtube URL 관리 -->
       <div class="row" id="Youtube_URL">
         <ManageYouTubeURL/>
@@ -198,7 +125,7 @@ export default {
         alert('게시판이 생성되었습니다.')
         router.go(0)
       }, (res) => {
-        console.error(res)
+        alert('게시판 이름을 다시 확인해주세요.')
       })
     }
 
@@ -225,7 +152,6 @@ export default {
               , (res) => {
                 alert('게시판이 삭제되었습니다.')
                 router.go(0)
-                console.log(res.data)
               }, (res) => {
                 console.error(res)
               })

@@ -17,9 +17,9 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useAxios from '@/modules/axios'
-import Profile from '@compo/Profile.vue'
-import NotFound from '@compo/NotFound'
-import Loading from '@compo/Loading'
+import Profile from '@compo/user/Profile.vue'
+import NotFound from '@compo/common/NotFound'
+import Loading from '@compo/common/Loading'
 
 export default {
   components: {
