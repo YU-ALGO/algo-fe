@@ -1,5 +1,14 @@
 <template>
-  <div class="container">
+  <!-- load fail -->
+  <div v-if="loading === -1">
+    <NotFound/>
+  </div>
+  <!-- loading -->
+  <div v-else-if="loading === 0">
+    <Loading/>
+  </div>
+  <!-- load success -->
+  <div v-else class="container">
     <div class="main-body">
       <div class="row gutters-sm">
         <div class="col-md-4 mb-3">
@@ -184,13 +193,17 @@ import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import router from '@/router'
 import { axios } from '@bundled-es-modules/axios'
-import Pagination from '@compo/common/Pagination.vue'
-import Message from '@compo/user/Message.vue'
+import Pagination from '@compo/common/Pagination'
+import Message from '@compo/user/Message'
+import Loading from '@compo/common/Loading'
+import NotFound from '@compo/common/NotFound'
 
 export default {
   components: {
     Pagination,
     Message,
+    Loading,
+    NotFound,
   },
   setup() {
     const { axiosGet, axiosPost, axiosPatch } = useAxios()
@@ -524,6 +537,7 @@ export default {
     }
 
     // Profile.vue onMounted
+    const loading = ref(0)
     onMounted(() => {
       // 사용자 정보
       axiosGet(`/api/v1/profiles/${route.params.nickname}`
@@ -536,21 +550,19 @@ export default {
             for (let i = 0; i < newAllergies.size; i++) {
               allergyCheckData.value[i].selected = newAllergies.get(allergyCheckData.value[i].name)
             }
+            loading.value = 1
           }, (err) => {
+            loading.value = -1
             console.error(err)
           })
 
-      // 사용자 즐겨찾기 식품 정보
-      getFoodList(1)
-
-      // 사용자 작성 글 정보
-      getPostList(1)
-
-      // 사용자 작성 댓글 정보
-      getCommentList(1)
+      getFoodList(1)  // 즐겨찾기 식품 정보
+      getPostList(1)  // 작성 글 정보
+      getCommentList(1)  // 작성 댓글 정보
     })
 
     return {
+      loading,
       checkNickname,
       selfName,
       userData,

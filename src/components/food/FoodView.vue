@@ -1,5 +1,14 @@
 <template>
-  <div class="row">
+  <!-- load fail -->
+  <div v-if="loading === -1">
+    <NotFound/>
+  </div>
+  <!-- loading -->
+  <div v-else-if="loading === 0">
+    <Loading/>
+  </div>
+  <!-- load success -->
+  <div v-else class="row">
     <div class="mt-4">
       <div class="card shadow">
         <div class="card-body">
@@ -94,12 +103,19 @@ import { useRoute, useRouter } from 'vue-router'
 import { onMounted, ref, computed } from 'vue'
 import useAxios from '@/modules/axios'
 import store from '@/store'
+import Loading from '@compo/common/Loading'
+import NotFound from '@compo/common/NotFound'
 
 export default {
+  components: {
+    Loading,
+    NotFound,
+  },
   setup() {
     const { axiosGet, axiosPost, axiosDelete } = useAxios()
     const route = useRoute()
     const router = useRouter()
+    const loading = ref(0)
     const foodId = route.params.id
     const isAdmin = ref(false)
     const foodData = ref({
@@ -171,7 +187,9 @@ export default {
           , (res) => {
         // console.log(res)
             foodData.value = res.data
+            loading.value = 1
           }, (err) => {
+            loading.value = -1
             console.error(err)
           })
       axiosGet('/api/v1/foods/recommendation', (res) =>{
@@ -183,6 +201,7 @@ export default {
     })
 
     return {
+      loading,
       foodId,
       foodData,
       moveToFoodListPage,
