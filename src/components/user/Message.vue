@@ -39,7 +39,7 @@
                 <div class="input-group">
                   <input type="search" class="form-control" v-model="searchText" @keyup.enter="searchMessage" placeholder="검색"/>
                   <button class="btn btn-primary" @click="searchMessage">
-                    <i class="ri-search-line"></i>
+                    <i class="bi bi-search"></i>
                   </button>
                 </div>
               </div>

@@ -24,8 +24,8 @@
         <div class="form-inline row mt-2">
           <div class="text-end mt-2">
             <button type="button" @click="thumbsUp" class="btn me-2" :class="postData.is_like ? 'btn-warning' : 'btn-outline-warning'">
-              <i v-if="!postData.is_like" class="ri-thumb-up-line"></i>
-              <i v-else class="ri-thumb-up-fill"></i>
+              <i v-if="!postData.is_like" class="bi bi-hand-thumbs-up"></i>
+              <i v-else class="bi bi-hand-thumbs-up-fill"></i>
             </button>
             <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
             <router-link v-if="checkPermission" class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { pid: postId, editable: true } }">수정</router-link>
@@ -65,7 +65,7 @@
               </div>
               <div v-if="!comment.is_deleted && !(comment.author !== nickname && comment.parent !== null)" class="col-1">
                 <button class="menu-item" data-bs-toggle="dropdown">
-                  <i class="ri-more-2-fill"></i>
+                  <i class="bi bi-three-dots-vertical"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end text-center" style="min-width: 1px">
                   <li v-if="comment.author === nickname" class="dropdown-item" @click="modifyId = comment.id; newComment = comment.content">수정</li>

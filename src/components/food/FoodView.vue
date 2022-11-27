@@ -14,8 +14,8 @@
         <div class="card-body">
           <h5 class="card-title" style="display:inline">{{ foodData.food_name }}</h5>
           <button class="btn mt-auto" :class="foodData.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite(foodData.is_like, foodData.id)" style=" float: right;">
-            <i v-if="!foodData.is_like" class="bi-star"></i>
-            <i v-else class="bi-star-fill"></i> {{ foodData.like_count }}
+            <i v-if="!foodData.is_like" class="bi bi-star"></i>
+            <i v-else class="bi bi-star-fill"></i> {{ foodData.like_count }}
           </button>
           <button type="button" class="btn btn-primary" style=" float: right;margin-right: 5px;" @click="moveToFoodListPage">목록</button>
           <hr/>
@@ -82,8 +82,8 @@
                       </div>
                       <div class="text-center mt-2">
                         <button class="btn mt-auto" :class="recFood.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite(recFood.is_like, recFood.id)">
-                          <i v-if="!recFood.is_like" class="bi-star"></i>
-                          <i v-else class="bi-star-fill"></i> {{ recFood.like_count }}
+                          <i v-if="!recFood.is_like" class="bi bi-star"></i>
+                          <i v-else class="bi bi-star-fill"></i> {{ recFood.like_count }}
                         </button>
                       </div>
                     </div>

@@ -5,7 +5,7 @@
       <div class="input-group mb-2">
         <input type="search" class="form-control" v-model="searchText" @keyup.enter="searchPost" placeholder="식품명 검색"/>
         <button class="btn btn-primary" @click="searchPost">
-          <i class="ri-search-line"></i>
+          <i class="bi bi-search"></i>
         </button>
       </div>
     <div>

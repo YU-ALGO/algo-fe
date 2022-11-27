@@ -5,7 +5,7 @@
       @click="action"
       :title="title"
   >
-    <i :class="`ri-${icon}`"></i>
+    <i :class="`bi bi-${icon}`"></i>
   </button>
 </template>
 

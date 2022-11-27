@@ -34,7 +34,7 @@
           <div class="input-group mb-3">
             <input type="search" class="form-control" placeholder="식품명을 입력하세요." v-model="searchText" @keyup.enter="searchFood">
             <button type="button" class="btn btn-primary" @click="searchFood">
-              <i class="ri-search-line"></i>
+              <i class="bi bi-search"></i>
             </button>
           </div>
           <router-link v-if="isAdmin" class="btn btn-primary" :to="{ name: 'FoodWrite'}">식품 추가</router-link>
@@ -64,8 +64,8 @@
                       </div>
                       <div class="text-center mt-2">
                         <button class="btn mt-auto" :class="food.is_like ? 'btn-warning' : 'btn-outline-warning'" @click="favorite(food.is_like, food.id)">
-                          <i v-if="!food.is_like" class="bi-star"></i>
-                          <i v-else class="bi-star-fill"></i> {{ food.like_count }}
+                          <i v-if="!food.is_like" class="bi bi-star"></i>
+                          <i v-else class="bi bi-star-fill"></i> {{ food.like_count }}
                         </button>
                       </div>
                     </div>

@@ -30,31 +30,31 @@ export default {
     const modal = ref(null)
     const items = [
       {
-        icon: 'bold',
+        icon: 'type-bold',
         title: '굵기 적용',
         action: () => props.editor.chain().focus().toggleBold().run(),
         isActive: () => props.editor.isActive('bold'),
       },
       {
-        icon: 'italic',
+        icon: 'type-italic',
         title: '기울이기 적용',
         action: () => props.editor.chain().focus().toggleItalic().run(),
         isActive: () => props.editor.isActive('italic'),
       },
       {
-        icon: 'strikethrough',
+        icon: 'type-strikethrough',
         title: '취소선 적용',
         action: () => props.editor.chain().focus().toggleStrike().run(),
         isActive: () => props.editor.isActive('strike'),
       },
       {
-        icon: 'code-view',
+        icon: 'code',
         title: '소스코드 추가',
         action: () => props.editor.chain().focus().toggleCode().run(),
         isActive: () => props.editor.isActive('code'),
       },
       {
-        icon: 'mark-pen-line',
+        icon: 'pen',
         title: '하이라이트 적용',
         action: () => props.editor.chain().focus().toggleHighlight().run(),
         isActive: () => props.editor.isActive('highlight'),
@@ -63,13 +63,13 @@ export default {
         type: 'divider',
       },
       {
-        icon: 'h-1',
+        icon: 'type-h1',
         title: 'Heading 1',
         action: () => props.editor.chain().focus().toggleHeading({level: 1}).run(),
         isActive: () => props.editor.isActive('heading', {level: 1}),
       },
       {
-        icon: 'h-2',
+        icon: 'type-h2',
         title: 'Heading 2',
         action: () => props.editor.chain().focus().toggleHeading({level: 2}).run(),
         isActive: () => props.editor.isActive('heading', {level: 2}),
@@ -81,25 +81,25 @@ export default {
         isActive: () => props.editor.isActive('paragraph'),
       },
       {
-        icon: 'list-unordered',
+        icon: 'list-ul',
         title: '글 머리표',
         action: () => props.editor.chain().focus().toggleBulletList().run(),
         isActive: () => props.editor.isActive('bulletList'),
       },
       {
-        icon: 'list-ordered',
+        icon: 'list-ol',
         title: '문단 번호',
         action: () => props.editor.chain().focus().toggleOrderedList().run(),
         isActive: () => props.editor.isActive('orderedList'),
       },
       {
-        icon: 'list-check-2',
+        icon: 'list-task',
         title: 'Task List',
         action: () => props.editor.chain().focus().toggleTaskList().run(),
         isActive: () => props.editor.isActive('taskList'),
       },
       {
-        icon: 'code-box-line',
+        icon: 'code-square',
         title: 'Code Block',
         action: () => props.editor.chain().focus().toggleCodeBlock().run(),
         isActive: () => props.editor.isActive('codeBlock'),
@@ -108,13 +108,13 @@ export default {
         type: 'divider',
       },
       {
-        icon: 'double-quotes-l',
+        icon: 'quote',
         title: 'Blockquote',
         action: () => props.editor.chain().focus().toggleBlockquote().run(),
         isActive: () => props.editor.isActive('blockquote'),
       },
       {
-        icon: 'separator',
+        icon: 'hr',
         title: 'Horizontal Rule',
         action: () => props.editor.chain().focus().setHorizontalRule().run(),
       },
@@ -127,7 +127,7 @@ export default {
         action: () => props.editor.chain().focus().setHardBreak().run(),
       },
       {
-        icon: 'format-clear',
+        icon: 'trash3',
         title: 'Clear Format',
         action: () => props.editor.chain().focus().clearNodes().unsetAllMarks().run(),
       },
@@ -135,7 +135,7 @@ export default {
         type: 'divider',
       },
       {
-        icon: 'image-add-line',
+        icon: 'image',
         title: 'Add Image',
         action: () => modal.value.showModal(),
       },
@@ -143,12 +143,12 @@ export default {
         type: 'divider',
       },
       {
-        icon: 'arrow-go-back-line',
+        icon: 'arrow-counterclockwise',
         title: 'Undo',
         action: () => props.editor.chain().focus().undo().run(),
       },
       {
-        icon: 'arrow-go-forward-line',
+        icon: 'arrow-clockwise',
         title: 'Redo',
         action: () => props.editor.chain().focus().redo().run(),
       },
