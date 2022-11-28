@@ -108,7 +108,7 @@ export default {
 
     const getPostList = async (page = currentPage.value) => {
       try {
-        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=10&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
+        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/boards/${boardId}/posts?page=${page}&size=10&sort=${selectedSort.value}&keyword=${searchText.value}&searchType=${selectedSearch.value}`)
         totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           postList.value = res.data
