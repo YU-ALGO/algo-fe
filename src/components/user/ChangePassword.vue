@@ -87,7 +87,7 @@ export default {
             alert('비밀번호 변경이 완료되었습니다.')
             router.push({name: 'Profile'})
           }, (err) => {
-            console.error(err)
+            alert(err.response.data.message)
           })
         } else {
           alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.')

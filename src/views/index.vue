@@ -189,17 +189,12 @@
 </template>
 
 <script>
-import {ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import useAxios from '@/modules/axios'
 
 export default {
   setup() {
-    const {axiosGet} = useAxios()
-
-    const firstURL = ref('fo2vhh8cbfI')
-    const secondURL = ref('b_MDW7gwnqg')
-    const thirdURL = ref('h87bmuEvVlI')
-
+    const { axiosGet } = useAxios()
     const noticePosts = ref('')
     const topPosts = ref('')
 
@@ -216,9 +211,6 @@ export default {
     })
 
     return {
-      firstURL,
-      secondURL,
-      thirdURL,
       noticePosts,
       topPosts,
     }

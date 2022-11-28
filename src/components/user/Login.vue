@@ -48,7 +48,6 @@
 import { ref } from 'vue'
 import router from '@/router'
 import { useStore } from 'vuex'
-import useAxios from '@/modules/axios.js'
 
 export default {
   setup() {
@@ -145,12 +144,6 @@ input[type='password'] {
   outline: none;
   box-shadow: none;
   width: 100%
-}
-
-.fa-eye-slash.btn {
-  border: none;
-  outline: none;
-  box-shadow: none
 }
 
 img {

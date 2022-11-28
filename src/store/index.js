@@ -12,7 +12,6 @@ export default createStore({
         isLogin: false,
         isAdmin: false,
         nickname: null,
-        youTubeURL: [],
     },
     mutations: {
         isLogin(state, data) {
@@ -27,9 +26,6 @@ export default createStore({
         username(state, data) {
             state.username = data
         },
-        youTubeURL(state, data) {
-            state.youTubeURL = data
-        }
     },
     getters: {
         isLogin(state) {
@@ -44,9 +40,6 @@ export default createStore({
         username(state) {
             return state.username
         },
-        youTubeURL(state) {
-            return state.youTubeURL
-        }
     },
     actions: {
         async login({ commit }, memberInfo) {
@@ -75,9 +68,6 @@ export default createStore({
         },
         async socialLogin({ commit }) {
             commit('isLogin', true)
-        },
-        async setYoutubeURL({ commit }, urlList) {
-            commit('youTubeURL', urlList)
         },
         async setUserData({ commit }) {
             await axiosGet('/api/v1/social', (res) => {

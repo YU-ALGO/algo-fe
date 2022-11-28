@@ -87,9 +87,12 @@ export default {
             password: '',
             new_password: password.value,
             is_reset: true,
-          }, () => {
+          }, (res) => {
+            console.log(res)  // 여기
             alert('비밀번호 변경이 완료되었습니다. 로그인화면으로 이동합니다.')
             router.push({name: 'Login'})
+          }, (err) => {
+            alert(err.response.data.message)
           })
         } else {
           alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.')

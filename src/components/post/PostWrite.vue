@@ -40,6 +40,7 @@ import TaskList from '@tiptap/extension-task-list'
 import MenuBar from '@compo/editor/MenuBar.vue'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import store from "@/store";
 
 export default {
   components: {
@@ -68,32 +69,28 @@ export default {
     })
 
     const onSave = () => {
-      if (boardId !== '1') {
-        if (title.value === '' || editor.value.getHTML() === '<p></p>') {
-          alert('게시글 내용을 모두 작성해주세요.')
-        } else {
-          if (editable.value) {
-            axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
-              title: title.value,
-              content: editor.value.getHTML()
-            }, () => {
-              router.go(-1)
-            }, (err) => {
-              console.error(err)
-            })
-          } else {
-            axiosPost(`/api/v1/boards/${boardId}/posts`, {
-              title: title.value,
-              content: editor.value.getHTML()
-            }, () => {
-              router.push({ name: 'Board', params: { bid: boardId }})
-            }, (err) => {
-              console.error(err)
-            })
-          }
-        }
+      if (title.value === '' || editor.value.getHTML() === '<p></p>') {
+        alert('게시글 내용을 모두 작성해주세요.')
       } else {
-        alert('공지사항은 관리자만 작성할 수 있습니다.')
+        if (editable.value) {
+          axiosPatch(`/api/v1/boards/${boardId}/posts/${postId}`, {
+            title: title.value,
+            content: editor.value.getHTML()
+          }, () => {
+            router.go(-1)
+          }, (err) => {
+            console.error(err)
+          })
+        } else {
+          axiosPost(`/api/v1/boards/${boardId}/posts`, {
+            title: title.value,
+            content: editor.value.getHTML()
+          }, () => {
+            router.push({ name: 'Board', params: { bid: boardId }})
+          }, (err) => {
+            console.error(err)
+          })
+        }
       }
     }
 
@@ -122,8 +119,17 @@ export default {
 
     onBeforeMount(() => {
       if (route.params.bid === '1') {
-        alert('공지사항은 관리자만 작성할 수 있습니다.')
-        router.go(-1)
+        if (store.state.isLogin) {
+          if (store.state.isAdmin) {
+            axiosGet('/api/v1/admin', () => {}, () => {
+              alert('공지사항은 관리자만 작성할 수 있습니다.')
+              router.go(-1)
+            })
+          } else {
+            alert('공지사항은 관리자만 작성할 수 있습니다.')
+            router.go(-1)
+          }
+        }
       }
     })
 

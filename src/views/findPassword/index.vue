@@ -24,8 +24,8 @@ export default {
 
     return {
       stage,
-      setData,
       username,
+      setData,
     }
   }
 }

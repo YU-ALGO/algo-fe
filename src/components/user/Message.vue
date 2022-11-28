@@ -137,7 +137,7 @@
         <div class="modal-body">
           <div class="mb-3">
             <label for="message_title" class="form-label d-flex">제목</label>
-            <input class="form-control" v-model="title" id="message_title" name="message_title" type="text" maxlength="20" required>
+            <input class="form-control" v-model="title" id="message_title" name="message_title" type="text" maxlength="30" required>
           </div>
           <div class="mb-3">
             <label for="message_receiver" class="form-label d-flex">받는사람</label>

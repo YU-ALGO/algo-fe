@@ -3,11 +3,12 @@
 </template>
 
 <script>
-import FoodView from '@compo/food/FoodView'
+import FoodView from '@compo/food/FoodView.vue'
+
 export default {
   components: {
     FoodView,
-  }
+  },
 }
 </script>
 

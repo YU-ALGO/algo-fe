@@ -61,7 +61,14 @@
         </div>
         <div class="form-inline row mt-2">
           <div class="text-lg-end mt-2">
-            <router-link v-if="boardId !== '1'" :to="{ name: 'PostWrite' }" class="btn btn-primary">글쓰기</router-link>
+            <div v-if="boardId === '1'">
+              <div v-if="isAdmin">
+                <router-link :to="{ name: 'PostWrite' }" class="btn btn-primary">글쓰기</router-link>
+              </div>
+            </div>
+            <div v-else>
+              <router-link :to="{ name: 'PostWrite' }" class="btn btn-primary">글쓰기</router-link>
+            </div>
           </div>
         </div>
         <div class="d-flex justify-content-center">
@@ -80,6 +87,8 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { axios } from '@bundled-es-modules/axios'
 import Pagination from '@compo/common/Pagination.vue'
+import store from '@/store'
+import useAxios from '@/modules/axios'
 
 export default {
   components: {
@@ -92,6 +101,7 @@ export default {
     }
   },
   setup() {
+    const { axiosGet } = useAxios()
     const route = useRoute()
     const boardId = route.params.bid
     const postList = ref('')
@@ -104,6 +114,7 @@ export default {
     const currentPage = ref(1)
     const pageDisplayCount = ref(5)
     const totalPageCount = ref()
+    const isAdmin = ref(false)
 
     const getPostList = async (page = currentPage.value) => {
       try {
@@ -131,11 +142,25 @@ export default {
 
     onMounted(() => {
       getPostList(1)
+      checkPermission()
     })
 
     watch(selectedSort, () => {
       getPostList(1)
     })
+
+    const checkPermission = () => {
+      isAdmin.value = false
+      if (store.state.isLogin) {
+        if (store.state.isAdmin) {
+          axiosGet('/api/v1/admin', () => {
+            isAdmin.value = true
+          }, () => {
+            isAdmin.value = false
+          })
+        }
+      }
+    }
 
     return {
       selectedSearch,
@@ -149,6 +174,8 @@ export default {
       searchPost,
       searchText,
       setPage,
+      checkPermission,
+      isAdmin,
     }
   }
 }

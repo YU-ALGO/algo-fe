@@ -15,7 +15,7 @@
 
 <script>
 import { ref } from 'vue'
-import Profile from '@compo/user/Profile.vue'
+import Profile from '@compo/user/Profile'
 import NotFound from '@compo/common/NotFound'
 import Loading from '@compo/common/Loading'
 

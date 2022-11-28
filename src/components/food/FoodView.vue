@@ -100,7 +100,7 @@
 
 <script>
 import { useRoute, useRouter } from 'vue-router'
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import useAxios from '@/modules/axios'
 import store from '@/store'
 import Loading from '@compo/common/Loading'

@@ -29,7 +29,7 @@ import { axios } from '@bundled-es-modules/axios'
 
 export default {
   setup(props, context) {
-    const { axiosPost, axiosPut } = useAxios()
+    const { axiosPost } = useAxios()
     const imageSrc = ref('')
     const show = ref(false)
     const oldFile = ref(null)

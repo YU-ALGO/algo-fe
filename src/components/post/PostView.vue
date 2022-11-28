@@ -119,7 +119,6 @@ import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
 import NotFound from '@compo/common/NotFound'
 import Loading from '@compo/common/Loading'
-import store from "@/store";
 
 export default {
   components: {

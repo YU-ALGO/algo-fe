@@ -1,20 +1,12 @@
 <template>
   <div class="row">
     <div class="col-2 mt-4">
-      <div class="position-sticky" style="top: 2rem;">
-        <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end sticky-top">
-          <nav class="nav nav-pills flex-column">
-            <a class="nav-link" href="#Board_Manage">게시판 관리</a>
-            <a class="nav-link" href="#Youtube_URL">Youtube URL 관리</a>
-          </nav>
-        </nav>
-      </div>
     </div>
     <div class="col-8">
       <!-- 게시판 관리 -->
       <div class="row" id="Board_Manage">
         <div class="row card mt-4 shadow p-3 mb-5 bg-body">
-          <h2 class="mt-2">Admin Page(게시판 관리)</h2>
+          <h2 class="mt-2">게시판 관리</h2>
           <hr/>
           <div>
             <h2>게시판 생성</h2>
@@ -77,11 +69,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Youtube URL 관리 -->
-      <div class="row" id="Youtube_URL">
-        <ManageYouTubeURL/>
-      </div>
     </div>
   </div>
 </template>
@@ -90,14 +77,8 @@
 import {ref, onMounted} from 'vue'
 import {useRouter} from 'vue-router'
 import useAxios from '@/modules/axios'
-import ManageFoods from '@/components/admin/ManageFoods.vue'
-import ManageYouTubeURL from '@compo/admin/ManageYouTubeURL'
 
 export default {
-  components: {
-    ManageYouTubeURL,
-    ManageFoods,
-  },
   setup() {
     const createBoardName = ref('')
     const modifyBoardName = ref('')
@@ -138,8 +119,8 @@ export default {
               }, () => {
                 alert("게시판 이름이 수정되었습니다.")
                 router.go(0)
-              }, (res) => {
-                console.error(res)
+              }, (err) => {
+                alert(err.response.data.message)
               })
         }
       }

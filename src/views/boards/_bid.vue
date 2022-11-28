@@ -46,9 +46,7 @@ export default {
       })
     })
 
-
     return {
-      boardId,
       boardName,
       loading,
     }
