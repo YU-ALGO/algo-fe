@@ -16,8 +16,13 @@
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
                 <div v-if="editProfile">
-                  <img v-if="!userData.profileImg" src="../../assets/default.png" alt="" class="rounded-circle" width="150">
-                  <img v-else :src="userData.profileImg" alt="../assets/default.png" class="rounded-circle" width="150">
+                  <div v-if="!afterUploadImage">
+                    <img v-if="!userData.profileImg" src="../../assets/default.png" alt="" class="rounded-circle" width="150">
+                    <img v-else :src="userData.profileImg" alt="../assets/default.png" class="rounded-circle" width="150">
+                  </div>
+                  <div v-else>
+                    <img :src="imageSrc" class="rounded-circle" width="150">
+                  </div>
                 </div>
                 <div v-else>
                   <img v-if="!userData.profileImg" src="../../assets/default.png" alt="" class="rounded-circle" width="150">
@@ -144,7 +149,7 @@
                     저장
                   </button>
                   <button class="btn btn-primary " @click="updatePassword">
-                    비밀번호 수정
+                    비밀번호 변경
                   </button>
                 </div>
               </div>
@@ -226,6 +231,7 @@ export default {
     const userComments = ref([])
     const editProfile = ref(false)  // 프로필 수정 상태인지 확인
     const isNickAvail = ref(false)
+    const afterUploadImage = ref(false)
 
     // 프로필 수정 항목
     const newAllergies = ref()
@@ -340,6 +346,7 @@ export default {
       for (let i = 0; i < newAllergies.size; i++) {
         allergyCheckData.value[i].selected = newAllergies.get(allergyCheckData.value[i].name)
       }
+      afterUploadImage.value = false
     }
 
     const nicknameValidation = ref(false) // 닉네임 정규식 검사 결과
@@ -524,6 +531,7 @@ export default {
       }, (err) => {
         console.error(err)
       })
+      afterUploadImage.value = true
     }
 
     const updateImage = () => {
@@ -591,6 +599,7 @@ export default {
       updatePassword,
       isNickAvail,
       imageSrc,
+      afterUploadImage,
     }
   }
 }

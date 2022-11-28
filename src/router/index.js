@@ -5,7 +5,6 @@ import FoodView from '@compo/food/FoodView.vue'
 import ChangePassword from '@compo/user/ChangePassword.vue'
 import NotFound from '@compo/common/NotFound.vue'
 import FoodWrite from '@compo/food/FoodWrite.vue'
-import Message from '@compo/user/Message.vue'
 import About from '@compo/main/About.vue'
 
 import MainView from '@views/index.vue'
@@ -141,11 +140,6 @@ const routes = [
     name: 'FindPassword',
     component: FindPassword,
     beforeEnter: loginCheck(),
-  },
-  {
-    path: '/user/message',
-    name: 'Message',
-    component: Message,
   },
   {
     path: '/about',

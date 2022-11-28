@@ -31,13 +31,14 @@
       <div class="col-8 card mt-4 shadow p-3 mb-5 bg-body">
         <div class="card-body">
           <h4 class="col-10 card-title mb-4">식품 정보</h4>
+
           <div class="input-group mb-3">
             <input type="search" class="form-control" placeholder="식품명을 입력하세요." v-model="searchText" @keyup.enter="searchFood">
             <button type="button" class="btn btn-primary" @click="searchFood">
               <i class="bi bi-search"></i>
             </button>
           </div>
-          <router-link v-if="isAdmin" class="btn btn-primary" :to="{ name: 'FoodWrite'}">식품 추가</router-link>
+
           <div class="mb-3">
             <div class="card p-3 mb-3 bg-body">
               <h5>알레르기 정보</h5>
@@ -47,6 +48,17 @@
                   <span class="form-check-label">{{ data.foodName }}</span>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <select v-model="selectedSort" class="form-select">
+                <option value="foodId,DESC">최신순</option>
+                <option value="likeCount,DESC">즐겨찾기순</option>
+              </select>
+            </div>
+            <div class="col-2 ms-auto">
+              <router-link v-if="isAdmin" class="btn btn-primary" :to="{ name: 'FoodWrite'}">식품 추가</router-link>
             </div>
           </div>
           <section class="py-2">
@@ -177,13 +189,14 @@ export default {
     }
 
     const searchText = ref('')  // 검색
+    const selectedSort = ref('foodId,DESC') // 정렬
     const currentPage = ref(1)
     const pageDisplayCount = ref(10)
     const totalPageCount = ref()
 
     const getFoodList = (page = currentPage.value) => {
       setParams()
-      axios.get(`http://be.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=createdAt,DESC&keyword=${searchText.value}`, {
+      axios.get(`http://be2.algo.r-e.kr:8088/api/v1/foods?page=${page}&size=12&sort=${selectedSort.value}&keyword=${searchText.value}`, {
         params,
         headers: {
           'Content-Type': 'application/json',
@@ -261,6 +274,10 @@ export default {
       }
     }
 
+    watch(selectedSort, () => {
+      getFoodList(1)
+    })
+
     onMounted(() => {
       getUserAllergy()
       getRecommendFood()
@@ -283,6 +300,7 @@ export default {
       viewFoodList,
       isAdmin,
       favorite,
+      selectedSort,
     }
   }
 }
