@@ -29,7 +29,7 @@
             </button>
             <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
             <router-link v-if="checkPermission" class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { pid: postId, editable: true } }">수정</router-link>
-            <button v-if="checkPermission" class="btn btn-danger me-2" @click="deletePost">삭제</button>
+            <button v-if="checkPermission || isAdmin" class="btn btn-danger me-2" @click="deletePost">삭제</button>
             <button class="btn btn-primary" @click="moveToPostListPage">목록</button>
           </div>
         </div>
@@ -120,6 +120,7 @@ import useAxios from '@/modules/axios'
 import { useStore } from 'vuex'
 import NotFound from '@compo/common/NotFound'
 import Loading from '@compo/common/Loading'
+import store from "@/store";
 
 export default {
   components: {
@@ -135,6 +136,7 @@ export default {
     const postId = route.params.pid
     const loading = ref(0)
     const nickname = ref(store.getters['nickname'])
+    const isAdmin = ref(false)
 
     const postData = ref({
       title: '',
@@ -145,6 +147,19 @@ export default {
       view_count: '',
       created_at: '',
     })
+
+    const checkAdmin = () => {
+      isAdmin.value = false
+      if (store.state.isLogin) {
+        if (store.state.isAdmin) {
+          axiosGet('/api/v1/admin', () => {
+            isAdmin.value = true
+          }, () => {
+            isAdmin.value = false
+          })
+        }
+      }
+    }
 
     // comment variables
     const comment = ref('')
@@ -279,6 +294,7 @@ export default {
 
       // get comments data
       getCommentList()
+      checkAdmin()
     })
 
     return {
@@ -303,6 +319,7 @@ export default {
       addSubComment,
       modifyComment,
       deleteComment,
+      isAdmin,
       checkPermission,
     }
   }

@@ -197,7 +197,7 @@
           <p class="text-start d-flex">{{ msgData.content }}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" @click="replyOption(msgData.sender_name)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Write_Message_Modal">
+          <button v-if="msgMode !== 3" type="button" @click="replyOption(msgData.sender_name)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Write_Message_Modal">
             답장
           </button>
           <button v-if="msgMode !== 3" class="btn btn-danger" @click="setBlockUser(msgData.sender_name)">
@@ -271,7 +271,7 @@ export default {
             receiver_name.value = ''
             isReply.value = false
           }, (err) => {
-            console.error(err)
+            alert('존재하지 않는 사용자 입니다.')
           })
         }
         }
@@ -314,7 +314,7 @@ export default {
       msgMode.value = 3
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes?page=${page}&size=5&sort=createdAt,DESC&keyword=${searchText.value}&searchType=${selectedSearch.value}`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -336,7 +336,7 @@ export default {
       msgMode.value = 4
       currentPage.value = page
       try {
-        const res = await axios.get(`http://be.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
+        const res = await axios.get(`http://be2.algo.r-e.kr:8088/api/v1/users/blocks?page=${page}&size=5`, {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
@@ -361,7 +361,7 @@ export default {
         }, () => {
           alert('차단되었습니다.')
         }, (err) => {
-          console.error(err)
+          alert('이미 차단된 사용자입니다.')
         })
       }
     }
@@ -485,7 +485,7 @@ export default {
     const selectMsgDelete = () => {
       if (msgMode.value === 3) {
         if(confirm('선택한 메시지를 모두 삭제하시겠습니까?')) {
-          axios.delete('http://be.algo.r-e.kr:8088/api/v1/messages/outboxes', {
+          axios.delete('http://be2.algo.r-e.kr:8088/api/v1/messages/outboxes', {
             data: {
               messageIdArray: selected.value
             },
@@ -503,7 +503,7 @@ export default {
         }
       } else {
         if(confirm('선택한 메시지를 모두 삭제하시겠습니까?')) {
-          axios.delete('http://be.algo.r-e.kr:8088/api/v1/messages/inboxes', {
+          axios.delete('http://be2.algo.r-e.kr:8088/api/v1/messages/inboxes', {
             data: {
               messageIdArray: selected.value
             },

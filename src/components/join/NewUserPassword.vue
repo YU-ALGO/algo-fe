@@ -12,12 +12,12 @@
         <h5 class="text-black-50 mt-4">비밀번호</h5>
         <div class="mb-2">
           <input type="password" class="form-control" placeholder="비밀번호 입력 (8자 이상)" v-model="password" @keyup.enter="checkPassword"
-                 minlength="8" required>
+                 minlength="8" maxlength="36" required>
           <p v-show="enablePasswordMsg" style="color: red"> {{ pwErrorMessage }} </p>
         </div>
         <div class="mb-3">
           <input type="password" class="form-control" placeholder="비밀번호 재입력" v-model="passwordCheck" @keyup.enter="checkPassword"
-                 minlength="8" required>
+                 minlength="8" maxlength="36" required>
           <p v-show="enablePasswordCheckMsg" style="color: red"> {{ pwCheckErrorMessage }} </p>
         </div>
         <button class="btn btn-primary form-control mt-4" @click="checkPassword">다음</button>
