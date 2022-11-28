@@ -3,7 +3,6 @@ import App from '@/App.vue'
 import router from '@/router'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.esm.min.js'
-import '@/RemixIcon_Fonts_v2.5.0/fonts/remixicon.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
 import store from './store'
