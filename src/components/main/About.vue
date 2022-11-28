@@ -67,7 +67,7 @@
           <hr>
           <p class="card-text">● keras를 이용한 딥러닝 기반 식품 추천 시스템</p>
           <p class="card-text">● Vue.js 3.0 프레임워크를 사용한 프론트엔드</p>
-          <p class="card-text">● Spring Boot 3.0을 사용한 백엔드</p>
+          <p class="card-text">● Spring Boot 2.7.1을 사용한 백엔드</p>
           <p class="card-text">● querydsl 5.0을 사용한 질의처리</p>
           <p class="card-text">● AWS S3를 사용한 이미지 서비스</p>
           <p class="card-text">● SMTP를 이용한 메일 서비스</p>
