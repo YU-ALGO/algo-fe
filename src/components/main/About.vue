@@ -72,6 +72,7 @@
           <p class="card-text">● AWS S3를 사용한 이미지 서비스</p>
           <p class="card-text">● SMTP를 이용한 메일 서비스</p>
           <p class="card-text">● 공공데이터 API를 이용한 HACCP 인증 식품 데이터</p>
+          <p class="card-text">● Swagger를 이용한 API </p>
           <br>
         </div>
       </div>
