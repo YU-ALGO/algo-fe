@@ -28,9 +28,7 @@
         </div>
         <div class="mx-3 my-2 py-2 bordert">
           <div class="text-center py-3">
-<!--              <button type="button" class="px-2" onclick="window.open('http://www.naver.com','네이버','popup, height=600, width=400')"><img src="../assets/kakaoLogo.png"></button>-->
             <a href="http://be2.algo.r-e.kr:8088/oauth2/authorization/kakao" class="px-2">
-<!--              <a style="cursor: pointer" @click="kakaoLogin" class="px-2">-->
               <img src="../../assets/kakaoLogo.png" alt=""/>
             </a>
             <a href="http://be2.algo.r-e.kr:8088/oauth2/authorization/naver" class="px-2">
@@ -49,14 +47,14 @@
 <script>
 import { ref } from 'vue'
 import router from '@/router'
-import { useStore } from 'vuex' // vuex 스토어 사용
+import { useStore } from 'vuex'
 import useAxios from '@/modules/axios.js'
 
 export default {
   setup() {
     const username = ref('')
     const password = ref('')
-    const store = useStore() //vuex 스토어 사용
+    const store = useStore()
 
     const login = async () => {
       store.dispatch('login', {

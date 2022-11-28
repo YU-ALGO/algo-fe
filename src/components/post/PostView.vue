@@ -27,7 +27,6 @@
               <i v-if="!postData.is_like" class="bi bi-hand-thumbs-up"></i>
               <i v-else class="bi bi-hand-thumbs-up-fill"></i>
             </button>
-            <!-- <button class="btn btn-primary m-2" @click="moveToEditPage">수정</button> -->
             <router-link v-if="checkPermission" class="btn btn-primary me-2" :to="{ name: 'PostWrite', query: { pid: postId, editable: true } }">수정</router-link>
             <button v-if="checkPermission || isAdmin" class="btn btn-danger me-2" @click="deletePost">삭제</button>
             <button class="btn btn-primary" @click="moveToPostListPage">목록</button>

@@ -92,7 +92,6 @@ export default {
     }
   },
   setup() {
-    // const { axiosGet } = useAxios()
     const route = useRoute()
     const boardId = route.params.bid
     const postList = ref('')
@@ -112,7 +111,6 @@ export default {
         totalPageCount.value = parseInt(res.headers['x-page-count']) === 0 ? 1 : parseInt(res.headers['x-page-count'])
         if (res.data.length !== 0) {
           postList.value = res.data
-          // console.log(postList)
         } else {
           postList.value = null
         }

@@ -29,7 +29,7 @@
       </table>
     </div>
       <div class="d-flex justify-content-center mt-4">
-    <!-- Pagination -->
+        <!-- Pagination -->
         <Pagination :currentPage="currentPage" :pageDisplayCount="pageDisplayCount" :totalPageCount="totalPageCount" @change="setPage" />
       </div>
     <router-link :to="{name: 'FoodWrite'}" class="btn btn-primary">식품 추가</router-link>
@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import {onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import Pagination from '@compo/common/Pagination'
-import axios from "axios";
+import axios from 'axios'
 
 export default {
   components: {
@@ -50,7 +50,6 @@ export default {
     const pageDisplayCount = ref(10)
     const totalPageCount = ref()
     const searchText = ref('')
-
     const foodList = ref('')  // getFoodList()로 가져온 식품 데이터
 
     const setPage = (page) => {

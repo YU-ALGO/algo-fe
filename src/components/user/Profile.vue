@@ -392,7 +392,7 @@ export default {
       if(newIntroduce.value !== userData.value.introduce) {
         promiseList.push(axiosPatch('/api/v1/users/introduce', { introduce: newIntroduce.value }))
       }
-      // if()
+
       let newAllergies = {}
       allergyCheckData.value.forEach((data) => {
         newAllergies[data.name] = data.selected
@@ -544,7 +544,6 @@ export default {
       router.push({name : 'ChangePassword'})
     }
 
-    // Profile.vue onMounted
     const loading = ref(0)
     onMounted(() => {
       // 사용자 정보

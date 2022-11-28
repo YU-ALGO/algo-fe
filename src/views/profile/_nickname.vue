@@ -14,9 +14,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import useAxios from '@/modules/axios'
+import { ref } from 'vue'
 import Profile from '@compo/user/Profile.vue'
 import NotFound from '@compo/common/NotFound'
 import Loading from '@compo/common/Loading'
@@ -29,22 +27,7 @@ export default {
   },
 
   setup() {
-    // const { axiosGet } = useAxios()
-    // const route = useRoute()
-    // const router = useRouter()
-    // const nickname = route.params.nickname
     const loading = ref(1)
-
-    onMounted(() => {
-      // axiosGet(`/api/v1/profiles/${nickname}`
-      // , (res) => {
-      //   console.log(res)
-      //   loading.value = 1
-      // }, (res) => {
-      //   console.error(res)
-      //       loading.value = -1
-      // })
-    })
 
     return {
       loading,

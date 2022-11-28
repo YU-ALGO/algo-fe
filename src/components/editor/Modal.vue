@@ -36,7 +36,6 @@ export default {
     const newFile = ref(null)
     const fileName = ref('')
     let imgUrl
-    // const formData = new FormData()
 
     const validImage = computed(() => {
       return fileName.value.match(/\.(jpg|JPG|jpeg|JPEG|gif|png)$/) !== null
@@ -53,8 +52,6 @@ export default {
     }
 
     const fileChange = () => {
-      // formData.append('image', file.value.files[0])
-      // console.log(file.value.files)
       const blobURL = URL.createObjectURL(oldFile.value.files[0]);
       const img = new Image();
       img.src = blobURL;

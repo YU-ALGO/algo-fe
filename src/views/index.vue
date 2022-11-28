@@ -87,14 +87,6 @@
                       <td>{{ post.created_at.split(' ')[0] }}</td>
                       <td>{{ post.view_count }}</td>
                       <td>{{ post.like_count }}</td>
-                      <!-- <td><a
-                          href=""
-                          target='_blank'>테스트</a> [9]
-                      </td>
-                      <td>작성자</td>
-                      <td>2022.09.21</td>
-                      <td>111</td>
-                      <td>222</td> -->
                     </tr>
                     </tbody>
                   </table>

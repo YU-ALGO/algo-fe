@@ -73,12 +73,6 @@ export default {
       }, () => {
         alert('백엔드 연결 실패 : 게시판 목록을 불러올 수 없습니다.')
       })
-      // axiosGet('/api/v1/token/validate'
-      //     , () => {
-      //     isLogin.value = true;
-      //   }, () => {
-      //   alert('토큰오류')
-      // })
       if (isSocialLogin.value) {
         store.dispatch('socialLogin')
         if(store.getters['nickname'] === null || store.getters['username'] === null) {
@@ -86,15 +80,7 @@ export default {
         }
       }
     })
-
-    // const isLogin = () => {
-    //   if(store.getters['isLogin'] || cookies.get("isLogin")) {
-    //     return true
-    //   } else {
-    //     return false;
-    //   }
-    // }
-
+    
     const logout = async () => {
       await store.dispatch('logout').catch((err) => console.error(err))
     }

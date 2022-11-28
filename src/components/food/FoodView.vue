@@ -185,7 +185,6 @@ export default {
       // get post data
       axiosGet(`/api/v1/foods/${foodId}`
           , (res) => {
-        // console.log(res)
             foodData.value = res.data
             loading.value = 1
           }, (err) => {

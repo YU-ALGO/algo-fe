@@ -40,11 +40,11 @@
 
 <script>
 import { ref } from 'vue'
-import { useStore } from 'vuex' // vuex 스토어 사용
+import { useStore } from 'vuex'
 
 export default {
   setup() {
-    const store = useStore() //vuex 스토어 사용
+    const store = useStore()
     const firstURL = ref('fo2vhh8cbfI')
     const secondURL = ref('b_MDW7gwnqg')
     const thirdURL = ref('h87bmuEvVlI')
