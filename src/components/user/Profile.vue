@@ -370,7 +370,7 @@ export default {
     }
 
     const nicknameCheck = () => {
-      axiosGet(`/api/v1/users/${newNickname.value}/exists`, (res) => {
+      axiosGet(`/api/v1/users/exists?nickname=${newNickname.value}`, (res) => {
         if (res.data) {
           alert('이미 사용중인 닉네임입니다.')
           duplicateNickname.value = true  // 중복된 닉네임 = true
